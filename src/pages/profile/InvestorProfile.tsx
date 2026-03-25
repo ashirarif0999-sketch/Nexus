@@ -31,11 +31,11 @@ export const InvestorProfile: React.FC = () => {
   const isCurrentUser = currentUser?.id === investor.id;
   
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="investor-profile-page space-y-6 animate-fade-in">
       {/* Profile header */}
-      <Card>
+      <Card className="investor-profile-header">
         <CardBody className="sm:flex sm:items-start sm:justify-between p-6">
-          <div className="sm:flex sm:space-x-6">
+          <div className="investor-profile-card sm:flex sm:space-x-6">
             <Avatar
               src={investor.avatarUrl}
               alt={investor.name}
@@ -86,11 +86,11 @@ export const InvestorProfile: React.FC = () => {
         </CardBody>
       </Card>
       
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="investor-profile-content-grid grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main content - left side */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="investor-profile-main-content lg:col-span-2 space-y-6">
           {/* About */}
-          <Card>
+          <Card className="investor-profile-about-section">
             <CardHeader>
               <h2 className="text-lg font-medium text-gray-900">About</h2>
             </CardHeader>
@@ -100,7 +100,7 @@ export const InvestorProfile: React.FC = () => {
           </Card>
           
           {/* Investment Interests */}
-          <Card>
+          <Card className="investor-profile-interests-section">
             <CardHeader>
               <h2 className="text-lg font-medium text-gray-900">Investment Interests</h2>
             </CardHeader>
@@ -150,7 +150,7 @@ export const InvestorProfile: React.FC = () => {
           </Card>
           
           {/* Portfolio Companies */}
-          <Card>
+          <Card className="investor-profile-portfolio-section">
             <CardHeader className="flex justify-between items-center">
               <h2 className="text-lg font-medium text-gray-900">Portfolio Companies</h2>
               <span className="text-sm text-gray-500">{investor.portfolioCompanies.length} companies</span>
@@ -174,9 +174,9 @@ export const InvestorProfile: React.FC = () => {
         </div>
         
         {/* Sidebar - right side */}
-        <div className="space-y-6">
+        <div className="investor-profile-sidebar space-y-6">
           {/* Investment Details */}
-          <Card>
+          <Card className="investor-profile-investment-section">
             <CardHeader>
               <h2 className="text-lg font-medium text-gray-900">Investment Details</h2>
             </CardHeader>
@@ -227,7 +227,7 @@ export const InvestorProfile: React.FC = () => {
           </Card>
           
           {/* Stats */}
-          <Card>
+          <Card className="investor-profile-stats-section">
             <CardHeader>
               <h2 className="text-lg font-medium text-gray-900">Investment Stats</h2>
             </CardHeader>

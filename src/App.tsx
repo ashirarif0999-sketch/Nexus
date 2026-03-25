@@ -30,6 +30,13 @@ import { DealsPage } from './pages/deals/DealsPage';
 // Chat Pages
 import { ChatPage } from './pages/chat/ChatPage';
 
+// Calendar Pages
+import { CalendarPage } from './pages/calendar/CalendarPage';
+
+// Video Pages
+import { VideoRoom } from './pages/video/VideoRoom';
+import { VideoMeetingsPage } from './pages/video/VideoMeetingsPage';
+
 function App() {
   return (
     <AuthProvider>
@@ -83,6 +90,18 @@ function App() {
           <Route path="/deals" element={<DashboardLayout />}>
             <Route index element={<DealsPage />} />
           </Route>
+          
+          {/* Calendar Routes */}
+          <Route path="/calendar" element={<DashboardLayout />}>
+            <Route index element={<CalendarPage />} />
+          </Route>
+          
+          {/* Video Meetings Page - With dashboard layout */}
+          <Route path="/video" element={<DashboardLayout />}>
+            <Route index element={<VideoMeetingsPage />} />
+          </Route>
+          {/* Video Call Route - Full screen, no layout */}
+          <Route path="/video/:roomId" element={<VideoRoom />} />
           
           {/* Chat Routes */}
           <Route path="/chat" element={<DashboardLayout />}>

@@ -1,4 +1,5 @@
 import React from 'react';
+import { clsx } from 'clsx';
 
 interface CardProps {
   children: React.ReactNode;
@@ -13,12 +14,14 @@ export const Card: React.FC<CardProps> = ({
   onClick,
   hoverable = false,
 }) => {
-  const hoverableClass = hoverable ? 'transform hover:-translate-y-1 transition-transform duration-300 cursor-pointer' : '';
-  const clickableClass = onClick ? 'cursor-pointer' : '';
-  
   return (
-    <div 
-      className={`bg-white rounded-lg shadow-md overflow-hidden ${hoverableClass} ${clickableClass} ${className}`}
+    <div
+      className={clsx(
+        'card-base bg-white rounded-lg shadow-md overflow-hidden flex flex-col',
+        hoverable && 'cursor-pointer',
+        onClick && 'card-clickable cursor-pointer',
+        className
+      )}
       onClick={onClick}
     >
       {children}
@@ -36,7 +39,7 @@ export const CardHeader: React.FC<CardHeaderProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`px-6 py-4 border-b border-gray-200 ${className}`}>
+    <div className={clsx('card-header px-6 py-4 border-b border-gray-200', className)}>
       {children}
     </div>
   );
@@ -52,7 +55,7 @@ export const CardBody: React.FC<CardBodyProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`px-6 py-4 ${className}`}>
+    <div className={clsx('card-body px-6 py-4 flex-1', className)}>
       {children}
     </div>
   );
@@ -68,7 +71,7 @@ export const CardFooter: React.FC<CardFooterProps> = ({
   className = '',
 }) => {
   return (
-    <div className={`px-6 py-4 border-t border-gray-200 ${className}`}>
+    <div className={clsx('card-footer px-6 py-4 border-t border-gray-200', className)}>
       {children}
     </div>
   );

@@ -60,21 +60,21 @@ export const CollaborationRequestCard: React.FC<CollaborationRequestCardProps> =
   };
   
   return (
-    <Card className="transition-all duration-300">
-      <CardBody className="flex flex-col">
-        <div className="flex justify-between items-start">
-          <div className="flex items-start">
+    <Card className="collaboration-card transition-all duration-300">
+      <CardBody className="collaboration-card-body flex flex-col">
+        <div className="collaboration-card-header flex justify-between items-start">
+          <div className="collaboration-card-investor flex items-start">
             <Avatar
               src={investor.avatarUrl}
               alt={investor.name}
               size="md"
               status={investor.isOnline ? 'online' : 'offline'}
-              className="mr-3"
+              className="collaboration-card-avatar mr-3"
             />
             
-            <div>
-              <h3 className="text-md font-semibold text-gray-900">{investor.name}</h3>
-              <p className="text-sm text-gray-500">
+            <div className="collaboration-card-investor-info">
+              <h3 className="collaboration-card-investor-name text-md font-semibold text-gray-900">{investor.name}</h3>
+              <p className="collaboration-card-investor-time text-sm text-gray-500">
                 {formatDistanceToNow(new Date(request.createdAt), { addSuffix: true })}
               </p>
             </div>
@@ -83,12 +83,12 @@ export const CollaborationRequestCard: React.FC<CollaborationRequestCardProps> =
           {getStatusBadge()}
         </div>
         
-        <div className="mt-4">
-          <p className="text-sm text-gray-600">{request.message}</p>
+        <div className="collaboration-card-message mt-4">
+          <p className="collaboration-card-message-text text-sm text-gray-600">{request.message}</p>
         </div>
       </CardBody>
       
-      <CardFooter className="border-t border-gray-100 bg-gray-50">
+      <CardFooter className="collaboration-card-footer border-t border-gray-100 bg-gray-50">
         {request.status === 'pending' ? (
           <div className="flex justify-between w-full">
             <div className="space-x-2">

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Bell, MessageCircle, UserPlus, DollarSign } from 'lucide-react';
+import { clsx } from 'clsx';
 import { Card, CardBody } from '../../components/ui/Card';
 import { Avatar } from '../../components/ui/Avatar';
 import { Badge } from '../../components/ui/Badge';
@@ -72,9 +73,10 @@ export const NotificationsPage: React.FC = () => {
         {notifications.map(notification => (
           <Card
             key={notification.id}
-            className={`transition-colors duration-200 ${
-              notification.unread ? 'bg-primary-50' : ''
-            }`}
+            className={clsx(
+              'transition-colors duration-200',
+              notification.unread && 'bg-primary-50'
+            )}
           >
             <CardBody className="flex items-start p-4">
               <Avatar

@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { MessageCircle, Users, Calendar, Building2, MapPin, UserCircle, FileText, DollarSign, Send } from 'lucide-react';
+import { MessageCircle, Users, Calendar, Building2, MapPin, UserCircle, FileText, DollarSign, Send, X, Check } from 'lucide-react';
 import { Avatar } from '../../components/ui/Avatar';
 import { Button } from '../../components/ui/Button';
 import { Card, CardBody, CardHeader } from '../../components/ui/Card';
 import { Badge } from '../../components/ui/Badge';
+import { Input } from '../../components/ui/Input';
 import { useAuth } from '../../context/AuthContext';
 import { findUserById } from '../../data/users';
 import { createCollaborationRequest, getRequestsFromInvestor } from '../../data/collaborationRequests';
@@ -13,6 +14,9 @@ import { Entrepreneur } from '../../types';
 export const EntrepreneurProfile: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { user: currentUser } = useAuth();
+  const [showInvestModal, setShowInvestModal] = useState(false);
+  const [investmentAmount, setInvestmentAmount] = useState('');
+  const [investmentMessage, setInvestmentMessage] = useState('');
   
   // Fetch entrepreneur data
   const entrepreneur = findUserById(id || '') as Entrepreneur | null;
@@ -44,17 +48,27 @@ export const EntrepreneurProfile: React.FC = () => {
         id,
         `I'm interested in learning more about ${entrepreneur.startupName} and would like to explore potential investment opportunities.`
       );
-      
+
       // In a real app, we would refresh the data or update state
       // For this demo, we'll force a page reload
       window.location.reload();
     }
   };
+
+  const handleInvest = () => {
+    // Mock investment - in a real app, this would call an API
+    alert(`Investment of $${investmentAmount} submitted to ${entrepreneur.startupName}! This would update your wallet balance and transaction history.`);
+
+    // Reset form and close modal
+    setInvestmentAmount('');
+    setInvestmentMessage('');
+    setShowInvestModal(false);
+  };
   
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="entrepreneur-profile-page space-y-6 animate-fade-in">
       {/* Profile header */}
-      <Card>
+      <Card className="entrepreneur-profile-header">
         <CardBody className="sm:flex sm:items-start sm:justify-between p-6">
           <div className="sm:flex sm:space-x-6">
             <Avatar
@@ -90,7 +104,7 @@ export const EntrepreneurProfile: React.FC = () => {
             </div>
           </div>
           
-          <div className="mt-6 sm:mt-0 flex flex-col sm:flex-row gap-2 justify-center sm:justify-end">
+          <div className="card-buttons-parent mt-6 sm:mt-0 flex flex-col sm:flex-row gap-2 justify-center sm:justify-end">
             {!isCurrentUser && (
               <>
                 <Link to={`/chat/${entrepreneur.id}`}>
@@ -103,13 +117,23 @@ export const EntrepreneurProfile: React.FC = () => {
                 </Link>
                 
                 {isInvestor && (
-                  <Button
-                    leftIcon={<Send size={18} />}
-                    disabled={hasRequestedCollaboration}
-                    onClick={handleSendRequest}
-                  >
-                    {hasRequestedCollaboration ? 'Request Sent' : 'Request Collaboration'}
-                  </Button>
+                  <>
+                    <Button
+                      leftIcon={<Send size={18} />}
+                      disabled={hasRequestedCollaboration}
+                      onClick={handleSendRequest}
+                    >
+                      {hasRequestedCollaboration ? 'Request Sent' : 'Request Collaboration'}
+                    </Button>
+
+                    <Button
+                      leftIcon={<DollarSign size={18} />}
+                      onClick={() => setShowInvestModal(true)}
+                      className="bg-green-600 hover:bg-green-700"
+                    >
+                      Invest Now
+                    </Button>
+                  </>
                 )}
               </>
             )}
@@ -126,11 +150,11 @@ export const EntrepreneurProfile: React.FC = () => {
         </CardBody>
       </Card>
       
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="entrepreneur-profile-content-grid grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Main content - left side */}
-        <div className="lg:col-span-2 space-y-6">
+        <div className="entrepreneur-profile-main-content lg:col-span-2 space-y-6">
           {/* About */}
-          <Card>
+          <Card className="entrepreneur-profile-about-section">
             <CardHeader>
               <h2 className="text-lg font-medium text-gray-900">About</h2>
             </CardHeader>
@@ -235,9 +259,9 @@ export const EntrepreneurProfile: React.FC = () => {
         </div>
         
         {/* Sidebar - right side */}
-        <div className="space-y-6">
+        <div className="entrepreneur-profile-sidebar space-y-6">
           {/* Funding Details */}
-          <Card>
+          <Card className="entrepreneur-profile-funding-section">
             <CardHeader>
               <h2 className="text-lg font-medium text-gray-900">Funding</h2>
             </CardHeader>
@@ -350,6 +374,123 @@ export const EntrepreneurProfile: React.FC = () => {
           </Card>
         </div>
       </div>
+
+      {/* Investment Modal */}
+      {showInvestModal && (
+        <>
+          {/* Backdrop */}
+          <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm z-50" onClick={() => setShowInvestModal(false)} />
+
+          {/* Modal */}
+          <div className="fixed inset-0 z-50 overflow-y-auto">
+            <div className="flex min-h-full items-center justify-center p-4">
+              <div className="relative w-full max-w-md bg-white rounded-2xl shadow-2xl">
+                {/* Header */}
+                <div className="flex items-center justify-between p-6 border-b border-gray-200">
+                  <h3 className="text-lg font-semibold text-gray-900">Invest in {entrepreneur.startupName}</h3>
+                  <button
+                    onClick={() => setShowInvestModal(false)}
+                    className="text-gray-400 hover:text-gray-600"
+                  >
+                    <X size={24} />
+                  </button>
+                </div>
+
+                {/* Body */}
+                <div className="p-6 space-y-6">
+                  {/* Investment Amount */}
+                  <div>
+                    <Input
+                      label="Investment Amount ($)"
+                      type="number"
+                      placeholder="Enter amount"
+                      value={investmentAmount}
+                      onChange={(e) => setInvestmentAmount(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Funding Source */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Funding Source
+                    </label>
+                    <div className="space-y-2">
+                      <div className="flex items-center p-3 border border-gray-200 rounded-lg">
+                        <div className="flex items-center">
+                          <div className="w-4 h-4 bg-green-500 rounded-full mr-3"></div>
+                          <div>
+                            <p className="text-sm font-medium text-gray-900">Wallet Balance</p>
+                            <p className="text-xs text-gray-500">$50,000.00 available</p>
+                          </div>
+                        </div>
+                        <input
+                          type="radio"
+                          name="fundingSource"
+                          defaultChecked
+                          className="ml-auto"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Optional Message */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Message to Entrepreneur (Optional)
+                    </label>
+                    <textarea
+                      className="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+                      rows={3}
+                      placeholder="Add a personal message..."
+                      value={investmentMessage}
+                      onChange={(e) => setInvestmentMessage(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Investment Summary */}
+                  <div className="bg-gray-50 p-4 rounded-lg">
+                    <h4 className="text-sm font-medium text-gray-900 mb-2">Investment Summary</h4>
+                    <div className="space-y-1 text-sm text-gray-600">
+                      <div className="flex justify-between">
+                        <span>Amount:</span>
+                        <span>${investmentAmount || '0'}</span>
+                      </div>
+                      <div className="flex justify-between">
+                        <span>Processing Fee:</span>
+                        <span>$0.00</span>
+                      </div>
+                      <div className="border-t border-gray-200 pt-1 mt-2">
+                        <div className="flex justify-between font-medium text-gray-900">
+                          <span>Total:</span>
+                          <span>${investmentAmount || '0'}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Footer */}
+                <div className="flex items-center justify-end gap-3 p-6 border-t border-gray-200">
+                  <Button
+                    variant="outline"
+                    onClick={() => setShowInvestModal(false)}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    onClick={handleInvest}
+                    disabled={!investmentAmount || parseFloat(investmentAmount) <= 0}
+                    className="bg-green-600 hover:bg-green-700"
+                  >
+                    <Check size={18} className="mr-2" />
+                    Confirm Investment
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

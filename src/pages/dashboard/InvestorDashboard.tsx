@@ -1,45 +1,90 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
-import { Users, PieChart, Filter, Search, PlusCircle } from 'lucide-react';
+import { Users, PieChart, Search, PlusCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { clsx } from 'clsx';
 import { Button } from '../../components/ui/Button';
 import { Card, CardBody, CardHeader } from '../../components/ui/Card';
 import { Input } from '../../components/ui/Input';
-import { Badge } from '../../components/ui/Badge';
+import { FilterModal, FilterButton } from '../../components/ui/FilterModal';
+import { Pagination } from '../../components/ui/Pagination';
 import { EntrepreneurCard } from '../../components/entrepreneur/EntrepreneurCard';
+import { SkeletonCard } from '../../components/ui/Skeleton';
+import { BlurFadeIn } from '../../components/ui/BlurFadeIn';
+import TextType from '../../components/ui/TextType';
 import { useAuth } from '../../context/AuthContext';
 import { Entrepreneur } from '../../types';
 import { entrepreneurs } from '../../data/users';
 import { getRequestsFromInvestor } from '../../data/collaborationRequests';
+import { useDebounce } from '../../hooks/useDebounce';
 
-export const InvestorDashboard: React.FC = () => {
+const ITEMS_PER_PAGE = 6;
+
+const InvestorDashboardComponent: React.FC = () => {
   const { user } = useAuth();
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
   
+  // Filter modal state
+  const [isIndustryModalOpen, setIsIndustryModalOpen] = useState(false);
+
+  // Debounced search for performance
+  const debouncedSearchQuery = useDebounce(searchQuery, 300);
+
   if (!user) return null;
   
   // Get collaboration requests sent by this investor
-  const sentRequests = getRequestsFromInvestor(user.id);
-  const requestedEntrepreneurIds = sentRequests.map(req => req.entrepreneurId);
+  const sentRequests = useMemo(() => getRequestsFromInvestor(user.id), [user.id]);
+  const requestedEntrepreneurIds = useMemo(() => sentRequests.map(req => req.entrepreneurId), [sentRequests]);
   
   // Filter entrepreneurs based on search and industry filters
-  const filteredEntrepreneurs = entrepreneurs.filter(entrepreneur => {
-    // Search filter
-    const matchesSearch = searchQuery === '' || 
-      entrepreneur.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      entrepreneur.startupName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      entrepreneur.industry.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      entrepreneur.pitchSummary.toLowerCase().includes(searchQuery.toLowerCase());
-    
-    // Industry filter
-    const matchesIndustry = selectedIndustries.length === 0 || 
-      selectedIndustries.includes(entrepreneur.industry);
-    
-    return matchesSearch && matchesIndustry;
-  });
+  const filteredEntrepreneurs = useMemo(() => {
+    return entrepreneurs.filter(entrepreneur => {
+      // Search filter
+      const matchesSearch = debouncedSearchQuery === '' ||
+        entrepreneur.name.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+        entrepreneur.startupName.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+        entrepreneur.industry.toLowerCase().includes(debouncedSearchQuery.toLowerCase()) ||
+        entrepreneur.pitchSummary.toLowerCase().includes(debouncedSearchQuery.toLowerCase());
+
+      // Industry filter
+      const matchesIndustry = selectedIndustries.length === 0 ||
+        selectedIndustries.includes(entrepreneur.industry);
+
+      return matchesSearch && matchesIndustry;
+    });
+  }, [entrepreneurs, debouncedSearchQuery, selectedIndustries]);
   
-  // Get unique industries for filter
-  const industries = Array.from(new Set(entrepreneurs.map(e => e.industry)));
+  // Get unique industries for filters
+  const industries = useMemo(() => Array.from(new Set(entrepreneurs.map(e => e.industry))), [entrepreneurs]);
+
+  // Prepare filter options for modal
+  const industryOptions = useMemo(() => industries.map(i => ({ id: i, label: i })), [industries]);
+
+  // Pagination calculations
+  const totalPages = useMemo(() => Math.ceil(filteredEntrepreneurs.length / ITEMS_PER_PAGE), [filteredEntrepreneurs.length]);
+  const paginatedEntrepreneurs = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredEntrepreneurs.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filteredEntrepreneurs, currentPage]);
+  
+  // Simulate loading when page changes with optimized delay
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setIsLoading(true);
+      setCurrentPage(page);
+      // Optimized 4-second delay for better UX and perceived performance
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 1200);
+    }
+  };
+  
+  // Reset to page 1 when filters change
+  React.useEffect(() => {
+    setCurrentPage(1);
+  }, [debouncedSearchQuery, selectedIndustries]);
   
   // Toggle industry selection
   const toggleIndustry = (industry: string) => {
@@ -50,55 +95,67 @@ export const InvestorDashboard: React.FC = () => {
     );
   };
   
+
+  
   return (
     <div className="space-y-6 animate-fade-in">
       <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Discover Startups</h1>
-          <p className="text-gray-600">Find and connect with promising entrepreneurs</p>
-        </div>
-        
-        <Link to="/entrepreneurs">
-          <Button
-            leftIcon={<PlusCircle size={18} />}
-          >
-            View All Startups
-          </Button>
-        </Link>
-      </div>
-      
-      {/* Filters and search */}
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="w-full md:w-2/3">
-          <Input
-            placeholder="Search startups, industries, or keywords..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            fullWidth
-            startAdornment={<Search size={18} />}
+          <BlurFadeIn>
+            <h1 className="text-2xl font-bold text-gray-900">Welcome, {user.name}</h1>
+          </BlurFadeIn>
+          <TextType
+            text={["Discover promising startups", "Find your next investment", "Connect with entrepreneurs"]}
+            typingSpeed={75}
+            pauseDuration={2000}
+            deletingSpeed={50}
+            showCursor={true}
+            cursorCharacter="|"
           />
         </div>
         
-        <div className="w-full md:w-1/3">
-          <div className="flex items-center space-x-2">
-            <Filter size={18} className="text-gray-500" />
-            <span className="text-sm font-medium text-gray-700">Filter by:</span>
-            
-            <div className="flex flex-wrap gap-2">
-              {industries.map(industry => (
-                <Badge
-                  key={industry}
-                  variant={selectedIndustries.includes(industry) ? 'primary' : 'gray'}
-                  className="cursor-pointer"
-                  onClick={() => toggleIndustry(industry)}
-                >
-                  {industry}
-                </Badge>
-              ))}
-            </div>
+        {/* Filters and search */}
+        <div className="flex flex-col md:flex-row gap-4">
+          <div className="w-full md:w-2/3">
+            <Input
+              placeholder="Search startups, industries, or keywords..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              fullWidth
+              startAdornment={<Search size={18} />}
+            />
+          </div>
+
+          <div className="w-full md:w-1/3 flex gap-2 items-center">
+            <FilterButton
+              label="Industry"
+              count={industries.length}
+              selectedCount={selectedIndustries.length}
+              onClick={() => setIsIndustryModalOpen(true)}
+            />
+
+            <Link to="/entrepreneurs">
+              <Button
+                leftIcon={<PlusCircle size={18} />}
+                size="sm"
+              >
+                View All Startups
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
+      
+      {/* Industry Filter Modal */}
+      <FilterModal
+        isOpen={isIndustryModalOpen}
+        onClose={() => setIsIndustryModalOpen(false)}
+        title="Filter by Industry"
+        options={industryOptions}
+        selectedOptions={selectedIndustries}
+        onToggle={toggleIndustry}
+        type="checkbox"
+      />
       
       {/* Stats summary */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -156,14 +213,32 @@ export const InvestorDashboard: React.FC = () => {
           
           <CardBody>
             {filteredEntrepreneurs.length > 0 ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {filteredEntrepreneurs.map(entrepreneur => (
-                  <EntrepreneurCard
-                    key={entrepreneur.id}
-                    entrepreneur={entrepreneur}
+              <>
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 scroll-performance-optimized" style={{ contain: 'layout style', willChange: 'transform' }}>
+                  {isLoading ? (
+                    Array.from({ length: ITEMS_PER_PAGE }).map((_, index) => (
+                      <SkeletonCard key={`skeleton-${index}`} />
+                    ))
+                  ) : (
+                    paginatedEntrepreneurs.map(entrepreneur => (
+                      <EntrepreneurCard
+                        key={entrepreneur.id}
+                        entrepreneur={entrepreneur}
+                      />
+                    ))
+                  )}
+                </div>
+                
+                {/* Pagination */}
+                {!isLoading && (
+                  <Pagination
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    onPageChange={handlePageChange}
+                    className="pt-6"
                   />
-                ))}
-              </div>
+                )}
+              </>
             ) : (
               <div className="text-center py-8">
                 <p className="text-gray-600">No startups match your filters</p>
@@ -185,3 +260,5 @@ export const InvestorDashboard: React.FC = () => {
     </div>
   );
 };
+
+export const InvestorDashboard = React.memo(InvestorDashboardComponent);

@@ -1,5 +1,5 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
-import { User, UserRole, AuthContextType } from '../types';
+import { User, UserRole, AuthContextType, Entrepreneur, Investor } from '../types';
 import { users } from '../data/users';
 import toast from 'react-hot-toast';
 
@@ -33,15 +33,57 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Find user with matching email and role
-      const foundUser = users.find(u => u.email === email && u.role === role);
+      let foundUser = users.find(u => u.email === email && u.role === role);
       
-      if (foundUser) {
-        setUser(foundUser);
-        localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(foundUser));
-        toast.success('Successfully logged in!');
-      } else {
-        throw new Error('Invalid credentials or user not found');
+      // If no matching user, create a new one for demo purposes
+      if (!foundUser) {
+        const name = email.split('@')[0].replace('.', ' ').split(' ').map((s: string) => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
+        
+        if (role === 'entrepreneur') {
+          const newEntrepreneur: Entrepreneur = {
+            id: `e${Date.now()}`,
+            name,
+            email,
+            role: 'entrepreneur',
+            avatarUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`,
+            bio: '',
+            isOnline: true,
+            createdAt: new Date().toISOString(),
+            startupName: 'My Startup',
+            pitchSummary: 'A promising startup looking for investment',
+            fundingNeeded: '$500,000',
+            industry: 'Technology',
+            location: 'San Francisco, CA',
+            foundedYear: 2024,
+            teamSize: 5
+          };
+          foundUser = newEntrepreneur;
+          users.push(newEntrepreneur);
+        } else {
+          const newInvestor: Investor = {
+            id: `i${Date.now()}`,
+            name,
+            email,
+            role: 'investor',
+            avatarUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`,
+            bio: '',
+            isOnline: true,
+            createdAt: new Date().toISOString(),
+            investmentInterests: ['Technology', 'FinTech', 'HealthTech'],
+            investmentStage: ['Seed', 'Series A'],
+            portfolioCompanies: [],
+            totalInvestments: 0,
+            minimumInvestment: '$50,000',
+            maximumInvestment: '$500,000'
+          };
+          foundUser = newInvestor;
+          users.push(newInvestor);
+        }
       }
+      
+      setUser(foundUser);
+      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(foundUser));
+      toast.success('Successfully logged in!');
     } catch (error) {
       toast.error((error as Error).message);
       throw error;

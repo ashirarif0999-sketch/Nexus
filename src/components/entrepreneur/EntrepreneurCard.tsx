@@ -12,7 +12,7 @@ interface EntrepreneurCardProps {
   showActions?: boolean;
 }
 
-export const EntrepreneurCard: React.FC<EntrepreneurCardProps> = ({
+const EntrepreneurCardComponent: React.FC<EntrepreneurCardProps> = ({
   entrepreneur,
   showActions = true
 }) => {
@@ -30,24 +30,24 @@ export const EntrepreneurCard: React.FC<EntrepreneurCardProps> = ({
   return (
     <Card 
       hoverable 
-      className="transition-all duration-300 h-full"
+      className="entrepreneur-card transition-all duration-300 h-full"
       onClick={handleViewProfile}
     >
-      <CardBody className="flex flex-col">
-        <div className="flex items-start">
+      <CardBody className="entrepreneur-card-body flex flex-col">
+        <div className="entrepreneur-card-header flex items-start">
           <Avatar
             src={entrepreneur.avatarUrl}
             alt={entrepreneur.name}
             size="lg"
             status={entrepreneur.isOnline ? 'online' : 'offline'}
-            className="mr-4"
+            className="entrepreneur-card-avatar mr-4"
           />
           
-          <div className="flex-1">
-            <h3 className="text-lg font-semibold text-gray-900 mb-1">{entrepreneur.name}</h3>
-            <p className="text-sm text-gray-500 mb-2">{entrepreneur.startupName}</p>
+          <div className="entrepreneur-card-info flex-1">
+            <h3 className="entrepreneur-card-name text-lg font-semibold text-gray-900 mb-1">{entrepreneur.name}</h3>
+            <p className="entrepreneur-card-startup text-sm text-gray-500 mb-2">{entrepreneur.startupName}</p>
             
-            <div className="flex flex-wrap gap-2 mb-3">
+            <div className="entrepreneur-card-badges flex flex-wrap gap-2 mb-3">
               <Badge variant="primary" size="sm">{entrepreneur.industry}</Badge>
               <Badge variant="gray" size="sm">{entrepreneur.location}</Badge>
               <Badge variant="accent" size="sm">Founded {entrepreneur.foundedYear}</Badge>
@@ -55,26 +55,26 @@ export const EntrepreneurCard: React.FC<EntrepreneurCardProps> = ({
           </div>
         </div>
         
-        <div className="mt-3">
-          <h4 className="text-sm font-medium text-gray-900 mb-1">Pitch Summary</h4>
-          <p className="text-sm text-gray-600 line-clamp-3">{entrepreneur.pitchSummary}</p>
+        <div className="entrepreneur-card-pitch mt-3">
+          <h4 className="entrepreneur-card-pitch-title text-sm font-medium text-gray-900 mb-1">Pitch Summary</h4>
+          <p className="entrepreneur-card-pitch-text text-sm text-gray-600 line-clamp-3">{entrepreneur.pitchSummary}</p>
         </div>
         
-        <div className="mt-3 flex justify-between items-center">
+        <div className="entrepreneur-card-stats mt-3 flex justify-between items-center">
           <div>
-            <span className="text-xs text-gray-500">Funding Need</span>
-            <p className="text-sm font-medium text-gray-900">{entrepreneur.fundingNeeded}</p>
+            <span className="entrepreneur-card-funding-label text-xs text-gray-500">Funding Need</span>
+            <p className="entrepreneur-card-funding-value text-sm font-medium text-gray-900">{entrepreneur.fundingNeeded}</p>
           </div>
           
           <div>
-            <span className="text-xs text-gray-500">Team Size</span>
-            <p className="text-sm font-medium text-gray-900">{entrepreneur.teamSize} people</p>
+            <span className="entrepreneur-card-team-label text-xs text-gray-500">Team Size</span>
+            <p className="entrepreneur-card-team-value text-sm font-medium text-gray-900">{entrepreneur.teamSize} people</p>
           </div>
         </div>
       </CardBody>
       
       {showActions && (
-        <CardFooter className="border-t border-gray-100 bg-gray-50 flex justify-between">
+        <CardFooter className="entrepreneur-card-footer border-t border-gray-100 bg-gray-50 card-buttons-parent">
           <Button
             variant="outline"
             size="sm"
@@ -83,7 +83,7 @@ export const EntrepreneurCard: React.FC<EntrepreneurCardProps> = ({
           >
             Message
           </Button>
-          
+
           <Button
             variant="primary"
             size="sm"
@@ -97,3 +97,5 @@ export const EntrepreneurCard: React.FC<EntrepreneurCardProps> = ({
     </Card>
   );
 };
+
+export const EntrepreneurCard = React.memo(EntrepreneurCardComponent);

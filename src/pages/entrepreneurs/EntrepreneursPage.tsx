@@ -1,15 +1,25 @@
-import React, { useState } from 'react';
-import { Search, Filter, MapPin } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
+import { clsx } from 'clsx';
 import { Input } from '../../components/ui/Input';
 import { Card, CardHeader, CardBody } from '../../components/ui/Card';
-import { Badge } from '../../components/ui/Badge';
+import { SkeletonCard } from '../../components/ui/Skeleton';
+import { FilterModal, FilterButton } from '../../components/ui/FilterModal';
 import { EntrepreneurCard } from '../../components/entrepreneur/EntrepreneurCard';
 import { entrepreneurs } from '../../data/users';
+
+const ITEMS_PER_PAGE = 6;
 
 export const EntrepreneursPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
   const [selectedFundingRange, setSelectedFundingRange] = useState<string[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
+  
+  // Modal states
+  const [showIndustryModal, setShowIndustryModal] = useState(false);
+  const [showFundingModal, setShowFundingModal] = useState(false);
   
   // Get unique industries and funding ranges
   const allIndustries = Array.from(new Set(entrepreneurs.map(e => e.industry)));
@@ -41,7 +51,29 @@ export const EntrepreneursPage: React.FC = () => {
     
     return matchesSearch && matchesIndustry && matchesFunding;
   });
-  
+
+  // Pagination calculations
+  const totalPages = Math.ceil(filteredEntrepreneurs.length / ITEMS_PER_PAGE);
+  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+  const paginatedEntrepreneurs = filteredEntrepreneurs.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+
+  // Simulate loading when page changes
+  const handlePageChange = (page: number) => {
+    if (page >= 1 && page <= totalPages) {
+      setIsLoading(true);
+      setCurrentPage(page);
+      // Simulate network delay for loading skeletons
+      setTimeout(() => {
+        setIsLoading(false);
+      }, 500);
+    }
+  };
+
+  // Reset to page 1 when filters change
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [searchQuery, selectedIndustries, selectedFundingRange]);
+
   const toggleIndustry = (industry: string) => {
     setSelectedIndustries(prev => 
       prev.includes(industry)
@@ -65,71 +97,21 @@ export const EntrepreneursPage: React.FC = () => {
         <p className="text-gray-600">Discover promising startups looking for investment</p>
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-        {/* Filters sidebar */}
-        <div className="space-y-6">
-          <Card>
-            <CardHeader>
-              <h2 className="text-lg font-medium text-gray-900">Filters</h2>
-            </CardHeader>
-            <CardBody className="space-y-6">
-              <div>
-                <h3 className="text-sm font-medium text-gray-900 mb-2">Industry</h3>
-                <div className="space-y-2">
-                  {allIndustries.map(industry => (
-                    <button
-                      key={industry}
-                      onClick={() => toggleIndustry(industry)}
-                      className={`block w-full text-left px-3 py-2 rounded-md text-sm ${
-                        selectedIndustries.includes(industry)
-                          ? 'bg-primary-50 text-primary-700'
-                          : 'text-gray-700 hover:bg-gray-50'
-                      }`}
-                    >
-                      {industry}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              
-              <div>
-                <h3 className="text-sm font-medium text-gray-900 mb-2">Funding Range</h3>
-                <div className="space-y-2">
-                  {fundingRanges.map(range => (
-                    <button
-                      key={range}
-                      onClick={() => toggleFundingRange(range)}
-                      className={`block w-full text-left px-3 py-2 rounded-md text-sm ${
-                        selectedFundingRange.includes(range)
-                          ? 'bg-primary-50 text-primary-700'
-                          : 'text-gray-700 hover:bg-gray-50'
-                      }`}
-                    >
-                      {range}
-                    </button>
-                  ))}
-                </div>
-              </div>
-              
-              <div>
-                <h3 className="text-sm font-medium text-gray-900 mb-2">Location</h3>
-                <div className="space-y-2">
-                  <button className="flex items-center w-full text-left px-3 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-50">
-                    <MapPin size={16} className="mr-2" />
-                    San Francisco, CA
-                  </button>
-                  <button className="flex items-center w-full text-left px-3 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-50">
-                    <MapPin size={16} className="mr-2" />
-                    New York, NY
-                  </button>
-                  <button className="flex items-center w-full text-left px-3 py-2 rounded-md text-sm text-gray-700 hover:bg-gray-50">
-                    <MapPin size={16} className="mr-2" />
-                    Boston, MA
-                  </button>
-                </div>
-              </div>
-            </CardBody>
-          </Card>
+      <div className="space-y-6">
+        {/* Filter Buttons */}
+        <div className="flex flex-wrap gap-3">
+          <FilterButton
+            label="Industry"
+            count={allIndustries.length}
+            selectedCount={selectedIndustries.length}
+            onClick={() => setShowIndustryModal(true)}
+          />
+          <FilterButton
+            label="Funding Range"
+            count={fundingRanges.length}
+            selectedCount={selectedFundingRange.length}
+            onClick={() => setShowFundingModal(true)}
+          />
         </div>
         
         {/* Main content */}
@@ -152,15 +134,79 @@ export const EntrepreneursPage: React.FC = () => {
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {filteredEntrepreneurs.map(entrepreneur => (
-              <EntrepreneurCard
-                key={entrepreneur.id}
-                entrepreneur={entrepreneur}
-              />
-            ))}
+            {isLoading ? (
+              // Show skeleton cards while loading
+              Array.from({ length: ITEMS_PER_PAGE }).map((_, index) => (
+                <SkeletonCard key={`skeleton-${index}`} />
+              ))
+            ) : (
+              paginatedEntrepreneurs.map(entrepreneur => (
+                <EntrepreneurCard
+                  key={entrepreneur.id}
+                  entrepreneur={entrepreneur}
+                />
+              ))
+            )}
           </div>
+
+          {/* Pagination */}
+          {!isLoading && totalPages > 1 && (
+            <div className="flex justify-center items-center gap-2 py-6">
+              <button
+                onClick={() => handlePageChange(currentPage - 1)}
+                disabled={currentPage === 1}
+                className="p-2 rounded-md border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ChevronLeft size={20} />
+              </button>
+              
+              {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                <button
+                  key={page}
+                  onClick={() => handlePageChange(page)}
+                  className={clsx(
+                    'w-10 h-10 rounded-md font-medium',
+                    currentPage === page
+                      ? 'bg-primary-600 text-white'
+                      : 'border border-gray-300 hover:bg-gray-50'
+                  )}
+                >
+                  {page}
+                </button>
+              ))}
+              
+              <button
+                onClick={() => handlePageChange(currentPage + 1)}
+                disabled={currentPage === totalPages}
+                className="p-2 rounded-md border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                <ChevronRight size={20} />
+              </button>
+            </div>
+          )}
         </div>
       </div>
+
+      {/* Filter Modals */}
+      <FilterModal
+        isOpen={showIndustryModal}
+        onClose={() => setShowIndustryModal(false)}
+        title="Industry"
+        options={allIndustries.map(industry => ({ id: industry, label: industry }))}
+        selectedOptions={selectedIndustries}
+        onToggle={toggleIndustry}
+        type="checkbox"
+      />
+      
+      <FilterModal
+        isOpen={showFundingModal}
+        onClose={() => setShowFundingModal(false)}
+        title="Funding Range"
+        options={fundingRanges.map(range => ({ id: range, label: range }))}
+        selectedOptions={selectedFundingRange}
+        onToggle={toggleFundingRange}
+        type="checkbox"
+      />
     </div>
   );
 };

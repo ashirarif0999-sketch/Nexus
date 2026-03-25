@@ -1,3 +1,173 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+
+.sidebar-container{
+    z-index: 30;
+    height: -webkit-fill-available;
+    top: 0;
+}
+
+/* Sidebar collapse animation */
+.sidebar-container {
+    transition: width 0.3s ease-in-out;
+    overflow: hidden;
+}
+
+.sidebar-container.collapsed .sidebar-content,
+.sidebar-container.collapsed .sidebar-main,
+.sidebar-container.collapsed .sidebar-settings,
+.sidebar-container.collapsed .sidebar-footer,
+.sidebar-container.collapsed .sidebar-header {
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+}
+
+.sidebar-container:not(.collapsed) .sidebar-content,
+.sidebar-container:not(.collapsed) .sidebar-main,
+.sidebar-container:not(.collapsed) .sidebar-settings,
+.sidebar-container:not(.collapsed) .sidebar-footer,
+.sidebar-container:not(.collapsed) .sidebar-header {
+    opacity: 1;
+    transition: opacity 0.2s ease-in-out 0.15s;
+}
+
+/* Sidebar blur overlay */
+.sidebar-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(4px);
+    z-index: 20;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.sidebar-overlay.visible {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+/* Sidebar logout button */
+.sidebar-logout-btn {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 10px 16px;
+    margin-top: 12px;
+    background-color: #fee2e2;
+    color: #dc2626;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.sidebar-logout-btn:hover {
+    background-color: #fecaca;
+}
+
+.sidebar-logout-btn span {
+    margin-left: 10px;
+}
+
+/* Card footer always sticks to bottom */
+.card-footer {
+    margin-top: auto;
+}
+.card-base:hover{
+    --tw-ring-offset-width: 2px;
+    --tw-ring-opacity: 1;
+    --tw-ring-color: rgb(59 130 246 / var(--tw-ring-opacity));
+}
+.entrepreneur-profile-page .card-body{
+    text-align: center;
+}
+
+/* Import Border Glow Effects */
+@import './component/BorderGlow.css';
+.avatar-wrapper {
+    aspect-ratio: 1 / 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: fit-content;
+    flex-shrink: 0; /* Prevent squeezing */
+    min-width: fit-content;
+    min-height: fit-content;
+}
+.dashboard-main {
+    height: max-content;
+}
+@media (max-width: 1183px) {
+    .entrepreneur-profile-page .card-body{
+    zoom: 90%;
+    }
+}
+.button-base{
+
+        width: auto;
+    height: fit-content;
+}
+.card-buttons-parent{
+    flex-direction: row;
+}
+/* Button text stays in one line */
+.button-content {
+    white-space: nowrap;
+}
+
+/* Card buttons parent - flexible positioning */
+.card-buttons-parent {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+@media (min-width: 640px) {
+    .card-buttons-parent {
+        justify-content: space-between;
+        flex-wrap: nowrap;
+    }
+}
+
+/* Allow buttons to move up/down when space is constrained */
+.card-buttons-parent.constrained-space {
+    flex-direction: column;
+    align-items: stretch;
+}
+
+.card-buttons-parent.constrained-space > * {
+    width: 100%;
+    margin-bottom: 0.25rem;
+}
+
+.card-buttons-parent.constrained-space > *:last-child {
+    margin-bottom: 0;
+}
+
+@media(max-width:480px){
+    body{
+        zoom: 80%;
+    }
+}
+.input-field{
+    line-height: 2.6rem !important;
+    border-radius: 12px;
+}
+.filter-modal-option{
+    width: min-content;
+    background: aliceblue;
+}
+.register-card, .login-card{
+    background-color: #ffffff69;
+    backdrop-filter: blur(121px);
+}

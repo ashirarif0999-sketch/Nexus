@@ -62,19 +62,19 @@ export const ChatPage: React.FC = () => {
   if (!currentUser) return null;
   
   return (
-    <div className="flex h-[calc(100vh-4rem)] bg-white border border-gray-200 rounded-lg overflow-hidden animate-fade-in">
+    <div className="chat-page-container flex h-[calc(100vh-4rem)] bg-white border border-gray-200 rounded-lg overflow-hidden animate-fade-in">
       {/* Conversations sidebar */}
-      <div className="hidden md:block w-1/3 lg:w-1/4 border-r border-gray-200">
+      <div className="chat-sidebar hidden md:block w-1/3 lg:w-1/4 border-r border-gray-200">
         <ChatUserList conversations={conversations} />
       </div>
       
       {/* Main chat area */}
-      <div className="flex-1 flex flex-col">
+      <div className="chat-main-area flex-1 flex flex-col">
         {/* Chat header */}
         {chatPartner ? (
           <>
-            <div className="border-b border-gray-200 p-4 flex justify-between items-center">
-              <div className="flex items-center">
+            <div className="chat-header border-b border-gray-200 p-4 flex justify-between items-center">
+              <div className="chat-header-user-info flex items-center">
                 <Avatar
                   src={chatPartner.avatarUrl}
                   alt={chatPartner.name}
