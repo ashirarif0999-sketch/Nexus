@@ -205,6 +205,7 @@ const formatDateSeparator = (timestamp: string) => {
 
 const isConsecutive = (currentMsg: ExtendedMessage | undefined, prevMsg: ExtendedMessage | undefined) => {
   if (!currentMsg || !prevMsg) return false;
+  if (!currentMsg.senderId || !prevMsg.senderId) return false;
   if (currentMsg.senderId !== prevMsg.senderId) return false;
   const currTime = new Date(currentMsg.timestamp).getTime();
   const prevTime = new Date(prevMsg.timestamp).getTime();
