@@ -1,6 +1,41 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* Custom Font - Mileast */
+@font-face {
+    font-family: 'Mileast';
+    src: url('/fonts/Mileast.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'oldschool-grotesk-regular';
+    src: url('/fonts/OldschoolGroteskTrail-Regular.ttf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+.login-title, .register-title{
+    font-family: 'montserrat',sans-serif;
+    font-size:35px;
+    font-weight: 500;
+}
+.login-welcome-subtitle, .register-welcome-subtitle{
+    font-family: 'mileast', sans-serif;
+    font-size:xx-large;
+    margin-top: 16px;
+}
+.login-welcome-title, .register-welcome-title{
+    display: none;
+}
+/* Font utility classes */
+.font-mileast {
+    font-family: 'Mileast', sans-serif;
+}
 
 
 .sidebar-container{
@@ -32,6 +67,94 @@
     opacity: 1;
     transition: opacity 0.2s ease-in-out 0.15s;
 }
+@keyframes bounceUp{
+    0%{
+        transform: translateY(0px);
+    }
+    50%{
+        transform: translateY(-50px);
+    }
+    100%{
+        transform: translateY(0px);
+    }
+}
+
+.mobile-expand-btn{
+    i{
+    animation: bounceUp 4s ease-in-out infinite;
+    }
+}
+/* Animation for saved accounts dropdown pop-in */
+@keyframes popIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
+  }
+  70% {
+    transform: translate(-50%, -50%) scale(1.025);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+.saved-accounts-dropdown-menu{
+  animation: popIn 0.34s ease-out forwards;
+  position: fixed;
+    top: 50%;
+    left: 50%;
+    width: 90%;
+    max-width: 414px;
+    max-height: stretch;
+    overflow-y: auto;
+    background: #1f1f22;
+    border-radius: 30px;
+    corner-shape: squircle;
+    .saved-accounts-section-header{
+        height: 35px;
+        background-color: #ffffff;
+    }
+    .account-item{
+        background: aliceblue;
+        color: #0D0E12;
+    }
+}
+
+.register-page-container, .login-page-container{
+    position: relative;
+}
+@media (max-width:1024px){
+.register-page-container::before, .login-page-container::before{
+  content: '';
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    right: -20px;
+    bottom: -20px;
+    background: url(auth-bg-image.png);
+    background-size: cover;
+    background-position: center;
+    filter: blur(3px);
+    z-index: -1;
+    
+}
+.login-page-container, .register-form-container{
+    background: black ;
+}
+.login-title,.register-title{
+        color: white !important;
+    }
+    .login-card, .register-card{
+        box-shadow: none !important;
+    }
+}
+.showaccountdropdown{
+    position: absolute;
+    inset:-356px !important;
+}
+.animate-pop-in {
+  animation: popIn 0.34s ease-out forwards;
+}
 
 /* Sidebar blur overlay */
 .sidebar-overlay {
@@ -52,7 +175,10 @@
     opacity: 1;
     pointer-events: auto;
 }
-
+.vector-brand-logo {
+  /* We use transition for smooth rotation when hover triggers JS */
+  transition: transform 5s cubic-bezier(0.19, 3.06, 0.76, 0.94);
+}
 /* Sidebar logout button */
 .sidebar-logout-btn {
     display: flex;
@@ -79,6 +205,107 @@
 }
 
 /* Card footer always sticks to bottom */
+
+/* Chat Window Styles */
+.chat-window {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  background-color: #f9fafb;
+}
+
+.chat-page-container {
+    display: flex;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    animation: fadeIn 0.3s ease-out;
+    position: relative;
+    height: calc(100vh - 4rem);
+}
+
+.chat-page-container.fullscreen {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 50;
+    border: none;
+    border-radius: 0;
+    height: 100vh;
+}
+
+.chat-main-area {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.chat-main-area.fullscreen {
+    position: relative;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+/* Chat Sidebar Styles */
+.chat-sidebar {
+    border-right: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+    height: 100%;
+    z-index: 50;
+}
+
+.chat-sidebar.hidden {
+    display: none;
+}
+
+.chat-sidebar.visible {
+    display: block;
+}
+
+/* Desktop sidebar */
+@media (min-width: 768px) {
+    .chat-sidebar {
+        position: relative;
+        width: 33.333333%;
+        display: block;
+    }
+}
+
+@media (min-width: 1024px) {
+    .chat-sidebar {
+        width: 25%;
+    }
+}
+
+/* Mobile sidebar overlay */
+.chat-sidebar.mobile-open {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+}
+
+/* Mobile close button */
+.sidebar-mobile-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+@media (min-width: 768px) {
+    .sidebar-mobile-header {
+        display: none;
+    }
+}
 .card-footer {
     margin-top: auto;
 }
@@ -104,7 +331,68 @@
     min-height: fit-content;
 }
 .dashboard-main {
+    height: -moz-max-content;
     height: max-content;
+    min-width: 0;
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    pointer-events: auto;
+    position: relative;
+    z-index: 1;
+}
+.navbar-user-menu{
+    display: none;
+}
+/* Adjust padding when dock is expanded - using CSS class set by JS */
+.dashboard-main.dock-expanded {
+    padding-left: calc(220px + 0.5rem);
+}
+.video-meetings-action-bar{
+    justify-content: space-between;
+}
+/* When dock is expanded on smaller screens, ensure dashboard content is clickable */
+@media (max-width: 850px) {
+    .dashboard-main.dock-expanded {
+        padding-left: calc(220px + 0.5rem);
+        padding-right: 0.5rem;
+        position: relative;
+        z-index: 10;
+    }
+}
+
+
+/* Dashboard content container - ensure it doesn't overflow */
+.dashboard-content {
+    min-width: 0;
+    overflow: hidden;
+}
+
+/* Dashboard main content - ensure it fits within parent */
+.dashboard-main-content {
+    width: 100%;
+    min-width: 0;
+}
+
+/* Fix for dashboard layout to prevent overflow */
+.dashboard-layout {
+    overflow-x: hidden;
+}
+
+/* Fix for medium viewports (641px-850px) where overflow occurs */
+@media (min-width: 641px) and (max-width: 850px) {
+    .dashboard-main {
+        padding: 1rem 1rem 1rem 5rem;
+        min-width: 0;
+    }
+    
+    .dashboard-main-content {
+        max-width: 100%;
+        min-width: 0;
+    }
+}
+.button-base{
+    height: 40px !important;
 }
 @media (max-width: 1183px) {
     .entrepreneur-profile-page .card-body{
@@ -116,8 +404,60 @@
         width: auto;
     height: fit-content;
 }
+.investor-profile-page .card-body{
+    .button-base{
+        width: stretch;
+    }
+}
+.login-form .button-base{
+    width: stretch;
+}
 .card-buttons-parent{
     flex-direction: row;
+}
+
+.login-welcome-section, .register-welcome-section {
+    position: relative; /* Zaroori hai pseudo-element ke liye */
+    background: linear-gradient(0deg, #2d3ebf13, transparent);
+    border-radius: 0px 25px 25px 0px;
+    margin: 0px 10px 0px 0px;
+    overflow: hidden;
+    z-index: 1;
+}
+
+/* Hum ek layer banayenge jo animate hogi */
+.login-welcome-section::before, .register-welcome-section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(0deg, #2D3FBF, transparent);
+    opacity: 0; /* Shuru mein chhupa hua */
+    z-index: -1; /* Content ke peeche */
+    animation: bgcolorshift 15s ease-in-out infinite;
+}
+
+@keyframes bgcolorshift {
+    0%, 100% {
+        opacity: 0; /* Base background dikhega */
+    }
+    50% {
+        opacity: 0.6; /* Darker gradient smooth tareeke se upar aayega */
+    }
+    60%{
+        opacity:0.1;
+    }
+    70%{
+        opacity:0.4;
+    }
+    80%{
+        opacity:0.2;
+    }
+    90%{
+        opacity:0.3;
+    }
 }
 /* Button text stays in one line */
 .button-content {
@@ -129,7 +469,7 @@
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
-    justify-content: center;
+    justify-content: space-between;
 }
 
 @media (min-width: 640px) {
@@ -156,18 +496,742 @@
 
 @media(max-width:480px){
     body{
-        zoom: 80%;
+        zoom: 90%;
     }
 }
+.login-form-section, .register-form-section {
+    background: #e7e7e7; 
+    color: black;
+    overflow: hidden;
+    border-radius: 25px 0px 0px 25px;
+    .login-title, .register-title{
+    color: rgb(31, 31, 31);
+}
+}
+@media(max-width:1024px){
+    .register-page-container, .login-page-container{
+    background: url(auth-bg-image.png);
+    backdrop-filter: blur(20px);
+    }
+    .register-form-section, .login-form-section{
+    overflow: visible !important;
+    background: rgba(255, 255, 255, 0);
+    }
+}
+@media(max-width:480px){
+    .register-page-container, .login-page-container{
+       height: 125vh;
+    }
+    
+}
+/* Mobile auth header - positions at top when panel is open */
+@media (max-width: 480px) {
+  .login-page-header {
+    position: relative;
+    transition: all 0.5s ease-out;
+  }
+
+  /* When form container is open (has translate-y-0), move header to top */
+  .login-form-section:has(.login-form-container.translate-y-0) .login-page-header {
+ position: relative;
+        left: 0;
+        right: 0;
+        padding-top: 1rem;
+        z-index: 10;
+        TOP: -50PX;
+  }
+}
 .input-field{
-    line-height: 2.6rem !important;
-    border-radius: 12px;
+    border-radius: 27px;
+    height: 45px;
+    corner-shape: squircle;
 }
 .filter-modal-option{
     width: min-content;
     background: aliceblue;
 }
+
 .register-card, .login-card{
-    background-color: #ffffff69;
+    background-color: #e7e7e7;
     backdrop-filter: blur(121px);
+    border-radius: 35px !important;
+    corner-shape: squircle;
+    border: none;
+    box-shadow: 3px 7px 14px 4px #00000017, -3px -7px 21px 4px #ffffffa8;
+    width: max-content;
+    height: max-content;
+    justify-self: anchor-center;
+
+    label{
+        color: #2a2a2a;
+    }
+    .button-base{
+        width: stretch;
+        border-radius: 12px;
+    }
+    .password-strength-meter {
+        zoom:100%;
+        .password-strength-meter-bar{
+            background: #a7a7a7;
+        }
+        margin-top: 5px !important;
+
+    }
 }
+@media(max-width:480px){
+    .register-card, .login-card{
+        width: -webkit-fill-available;
+        border-radius: 30px 30px 0px 0px !important;
+        corner-shape: squircle;
+        box-shadow: none;
+    }
+}
+
+.entrepreneur-summary-cards {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    .card-body{
+        align-content:center
+    }
+}
+@media(max-width:998px){
+    .entrepreneur-investors-list{
+        display: grid;
+        gap: 5px;
+    }
+}
+@media(min-width:998px){
+    .entrepreneur-investors-list{
+        display: grid;
+        gap: 5px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+    .entrepreneur-collaboration-requests-list{
+        display: grid;
+        gap: 5px;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        .card-base{
+            height: max-content;
+        }
+    }
+}
+.login-form, .register-form{
+    .button-base{
+        background: #405CFF;
+    }
+}
+.sidebar-support{
+        background: linear-gradient(230deg, #0075e526, #0075e503);
+        border-radius: 24px;
+        corner-shape:squircle;
+}
+
+/* Mobile auth panel slide-in */
+@media (max-width: 480px) {
+  .login-form-container,
+  .register-form-container {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    transform: translateY(100%);
+    opacity: 0;
+    transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+    z-index: 50;
+    padding: 0.1rem;
+    background: transparent;
+  }
+
+  .login-form-container.translate-y-0,
+  .register-form-container.translate-y-0 {
+    transform: translateY(0);
+    opacity: 1;
+  }
+
+  .mobile-expand-btn:hover{
+    background: #00000000 !important;
+  }
+  .mobile-expand-btn {
+    position: absolute;
+    bottom: 4rem;
+    width: -webkit-fill-available;
+    background:transparent;
+    z-index: 1;
+    color: #ffffff;
+    transition: all 0.5s ease-out;
+  }
+
+  /* When form is open, move button to top with header */
+  .login-form-section:has(.login-form-container.translate-y-0) .mobile-expand-btn,
+  .register-form-section:has(.register-form-container.translate-y-0) .mobile-expand-btn {
+    position: fixed;
+    top: 1rem;
+    bottom: auto;
+    z-index: 45;
+    animation: slideUp 0.5s ease-out forwards;
+  }
+}
+
+/* Mobile auth header - positions at top when panel is open */
+@media (max-width: 480px) {
+  .login-page-header,
+  .register-page-header {
+    position: relative;
+    transition: all 0.5s ease-out;
+  }
+
+  /* When form container is open (has translate-y-0), move header to top with slide-up animation */
+  .login-form-section:has(.login-form-container.translate-y-0) .login-page-header,
+  .register-form-section:has(.register-form-container.translate-y-0) .register-page-header {
+    position: fixed;
+    top: 135px; /* Adjust as needed to position below mobile header */
+    left: 0;
+    right: 0;
+    padding-top: 1rem;
+    z-index: 10;
+    animation: slideUp 0.5s ease-out forwards;
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateY(0);
+      opacity: 1;
+    }
+  }
+}
+@media(max-width:480px){
+.login-card, .register-card{
+    padding: 10px 35px 70px 35px;
+    border-radius: 30px 30px 0px 0px;
+}
+.mobile-expand-btn{
+        display: block;
+        height: 300px;
+        width: 100%;
+        border-radius: 30px;
+        i{
+            font-size:50px;
+        }
+
+}
+
+}
+.mobile-collapse-btn:hover{
+    background: #ffffff !important;
+}
+
+.mobile-collapse-btn{
+position: relative;
+    right: 0;
+    left: 0;
+    margin-bottom: 5px;
+    background: #f7c4c400;
+    width: -webkit-fill-available;
+    COLOR: rgb(0, 0, 0);
+    border-radius: 30PX;
+    height: 50px;
+}
+@media(min-width:480px){
+.mobile-collapse-btn, .mobile-expand-btn{
+    display: none !important;
+}
+}
+.login-card, .register-card{
+    border: 1px solid #c1c1c1;
+    .input-field{
+        background: #dbdbdb;
+        color: rgb(0, 0, 0);
+        border: 1px solid #c1c1c1;
+    }
+    .input-wrapper{
+        margin-top: 8px !important;
+    }
+    .input-field:active, .input-field:focus{
+        background: #ffffff;
+        color: rgb(0, 0, 0);
+    }
+}
+.forgot-password-page, .reset-password-page {
+    background: transparent;
+    color: white;
+    min-height: 0px;
+    padding: 10px 0px 10px 0px;
+}
+.chat-page-container.fullscreen .message-input-1{
+    position: fixed;
+    bottom: 0;
+    width: stretch;
+}
+.login-role-buttons .login-role-entrepreneur, .login-role-buttons .login-role-investor, .login-demo-buttons .button-base, .register-role-buttons .register-role-entrepreneur, .register-role-buttons .register-role-investor{
+    color: rgb(29, 29, 29);
+    border-radius: 12px;
+}
+.login-role-buttons .login-role-entrepreneur:hover, .login-role-buttons .login-role-investor:hover, .register-role-buttons .register-role-entrepreneur:hover, .register-role-buttons .register-role-investor:hover{
+    color: rgb(42,42,42) !important;
+    background: rgb(255, 255, 255) !important;
+}
+.login-demo-buttons .button-base:hover{
+    color: rgb(42, 42, 42) !important;
+    border-radius: 12px;
+}
+/* Login role buttons - replace Tailwind bg-primary-50 with raw CSS */
+.login-role-buttons .login-role-entrepreneur.selected,
+.login-role-buttons .login-role-investor.selected {
+    background-color: #2D3FBF !important;
+    color: #ffffff;
+}
+
+/* Register role buttons - replace Tailwind bg-primary-50 with raw CSS */
+.register-role-buttons .register-role-entrepreneur.selected,
+.register-role-buttons .register-role-investor.selected {
+    background-color: #2D3FBF !important;
+}
+.login-role-buttons .login-role-entrepreneur.border-primary-500:hover,
+.login-role-buttons .login-role-investor.border-primary-500:hover, .register-role-buttons .register-role-entrepreneur.border-primary-500:hover, .register-role-buttons .register-role-investor.border-primary-500:hover{
+    color: white !important;
+}
+/* Also handle when role is selected (override Tailwind) */
+.login-role-buttons .login-role-entrepreneur.border-primary-500,
+.login-role-buttons .login-role-investor.border-primary-500,
+.register-role-buttons .register-role-entrepreneur.border-primary-500,
+.register-role-buttons .register-role-investor.border-primary-500 {
+    background-color: #405CFF !important;
+    color: white !important;
+}
+
+.investor-filter-actions{
+    display: grid;
+    .button-base{
+        width: stretch;
+        line-height: 1.75rem;
+    }
+}
+.auth-bg-image{
+    mix-blend-mode: color-dodge;
+}
+
+
+@media (max-width:950px){
+    .dock {
+        display: none !important;
+    }
+    .dock--expanded {
+        display: flex !important;
+        width: -webkit-fill-available !important;
+    }
+}
+.navbar-container{
+    display: none;
+}
+
+@media (max-width:950px){
+    .navbar-container{
+        display: block;
+        position: fixed;
+        background: #f7f7f9;
+        z-index: 10;
+        width: stretch;
+    }
+}
+/*SIDEBAR CSS*/
+
+/* ═══════════════════════════════════════════════════════════
+   NEXUS — AngelList-style Dock Sidebar
+   Drop into: src/styles/sidebar.css  (or your global CSS)
+   ═══════════════════════════════════════════════════════════ */
+
+/* ─── Dock Shell ──────────────────────────────────────────── */
+
+.dock {
+  position: fixed;
+  top: 0;          /* full height — remove if you have a topnav */
+  left: 0;
+  bottom: 0;
+  width: 60px;
+  background: #0f0f11;
+  border-right: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 16px 5px;
+  z-index: 40;
+  transition: transform 0.25s ease, opacity 0.25s ease;
+}
+
+.dock--hidden {
+  transform: translateX(-100%);
+  opacity: 0;
+  pointer-events: none;
+}
+
+.dock--expanded {
+  width: 220px;
+}
+
+/* ─── Top / Bottom sections ───────────────────────────────── */
+
+.dock__top,
+.dock__bottom {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+}
+.dock__bottom{
+    
+  bottom: 16px;
+  position: absolute;
+}
+
+.dock__nav {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  width: 100%;
+}
+
+/* ─── Individual Dock Item ────────────────────────────────── */
+
+.dock-item {
+position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 57px;
+    gap: 3px;
+    border-radius: 10px;
+    color: #6b7280;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: color 0.15s cubic-bezier(0, 0.92, 0.25, 1), background 0.15s cubic-bezier(0, 0.94, 0.25, 1);
+    text-decoration: none;
+}
+
+.dock-item:hover {
+  color: #e5e7eb;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* Active state — left accent bar */
+.dock-item--active {
+  color: #ffffff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.dock-item--active::before {
+   content: '';
+    position: absolute;
+    left: 2px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 4px;
+    height: 32px;
+    background: #6366f1;
+    border-radius: 0 3px 3px 0;
+}
+
+.dock-item__icon {
+  position: relative;
+  display: flex;
+}
+
+/* Notification badge */
+.dock-item__badge {
+  position: absolute;
+  top: -5px;
+  right: -6px;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 3px;
+  background: #ef4444;
+  color: #fff;
+  font-size: 9px;
+  font-weight: 700;
+  border-radius: 99px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* ─── Expanded sidebar styles ────────────────────────────── */
+.dock--expanded .dock__header{
+    justify-content: flex-start;
+}
+.dock__header {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+.dock-logo-image{
+    display: none;
+}
+.dock--expanded .dock-logo-image{
+    display: block;
+}
+.dock  .dock-toggle{
+    padding:12px;
+}
+.dock--expanded .dock-toggle{
+
+    padding: 7px 16px 7px 10px;
+}
+.dock-toggle {
+display: flex;
+    align-items: center;
+    height: 58px;
+    gap: 8px;
+    width:max-content;
+    border-radius: 10px;
+    color: #6b7280;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: color 0.15s ease, background 0.15s ease;
+
+  svg{
+    zoom:125%;
+  }
+}
+.dashboard-main{
+        padding-top: calc(65px + 1rem);
+        padding-left: calc(60px + 0.5rem);
+    }
+@media (max-width:950px){
+    .dashboard-main{
+        padding-top: calc(65px + 1rem);
+        padding-left: 0.5rem;
+        
+    }
+    .dock-account__menu{
+            position: absolute;
+    bottom: -30px !important;
+    left: 0px !important;
+    width: stretch !important;
+    zoom: 140%;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    opacity: 0;
+    padding: 0px 0px 20px 0px;
+    transform: translateX(0px) translateY(-8px) scale(1) !important;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    z-index: 200;
+    }
+}
+.dock-toggle:hover {
+  color: #e5e7eb;
+  background: rgba(255, 255, 255, 0.07);
+}
+
+.dock-item--expanded {
+justify-content: flex-start;
+    padding-left: 12px;
+    width: 100%;
+    max-width: 98%;
+}
+.dock-account{
+    width: -webkit-fill-available;
+}
+.dock-item__text {
+  margin-left: 6px;
+  font-size: 16px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+@media (max-width:480px){
+    .dock-item__text{
+        font-size: 20px;
+        margin-left:12px ;
+    }
+}
+/* ─── Divider between sections ────────────────────────────── */
+
+.dock__divider {
+  width: 28px;
+  height: 1px;
+  background: rgba(255, 255, 255, 0.08);
+  margin: 8px 0;
+}
+
+/* ─── Tooltip ─────────────────────────────────────────────── */
+
+.dock-tooltip-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.dock-tooltip {
+  position: absolute;
+  left: calc(100% + 12px);
+  top: 50%;
+  transform: translateY(-50%) translateX(-4px);
+  background: #1c1c21;
+  color: #e5e7eb;
+  font-size: 12px;
+  font-weight: 500;
+  white-space: nowrap;
+  padding: 5px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.12s ease, transform 0.12s ease;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+.dock-tooltip--visible {
+  opacity: 1;
+  transform: translateY(-50%) translateX(0);
+}
+
+/* ─── Avatar button ───────────────────────────────────────── */
+
+.dock-avatar-btn {
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.dock-avatar-btn:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* ─── Account Dropdown ────────────────────────────────────── */
+
+.dock-account {
+  position: relative;
+}
+
+.dock-account__menu {
+  position: absolute;
+  bottom: 0;
+  left: calc(100% + 12px);
+  width: 240px;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+
+  opacity: 0;
+  transform: translateX(-8px) scale(0.97);
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 200;
+}
+
+.dock-account__menu--open {
+  opacity: 1;
+  transform: translateX(0) scale(1);
+  pointer-events: auto;
+}
+
+/* Header */
+.dock-account__header {
+  padding: 12px 16px;
+}
+
+.dock-account__signed-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: #9ca3af;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.dock-account__user {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.dock-account__name {
+  font-size: 13px;
+  font-weight: 600;
+  color: #111827;
+  margin: 0;
+  line-height: 1.3;
+}
+
+.dock-account__role {
+  font-size: 11px;
+  color: #6b7280;
+  margin: 0;
+  text-transform: capitalize;
+}
+
+.dock-account__chevron {
+  margin-left: auto;
+  color: #d1d5db;
+}
+
+/* Divider */
+.dock-account__divider {
+  height: 1px;
+  background: #f3f4f6;
+  margin: 2px 0;
+}
+
+/* Menu items */
+.dock-account__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 9px 16px;
+  font-size: 13px;
+  color: #374151;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-decoration: none;
+  transition: background 0.1s ease;
+  text-align: left;
+}
+
+.dock-account__item:hover {
+  background: #f9fafb;
+  color: #111827;
+}
+
+.dock-account__item--danger {
+  color: #dc2626;
+}
+
+.dock-account__item--danger:hover {
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
+/* ─── If your topnav is 64px, offset the dock ─────────────── */
+/* Uncomment below if you have a fixed top navbar:
+
+.dock {
+  top: 64px;
+}
+
+*/

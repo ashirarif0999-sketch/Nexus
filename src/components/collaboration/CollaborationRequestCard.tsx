@@ -9,6 +9,7 @@ import { Button } from '../ui/Button';
 import { findUserById } from '../../data/users';
 import { updateRequestStatus } from '../../data/collaborationRequests';
 import { formatDistanceToNow } from 'date-fns';
+import { ROUTES } from '../../config/routes';
 
 interface CollaborationRequestCardProps {
   request: CollaborationRequest;
@@ -39,11 +40,11 @@ export const CollaborationRequestCard: React.FC<CollaborationRequestCardProps> =
   };
   
   const handleMessage = () => {
-    navigate(`/chat/${investor.id}`);
+    navigate(ROUTES.CHAT.CONVERSATION(investor.id));
   };
   
   const handleViewProfile = () => {
-    navigate(`/profile/investor/${investor.id}`);
+    navigate(ROUTES.PROFILE.INVESTOR(investor.id));
   };
   
   const getStatusBadge = () => {

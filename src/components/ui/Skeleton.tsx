@@ -72,3 +72,37 @@ export const SkeletonPagination: React.FC = () => {
     </div>
   );
 };
+
+// Skeleton for chat user list items
+export const ChatUserListSkeleton: React.FC = () => {
+  return (
+    <div className="space-y-1 px-3">
+      {[...Array(5)].map((_, i) => (
+        <div key={i} className="flex items-center gap-3 p-3">
+          <Skeleton variant="circular" width={48} height={48} />
+          <div className="flex-1 space-y-2">
+            <Skeleton width="60%" height={16} />
+            <Skeleton width="80%" height={12} />
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// Skeleton for chat message bubble
+export const ChatMessageSkeleton: React.FC<{ isCurrentUser?: boolean }> = ({ isCurrentUser = false }) => {
+  return (
+    <div className={clsx('flex w-full mb-6 px-4', isCurrentUser ? 'flex-row-reverse' : 'flex-row')}>
+      <div className={clsx('flex-shrink-0', isCurrentUser ? 'ml-3' : 'mr-3')}>
+        <Skeleton variant="circular" width={32} height={32} />
+      </div>
+      <div className={clsx('flex flex-col max-w-[75%]', isCurrentUser ? 'items-end' : 'items-start')}>
+        <Skeleton variant="rectangular" width={512} height={64} className="rounded-2xl" />
+        <div className="flex items-center gap-2 mt-1 px-1">
+          <Skeleton width={40} height={10} />
+        </div>
+      </div>
+    </div>
+  );
+};

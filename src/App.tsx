@@ -1,120 +1,146 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 
-// Layouts
+// Import centralized routes
+import { ROUTES, ROOT_REDIRECT } from './config/routes';
+
+// Layouts - Keep DashboardLayout eagerly loaded (required for most routes)
 import { DashboardLayout } from './components/layout/DashboardLayout';
 
-// Auth Pages
-import { LoginPage } from './pages/auth/LoginPage';
-import { RegisterPage } from './pages/auth/RegisterPage';
+// Auth Pages - Lazy load (heavy - 56KB with GSAP/OGL)
+const AuthenticationPage = lazy(() => import('./pages/auth/AuthenticationPage').then(m => ({ default: m.AuthenticationPage })));
 
-// Dashboard Pages
-import { EntrepreneurDashboard } from './pages/dashboard/EntrepreneurDashboard';
-import { InvestorDashboard } from './pages/dashboard/InvestorDashboard';
+// Dashboard Pages - Lazy load
+const EntrepreneurDashboard = lazy(() => import('./pages/dashboard/EntrepreneurDashboard').then(m => ({ default: m.EntrepreneurDashboard })));
+const InvestorDashboard = lazy(() => import('./pages/dashboard/InvestorDashboard').then(m => ({ default: m.InvestorDashboard })));
 
-// Profile Pages
-import { EntrepreneurProfile } from './pages/profile/EntrepreneurProfile';
-import { InvestorProfile } from './pages/profile/InvestorProfile';
+// Profile Pages - Lazy load
+const EntrepreneurProfile = lazy(() => import('./pages/profile/EntrepreneurProfile').then(m => ({ default: m.EntrepreneurProfile })));
+const InvestorProfile = lazy(() => import('./pages/profile/InvestorProfile').then(m => ({ default: m.InvestorProfile })));
+const CreateProfilePage = lazy(() => import('./pages/profile/CreateProfilePage').then(m => ({ default: m.CreateProfilePage })));
 
-// Feature Pages
-import { InvestorsPage } from './pages/investors/InvestorsPage';
-import { EntrepreneursPage } from './pages/entrepreneurs/EntrepreneursPage';
-import { MessagesPage } from './pages/messages/MessagesPage';
-import { NotificationsPage } from './pages/notifications/NotificationsPage';
-import { DocumentsPage } from './pages/documents/DocumentsPage';
-import { SettingsPage } from './pages/settings/SettingsPage';
-import { HelpPage } from './pages/help/HelpPage';
-import { DealsPage } from './pages/deals/DealsPage';
+// Feature Pages - Lazy load
+const InvestorsPage = lazy(() => import('./pages/investors/InvestorsPage').then(m => ({ default: m.InvestorsPage })));
+const EntrepreneursPage = lazy(() => import('./pages/entrepreneurs/EntrepreneursPage').then(m => ({ default: m.EntrepreneursPage })));
+const MessagesPage = lazy(() => import('./pages/messages/MessagesPage').then(m => ({ default: m.MessagesPage })));
+const NotificationsPage = lazy(() => import('./pages/notifications/NotificationsPage').then(m => ({ default: m.NotificationsPage })));
+const DocumentsPage = lazy(() => import('./pages/documents/DocumentsPage').then(m => ({ default: m.DocumentsPage })));
+const SettingsPage = lazy(() => import('./pages/settings/SettingsPage').then(m => ({ default: m.SettingsPage })));
+const HelpPage = lazy(() => import('./pages/help/HelpPage').then(m => ({ default: m.HelpPage })));
+const DealsPage = lazy(() => import('./pages/deals/DealsPage').then(m => ({ default: m.DealsPage })));
 
-// Chat Pages
-import { ChatPage } from './pages/chat/ChatPage';
+// Chat Pages - Lazy load (heavy - emoji-picker)
+const ChatPage = lazy(() => import('./pages/chat/ChatPage').then(m => ({ default: m.ChatPage })));
 
-// Calendar Pages
-import { CalendarPage } from './pages/calendar/CalendarPage';
+// Calendar Pages - Lazy load (heavy - FullCalendar)
+const CalendarPage = lazy(() => import('./pages/calendar/CalendarPage').then(m => ({ default: m.CalendarPage })));
 
-// Video Pages
-import { VideoRoom } from './pages/video/VideoRoom';
-import { VideoMeetingsPage } from './pages/video/VideoMeetingsPage';
+// Video Pages - Lazy load (heavy - WebRTC)
+const VideoRoom = lazy(() => import('./pages/video/VideoRoom').then(m => ({ default: m.VideoRoom })));
+const VideoMeetingsPage = lazy(() => import('./pages/video/VideoMeetingsPage').then(m => ({ default: m.VideoMeetingsPage })));
+
+// External Redirect Component - Uses window.location to prevent React Router infinite loops
+const ExternalRedirect: React.FC<{ to: string }> = ({ to }) => {
+  React.useEffect(() => {
+    window.location.href = to;
+  }, [to]);
+  return null;
+};
+
+// Loading spinner for lazy-loaded routes
+const PageLoader: React.FC = () => (
+  <div className="flex items-center justify-center min-h-screen">
+    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+  </div>
+);
 
 function App() {
   return (
     <AuthProvider>
       <Router>
-        <Routes>
-          {/* Authentication Routes */}
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/register" element={<RegisterPage />} />
-          
-          {/* Dashboard Routes */}
-          <Route path="/dashboard" element={<DashboardLayout />}>
-            <Route path="entrepreneur" element={<EntrepreneurDashboard />} />
-            <Route path="investor" element={<InvestorDashboard />} />
-          </Route>
-          
-          {/* Profile Routes */}
-          <Route path="/profile" element={<DashboardLayout />}>
-            <Route path="entrepreneur/:id" element={<EntrepreneurProfile />} />
-            <Route path="investor/:id" element={<InvestorProfile />} />
-          </Route>
-          
-          {/* Feature Routes */}
-          <Route path="/investors" element={<DashboardLayout />}>
-            <Route index element={<InvestorsPage />} />
-          </Route>
-          
-          <Route path="/entrepreneurs" element={<DashboardLayout />}>
-            <Route index element={<EntrepreneursPage />} />
-          </Route>
-          
-          <Route path="/messages" element={<DashboardLayout />}>
-            <Route index element={<MessagesPage />} />
-          </Route>
-          
-          <Route path="/notifications" element={<DashboardLayout />}>
-            <Route index element={<NotificationsPage />} />
-          </Route>
-          
-          <Route path="/documents" element={<DashboardLayout />}>
-            <Route index element={<DocumentsPage />} />
-          </Route>
-          
-          <Route path="/settings" element={<DashboardLayout />}>
-            <Route index element={<SettingsPage />} />
-          </Route>
-          
-          <Route path="/help" element={<DashboardLayout />}>
-            <Route index element={<HelpPage />} />
-          </Route>
-          
-          <Route path="/deals" element={<DashboardLayout />}>
-            <Route index element={<DealsPage />} />
-          </Route>
-          
-          {/* Calendar Routes */}
-          <Route path="/calendar" element={<DashboardLayout />}>
-            <Route index element={<CalendarPage />} />
-          </Route>
-          
-          {/* Video Meetings Page - With dashboard layout */}
-          <Route path="/video" element={<DashboardLayout />}>
-            <Route index element={<VideoMeetingsPage />} />
-          </Route>
-          {/* Video Call Route - Full screen, no layout */}
-          <Route path="/video/:roomId" element={<VideoRoom />} />
-          
-          {/* Chat Routes */}
-          <Route path="/chat" element={<DashboardLayout />}>
-            <Route index element={<ChatPage />} />
-            <Route path=":userId" element={<ChatPage />} />
-          </Route>
-          
-          {/* Redirect root to login */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
-          
-          {/* Catch all other routes and redirect to login */}
-          <Route path="*" element={<Navigate to="/login" replace />} />
-        </Routes>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
+            {/* Landing Page - External HTML - using window.location to prevent infinite loop */}
+            <Route path={ROUTES.LANDING} element={<ExternalRedirect to="/landingpage.html" />} />
+            {/* Authentication Routes */}
+            <Route path={ROUTES.AUTH.LOGIN} element={<AuthenticationPage />} />
+            <Route path={ROUTES.AUTH.REGISTER} element={<AuthenticationPage />} />
+            <Route path={ROUTES.AUTH.FORGOT_PASSWORD} element={<AuthenticationPage />} />
+            <Route path={ROUTES.AUTH.RESET_PASSWORD} element={<AuthenticationPage />} />
+            
+            {/* Dashboard Routes */}
+            <Route path={ROUTES.DASHBOARD.ROOT} element={<DashboardLayout />}>
+              <Route path="entrepreneur" element={<EntrepreneurDashboard />} />
+              <Route path="investor" element={<InvestorDashboard />} />
+            </Route>
+            
+            {/* Profile Routes */}
+            <Route path={ROUTES.PROFILE.ROOT} element={<DashboardLayout />}>
+              <Route path="entrepreneur/:id" element={<EntrepreneurProfile />} />
+              <Route path="investor/:id" element={<InvestorProfile />} />
+              <Route path="create/entrepreneur" element={<CreateProfilePage />} />
+              <Route path="create/investor" element={<CreateProfilePage />} />
+            </Route>
+            
+            {/* Feature Routes */}
+            <Route path={ROUTES.INVESTORS} element={<DashboardLayout />}>
+              <Route index element={<InvestorsPage />} />
+            </Route>
+            
+            <Route path={ROUTES.ENTREPRENEURS} element={<DashboardLayout />}>
+              <Route index element={<EntrepreneursPage />} />
+            </Route>
+            
+            <Route path={ROUTES.MESSAGES} element={<DashboardLayout />}>
+              <Route index element={<MessagesPage />} />
+            </Route>
+            
+            <Route path={ROUTES.NOTIFICATIONS} element={<DashboardLayout />}>
+              <Route index element={<NotificationsPage />} />
+            </Route>
+            
+            <Route path={ROUTES.DOCUMENTS} element={<DashboardLayout />}>
+              <Route index element={<DocumentsPage />} />
+            </Route>
+            
+            <Route path={ROUTES.SETTINGS} element={<DashboardLayout />}>
+              <Route index element={<SettingsPage />} />
+            </Route>
+            
+            <Route path={ROUTES.HELP} element={<DashboardLayout />}>
+              <Route index element={<HelpPage />} />
+            </Route>
+            
+            <Route path={ROUTES.DEALS} element={<DashboardLayout />}>
+              <Route index element={<DealsPage />} />
+            </Route>
+            
+            {/* Calendar Routes */}
+            <Route path={ROUTES.CALENDAR} element={<DashboardLayout />}>
+              <Route index element={<CalendarPage />} />
+            </Route>
+            
+            {/* Video Meetings Page - With dashboard layout */}
+            <Route path={ROUTES.VIDEO.ROOT} element={<DashboardLayout />}>
+              <Route index element={<VideoMeetingsPage />} />
+            </Route>
+            {/* Video Call Route - Full screen, no layout */}
+            <Route path="/video/:roomId" element={<VideoRoom />} />
+            
+            {/* Chat Routes */}
+            <Route path={ROUTES.CHAT.ROOT} element={<DashboardLayout />}>
+              <Route index element={<ChatPage />} />
+              <Route path=":userId" element={<ChatPage />} />
+            </Route>
+            
+            {/* Redirect root to login */}
+            <Route path={ROUTES.ROOT} element={<Navigate to={ROOT_REDIRECT} replace />} />
+            
+            {/* Catch all other routes and redirect to login */}
+            <Route path="*" element={<Navigate to={ROOT_REDIRECT} replace />} />
+          </Routes>
+        </Suspense>
       </Router>
     </AuthProvider>
   );

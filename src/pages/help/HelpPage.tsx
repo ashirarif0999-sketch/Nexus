@@ -25,14 +25,14 @@ const faqs = [
 
 export const HelpPage: React.FC = () => {
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Help & Support</h1>
-        <p className="text-gray-600">Find answers to common questions or get in touch with our support team</p>
+    <div className="help-page page-main-content space-y-6 animate-fade-in">
+      <div className="help-header page-header">
+        <h1 className="help-title text-2xl font-bold text-gray-900">Help & Support</h1>
+        <p className="help-subtitle text-gray-600">Find answers to common questions or get in touch with our support team</p>
       </div>
       
       {/* Search */}
-      <div className="max-w-2xl">
+      <div className="help-search max-w-2xl">
         <Input
           placeholder="Search help articles..."
           startAdornment={<Search size={18} />}
@@ -40,7 +40,7 @@ export const HelpPage: React.FC = () => {
         />
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div className="help-quick-links grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Quick links */}
         <Card>
           <CardBody className="text-center p-6">
@@ -97,12 +97,12 @@ export const HelpPage: React.FC = () => {
       </div>
       
       {/* FAQs */}
-      <Card>
-        <CardHeader>
-          <h2 className="text-lg font-medium text-gray-900">Frequently Asked Questions</h2>
+      <Card className="help-faq-card">
+        <CardHeader className="help-faq-header">
+          <h2 className="help-faq-title text-lg font-medium text-gray-900">Frequently Asked Questions</h2>
         </CardHeader>
-        <CardBody>
-          <div className="space-y-6">
+        <CardBody className="help-faq-body">
+          <div className="help-faq-list space-y-6">
             {faqs.map((faq, index) => (
               <div key={index} className="border-b border-gray-200 last:border-0 pb-6 last:pb-0">
                 <h3 className="text-base font-medium text-gray-900 mb-2">
@@ -118,12 +118,12 @@ export const HelpPage: React.FC = () => {
       </Card>
       
       {/* Contact form */}
-      <Card>
-        <CardHeader>
-          <h2 className="text-lg font-medium text-gray-900">Still need help?</h2>
+      <Card className="help-contact-card">
+        <CardHeader className="help-contact-header">
+          <h2 className="help-contact-title text-lg font-medium text-gray-900">Still need help?</h2>
         </CardHeader>
-        <CardBody>
-          <form className="space-y-6 max-w-2xl">
+        <CardBody className="help-contact-body">
+          <form className="help-contact-form space-y-6 max-w-2xl">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <Input
                 label="Name"

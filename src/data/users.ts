@@ -1,4 +1,39 @@
-import { Entrepreneur, Investor } from '../types';
+import { Entrepreneur, Investor, User, UserRole } from '../types';
+import { savedAccountsDB } from '../utils/savedAccountsDB';
+
+// In-memory cache for custom accounts
+let customAccountsCache: User[] = [];
+
+// Load custom accounts from IndexedDB
+const loadCustomAccounts = async (): Promise<User[]> => {
+  try {
+    const accounts = await savedAccountsDB.getAllAccounts();
+    return accounts.map(acc => ({
+      id: acc.id,
+      name: acc.name || acc.email.split('@')[0],
+      email: acc.email,
+      role: acc.role,
+      avatarUrl: acc.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(acc.name || acc.email.split('@')[0])}&background=random`,
+      bio: '',
+      isOnline: true,
+      createdAt: new Date(acc.lastLogin).toISOString()
+    }));
+  } catch (error) {
+    console.error('Error loading custom accounts:', error);
+    return [];
+  }
+};
+
+// Initialize custom accounts
+loadCustomAccounts().then(accounts => {
+  customAccountsCache = accounts;
+});
+
+// Function to refresh custom accounts cache
+export const refreshCustomAccounts = async (): Promise<User[]> => {
+  customAccountsCache = await loadCustomAccounts();
+  return customAccountsCache;
+};
 
 export const entrepreneurs: Entrepreneur[] = [
   {
@@ -910,10 +945,30 @@ export const users = [...entrepreneurs, ...investors];
 
 // Helper function to find a user by ID
 export const findUserById = (id: string) => {
-  return users.find(user => user.id === id) || null;
+  // First check built-in users
+  const builtInUser = users.find(user => user.id === id);
+  if (builtInUser) return builtInUser;
+  
+  // Then check custom accounts from IndexedDB
+  return customAccountsCache.find(user => user.id === id) || null;
+};
+
+// Helper function to find user by email
+export const findUserByEmail = (email: string) => {
+  // Check built-in users
+  const builtInUser = users.find(user => user.email.toLowerCase() === email.toLowerCase());
+  if (builtInUser) return builtInUser;
+  
+  // Check custom accounts
+  return customAccountsCache.find(user => user.email.toLowerCase() === email.toLowerCase()) || null;
 };
 
 // Helper function to get a user by role
 export const getUsersByRole = (role: 'entrepreneur' | 'investor') => {
   return users.filter(user => user.role === role);
+};
+
+// Get all users including custom accounts
+export const getAllUsers = (): User[] => {
+  return [...users, ...customAccountsCache];
 };

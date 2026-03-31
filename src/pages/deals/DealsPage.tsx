@@ -50,6 +50,7 @@ const deals = [
 
 export const DealsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [appliedSearchQuery, setAppliedSearchQuery] = useState('');
   const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
   
   const statuses = ['Due Diligence', 'Term Sheet', 'Negotiation', 'Closed', 'Passed'];
@@ -80,71 +81,71 @@ export const DealsPage: React.FC = () => {
   };
   
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Investment Deals</h1>
-          <p className="text-gray-600">Track and manage your investment pipeline</p>
+    <div className="deals-page page-main-content space-y-6 animate-fade-in">
+      <div className="deals-header page-header flex justify-between items-center">
+        <div className="deals-title-section">
+          <h1 className="deals-title text-2xl font-bold text-gray-900">Investment Deals</h1>
+          <p className="deals-subtitle text-gray-600">Track and manage your investment pipeline</p>
         </div>
         
-        <Button>
+        <Button className="deals-add-btn">
           Add Deal
         </Button>
       </div>
       
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-        <Card>
-          <CardBody>
-            <div className="flex items-center">
-              <div className="p-3 bg-primary-100 rounded-lg mr-3">
+      <div className="deals-stats page-stats grid grid-cols-1 md:grid-cols-4 gap-4">
+        <Card className="deals-total-investment-card">
+          <CardBody className="deals-total-investment-body">
+            <div className="deals-total-investment-content flex items-center">
+              <div className="deals-total-investment-icon p-3 bg-primary-100 rounded-lg mr-3">
                 <DollarSign size={20} className="text-primary-600" />
               </div>
-              <div>
-                <p className="text-sm text-gray-600">Total Investment</p>
-                <p className="text-lg font-semibold text-gray-900">$4.3M</p>
+              <div className="deals-total-investment-text">
+                <p className="deals-total-investment-label text-sm text-gray-600">Total Investment</p>
+                <p className="deals-total-investment-value text-lg font-semibold text-gray-900">$4.3M</p>
               </div>
             </div>
           </CardBody>
         </Card>
         
-        <Card>
-          <CardBody>
-            <div className="flex items-center">
-              <div className="p-3 bg-secondary-100 rounded-lg mr-3">
+        <Card className="deals-active-deals-card">
+          <CardBody className="deals-active-deals-body">
+            <div className="deals-active-deals-content flex items-center">
+              <div className="deals-active-deals-icon p-3 bg-secondary-100 rounded-lg mr-3">
                 <TrendingUp size={20} className="text-secondary-600" />
               </div>
-              <div>
-                <p className="text-sm text-gray-600">Active Deals</p>
-                <p className="text-lg font-semibold text-gray-900">8</p>
+              <div className="deals-active-deals-text">
+                <p className="deals-active-deals-label text-sm text-gray-600">Active Deals</p>
+                <p className="deals-active-deals-value text-lg font-semibold text-gray-900">8</p>
               </div>
             </div>
           </CardBody>
         </Card>
         
-        <Card>
-          <CardBody>
-            <div className="flex items-center">
-              <div className="p-3 bg-accent-100 rounded-lg mr-3">
+        <Card className="deals-portfolio-card">
+          <CardBody className="deals-portfolio-body">
+            <div className="deals-portfolio-content flex items-center">
+              <div className="deals-portfolio-icon p-3 bg-accent-100 rounded-lg mr-3">
                 <Users size={20} className="text-accent-600" />
               </div>
-              <div>
-                <p className="text-sm text-gray-600">Portfolio Companies</p>
-                <p className="text-lg font-semibold text-gray-900">12</p>
+              <div className="deals-portfolio-text">
+                <p className="deals-portfolio-label text-sm text-gray-600">Portfolio Companies</p>
+                <p className="deals-portfolio-value text-lg font-semibold text-gray-900">12</p>
               </div>
             </div>
           </CardBody>
         </Card>
         
-        <Card>
-          <CardBody>
-            <div className="flex items-center">
-              <div className="p-3 bg-success-100 rounded-lg mr-3">
+        <Card className="deals-closed-card">
+          <CardBody className="deals-closed-body">
+            <div className="deals-closed-content flex items-center">
+              <div className="deals-closed-icon p-3 bg-success-100 rounded-lg mr-3">
                 <Calendar size={20} className="text-success-600" />
               </div>
-              <div>
-                <p className="text-sm text-gray-600">Closed This Month</p>
-                <p className="text-lg font-semibold text-gray-900">2</p>
+              <div className="deals-closed-text">
+                <p className="deals-closed-label text-sm text-gray-600">Closed This Month</p>
+                <p className="deals-closed-value text-lg font-semibold text-gray-900">2</p>
               </div>
             </div>
           </CardBody>
@@ -152,26 +153,32 @@ export const DealsPage: React.FC = () => {
       </div>
       
       {/* Filters */}
-      <div className="flex flex-col md:flex-row gap-4">
-        <div className="w-full md:w-2/3">
+      <div className="deals-filters page-filters flex flex-col md:flex-row gap-4">
+        <div className="deals-search-wrapper w-full md:w-2/3">
           <Input
+            className="deals-search-input"
             placeholder="Search deals by startup name or industry..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                setAppliedSearchQuery(searchQuery);
+              }
+            }}
             startAdornment={<Search size={18} />}
             fullWidth
           />
         </div>
         
-        <div className="w-full md:w-1/3">
-          <div className="flex items-center gap-2">
+        <div className="deals-status-filters w-full md:w-1/3">
+          <div className="deals-filter-section flex items-center gap-2">
             <Filter size={18} className="text-gray-500" />
-            <div className="flex flex-wrap gap-2">
+            <div className="deals-status-badges flex flex-wrap gap-2">
               {statuses.map(status => (
                 <Badge
                   key={status}
                   variant={selectedStatus.includes(status) ? getStatusColor(status) : 'gray'}
-                  className="cursor-pointer"
+                  className="deals-status-badge cursor-pointer"
                   onClick={() => toggleStatus(status)}
                 >
                   {status}
@@ -183,80 +190,80 @@ export const DealsPage: React.FC = () => {
       </div>
       
       {/* Deals table */}
-      <Card>
-        <CardHeader>
-          <h2 className="text-lg font-medium text-gray-900">Active Deals</h2>
+      <Card className="deals-table-card page-section dashboard-section">
+        <CardHeader className="deals-table-header">
+          <h2 className="deals-table-title text-lg font-medium text-gray-900">Active Deals</h2>
         </CardHeader>
-        <CardBody>
-          <div className="overflow-x-auto">
-            <table className="w-full">
+        <CardBody className="deals-table-body">
+          <div className="deals-table-wrapper overflow-x-auto">
+            <table className="deals-table w-full">
               <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <tr className="deals-table-head-row border-b border-gray-200">
+                  <th className="deals-table-head-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Startup
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="deals-table-head-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Amount
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="deals-table-head-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Equity
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="deals-table-head-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="deals-table-head-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Stage
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="deals-table-head-cell px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Last Activity
                   </th>
-                  <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="deals-table-head-cell px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-200">
+              <tbody className="deals-table-body-section divide-y divide-gray-200">
                 {deals.map(deal => (
-                  <tr key={deal.id} className="hover:bg-gray-50">
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="flex items-center">
+                  <tr key={deal.id} className="deals-table-row hover:bg-gray-50">
+                    <td className="deals-table-cell px-6 py-4 whitespace-nowrap">
+                      <div className="deals-startup-info flex items-center">
                         <Avatar
                           src={deal.startup.logo}
                           alt={deal.startup.name}
                           size="sm"
-                          className="flex-shrink-0"
+                          className="deals-startup-logo flex-shrink-0"
                         />
-                        <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
+                        <div className="deals-startup-details ml-4">
+                          <div className="deals-startup-name text-sm font-medium text-gray-900">
                             {deal.startup.name}
                           </div>
-                          <div className="text-sm text-gray-500">
+                          <div className="deals-startup-industry text-sm text-gray-500">
                             {deal.startup.industry}
                           </div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{deal.amount}</div>
+                    <td className="deals-amount-cell px-6 py-4 whitespace-nowrap">
+                      <div className="deals-amount text-sm text-gray-900">{deal.amount}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{deal.equity}</div>
+                    <td className="deals-equity-cell px-6 py-4 whitespace-nowrap">
+                      <div className="deals-equity text-sm text-gray-900">{deal.equity}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <Badge variant={getStatusColor(deal.status)}>
+                    <td className="deals-status-cell px-6 py-4 whitespace-nowrap">
+                      <Badge variant={getStatusColor(deal.status)} className="deals-status">
                         {deal.status}
                       </Badge>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900">{deal.stage}</div>
+                    <td className="deals-stage-cell px-6 py-4 whitespace-nowrap">
+                      <div className="deals-stage text-sm text-gray-900">{deal.stage}</div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-500">
+                    <td className="deals-activity-cell px-6 py-4 whitespace-nowrap">
+                      <div className="deals-last-activity text-sm text-gray-500">
                         {new Date(deal.lastActivity).toLocaleDateString()}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <Button variant="outline" size="sm">
+                    <td className="deals-actions-cell px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                      <Button variant="outline" size="sm" className="deals-view-details-btn">
                         View Details
                       </Button>
                     </td>

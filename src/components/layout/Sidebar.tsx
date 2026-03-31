@@ -1,167 +1,334 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect, useMemo, memo } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import { clsx } from 'clsx';
 import { Avatar } from '../ui/Avatar';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
+import { ROUTES } from '../../config/routes';
 import {
   Home, Building2, CircleDollarSign, Users, MessageCircle,
-  Bell, FileText, Settings, HelpCircle, Calendar, Video, LogOut
+  Bell, FileText, Settings, HelpCircle, Calendar, Video,
+  LogOut, Search, UserCircle, Mail, ChevronRight, Menu, Check
 } from 'lucide-react';
 
-interface SidebarItemProps {
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+interface NavItem {
   to: string;
   icon: React.ReactNode;
   text: string;
-  className?: string;
+  badge?: number;
 }
 
 interface SidebarProps {
-  isCollapsed?: boolean;
+  onExpandChange?: (expanded: boolean) => void;
+  isExpanded?: boolean;
 }
 
-const SidebarItem: React.FC<SidebarItemProps> = ({ to, icon, text, className }) => {
+// ─── Tooltip ──────────────────────────────────────────────────────────────────
+
+const Tooltip: React.FC<{ label: string; children: React.ReactNode }> = memo(({ label, children }) => {
+  const [visible, setVisible] = useState(false);
+
   return (
-    <NavLink
-      to={to}
-      className={({ isActive }) =>
-        clsx(
-          'sidebar-item flex items-center py-2.5 px-4 rounded-md transition-colors duration-200',
-          className,
-          isActive
-            ? 'sidebar-item-active bg-primary-50 text-primary-700'
-            : 'sidebar-item-inactive text-gray-600 hover:bg-gray-100 hover:text-gray-900'
-        )
-      }
+    <div
+      className="dock-tooltip-wrapper"
+      onMouseEnter={() => setVisible(true)}
+      onMouseLeave={() => setVisible(false)}
     >
-      <span className="sidebar-item-icon mr-3">{icon}</span>
-      <span className="sidebar-item-text text-sm font-medium">{text}</span>
-    </NavLink>
-  );
-};
-
-export const Sidebar: React.FC<SidebarProps> = ({ isCollapsed = false }) => {
-  const { user, logout } = useAuth();
-  const navigate = useNavigate();
-  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
-  
-  if (!user) return null;
-  
-  // Define sidebar items based on user role
-  const entrepreneurItems = [
-    { to: '/dashboard/entrepreneur', icon: <Home size={20} />, text: 'Dashboard', className: '' },
-    { to: '/profile/entrepreneur/' + user.id, icon: <Building2 size={20} />, text: 'My Startup', className: '' },
-    { to: '/investors', icon: <CircleDollarSign size={20} />, text: 'Find Investors', className: 'sidebar-investors' },
-    { to: '/calendar', icon: <Calendar size={20} />, text: 'Calendar', className: 'sidebar-calendar' },
-    { to: '/video', icon: <Video size={20} />, text: 'Video Calls', className: 'sidebar-video' },
-    { to: '/messages', icon: <MessageCircle size={20} />, text: 'Messages', className: '' },
-    { to: '/notifications', icon: <Bell size={20} />, text: 'Notifications', className: '' },
-    { to: '/documents', icon: <FileText size={20} />, text: 'Documents', className: 'sidebar-documents' },
-  ];
-
-  const investorItems = [
-    { to: '/dashboard/investor', icon: <Home size={20} />, text: 'Dashboard', className: '' },
-    { to: '/profile/investor/' + user.id, icon: <CircleDollarSign size={20} />, text: 'My Portfolio', className: '' },
-    { to: '/entrepreneurs', icon: <Users size={20} />, text: 'Find Startups', className: 'sidebar-investors' },
-    { to: '/calendar', icon: <Calendar size={20} />, text: 'Calendar', className: 'sidebar-calendar' },
-    { to: '/video', icon: <Video size={20} />, text: 'Video Calls', className: 'sidebar-video' },
-    { to: '/messages', icon: <MessageCircle size={20} />, text: 'Messages', className: '' },
-    { to: '/notifications', icon: <Bell size={20} />, text: 'Notifications', className: '' },
-    { to: '/deals', icon: <FileText size={20} />, text: 'Deals', className: '' },
-  ];
-  
-  const sidebarItems = user.role === 'entrepreneur' ? entrepreneurItems : investorItems;
-  
-  // Common items at the bottom
-  const commonItems = [
-    { to: '/settings', icon: <Settings size={20} />, text: 'Settings', className: 'sidebar-settings' },
-    { to: '/help', icon: <HelpCircle size={20} />, text: 'Help & Support', className: '' },
-  ];
-  
-  return (
-    <div className={`sidebar-container fixed top-16 left-0 bottom-0 bg-white border-r border-gray-200 transition-all duration-300 z-30 ${isCollapsed ? 'collapsed w-0 overflow-hidden' : 'w-64'}`}>
-      <div className="sidebar-content h-full flex flex-col">
-        {/* User Profile Header */}
-        <div className="sidebar-header p-4 border-b border-gray-200 bg-gray-50">
-          <div className="flex items-center space-x-3">
-            <Avatar
-              src={user.avatarUrl}
-              alt={user.name}
-              size="lg"
-              status={user.isOnline ? 'online' : 'offline'}
-            />
-            <div className="flex-1 min-w-0">
-              <p className="text-sm font-semibold text-gray-900 truncate">{user.name}</p>
-              <p className="text-xs text-gray-500 capitalize truncate">{user.role}</p>
-            </div>
-          </div>
-        </div>
-        
-        <div className="sidebar-main flex-1 py-4 overflow-y-auto">
-          <div className="sidebar-items px-3 space-y-1">
-            {sidebarItems.map((item, index) => (
-              <SidebarItem
-                key={index}
-                to={item.to}
-                icon={item.icon}
-                text={item.text}
-                className={item.className}
-              />
-            ))}
-          </div>
-          
-          <div className="sidebar-settings mt-8 px-3">
-            <h3 className="sidebar-settings-title px-4 text-xs font-semibold text-gray-500 uppercase tracking-wider">
-              Settings
-            </h3>
-            <div className="sidebar-settings-items mt-2 space-y-1">
-              {commonItems.map((item, index) => (
-                <SidebarItem
-                  key={index}
-                  to={item.to}
-                  icon={item.icon}
-                  text={item.text}
-                />
-              ))}
-            </div>
-          </div>
-        </div>
-        
-        <div className="sidebar-footer p-4 border-t border-gray-200">
-          <div className="sidebar-support bg-gray-50 rounded-md p-3">
-            <p className="sidebar-support-text text-xs text-gray-600">Need assistance?</p>
-            <h4 className="sidebar-support-title text-sm font-medium text-gray-900 mt-1">Contact Support</h4>
-            <a 
-              href="mailto:support@businessnexus.com" 
-              className="sidebar-support-email mt-2 inline-flex items-center text-xs font-medium text-primary-600 hover:text-primary-500"
-            >
-              support@businessnexus.com
-            </a>
-          </div>
-          <button 
-            className="sidebar-logout-btn"
-            onClick={() => setShowLogoutConfirm(true)}
-          >
-            <LogOut size={18} />
-            <span>Logout</span>
-          </button>
-        </div>
-        
-        <ConfirmDialog
-          isOpen={showLogoutConfirm}
-          title="Logout"
-          message="Are you sure you want to logout? You will need to login again to access your account."
-          confirmText="Logout"
-          cancelText="Cancel"
-          onConfirm={() => {
-            logout();
-            setShowLogoutConfirm(false);
-            navigate('/login');
-          }}
-          onCancel={() => setShowLogoutConfirm(false)}
-          type="danger"
-        />
+      {children}
+      <div className={`dock-tooltip ${visible ? 'dock-tooltip--visible' : ''}`}>
+        {label}
       </div>
     </div>
   );
-};
+});
+
+Tooltip.displayName = 'Tooltip';
+
+// ─── Dock Nav Item ─────────────────────────────────────────────────────────────
+
+const DockItem: React.FC<NavItem & { isExpanded: boolean }> = memo(({ to, icon, text, badge, isExpanded }) => {
+  const content = (
+    <NavLink
+      to={to}
+      className={({ isActive }) =>
+        `dock-item ${isActive ? 'dock-item--active' : ''} ${isExpanded ? 'dock-item--expanded' : ''}`
+      }
+    >
+      <span className="dock-item__icon">
+        {icon}
+        {badge ? <span className="dock-item__badge">{badge > 99 ? '99+' : badge}</span> : null}
+      </span>
+      {isExpanded && <span className="dock-item__text">{text}</span>}
+    </NavLink>
+  );
+
+  return isExpanded ? content : <Tooltip label={text}>{content}</Tooltip>;
+});
+
+DockItem.displayName = 'DockItem';
+
+// ─── Account Dropdown ──────────────────────────────────────────────────────────
+
+interface AccountMenuProps {
+  user: { name: string; avatarUrl?: string; role: string; isOnline?: boolean };
+  onLogout: () => void;
+  isExpanded?: boolean;
+}
+
+const AccountMenu: React.FC<AccountMenuProps> = memo(({ user, onLogout, isExpanded = false }) => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+  const navigate = useNavigate();
+
+  // Memoize avatar URL to avoid recalculation on every render
+  const avatarUrl = useMemo(() => 
+    user.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'User')}&background=random`,
+    [user.avatarUrl, user.name]
+  );
+
+  useEffect(() => {
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    };
+    // Use passive listener for better scroll performance and debounce
+    document.addEventListener('mousedown', handler, { passive: true });
+    return () => document.removeEventListener('mousedown', handler);
+  }, []);
+
+  return (
+    <div ref={ref} className="dock-account">
+      {isExpanded ? (
+        <button className="dock-item dock-item--expanded" onClick={() => setOpen(o => !o)}>
+          <span className="dock-item__icon">
+            <Avatar
+              src={avatarUrl}
+              alt={user.name || 'User'}
+              size="sm"
+              status={user.isOnline ? 'online' : 'offline'}
+            />
+          </span>
+          <span className="dock-item__text">{user.name || 'User'}</span>
+        </button>
+      ) : (
+        <Tooltip label={user.name || 'User'}>
+          <button className="dock-avatar-btn" onClick={() => setOpen(o => !o)}>
+            <Avatar
+              src={avatarUrl}
+              alt={user.name || 'User'}
+              size="sm"
+              status={user.isOnline ? 'online' : 'offline'}
+            />
+          </button>
+        </Tooltip>
+      )}
+
+      <div className={`dock-account__menu ${open ? 'dock-account__menu--open' : ''}`}>
+        {/* Signed-in header */}
+        <div className="dock-account__header">
+          <span className="dock-account__signed-label">SIGNED IN AS</span>
+          <div className="dock-account__user">
+            <Avatar src={avatarUrl} alt={user.name || 'User'} size="sm" />
+            <div>
+              <p className="dock-account__name">{user.name || 'User'}</p>
+              <p className="dock-account__role">{user.role || 'Unknown'}</p>
+            </div>
+            <Check strokeWidth={1.25} className="dock-account__chevron"/>
+          </div>
+        </div>
+
+        <div className="dock-account__divider" />
+
+        <button
+          className="dock-account__item"
+          onClick={() => { navigate(ROUTES.SETTINGS); setOpen(false); }}
+        >
+          <Settings size={15} />
+          Account settings
+        </button>
+        <button
+          className="dock-account__item"
+          onClick={() => { navigate(ROUTES.HELP); setOpen(false); }}
+        >
+          <HelpCircle size={15} />
+          Help center
+        </button>
+        <a
+          href="mailto:support@businessnexus.com"
+          className="dock-account__item"
+          onClick={() => setOpen(false)}
+        >
+          <Mail size={15} />
+          Contact support
+        </a>
+
+        <div className="dock-account__divider" />
+
+        <button
+          className="dock-account__item dock-account__item--danger"
+          onClick={() => { onLogout(); setOpen(false); }}
+        >
+          <LogOut size={15} />
+          Sign out
+        </button>
+      </div>
+    </div>
+  );
+});
+
+AccountMenu.displayName = 'AccountMenu';
+
+// ─── Main Sidebar ──────────────────────────────────────────────────────────────
+
+export const Sidebar: React.FC<SidebarProps> = memo(({ onExpandChange, isExpanded: controlledExpanded }) => {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
+  const [internalExpanded, setInternalExpanded] = useState(false);
+  
+  // Use controlled value if provided, otherwise use internal state
+  const isExpanded = controlledExpanded !== undefined ? controlledExpanded : internalExpanded;
+
+  // Call the expand change callback when state changes
+  const handleExpandChange = React.useCallback((expanded: boolean) => {
+    setInternalExpanded(expanded);
+    onExpandChange?.(expanded);
+  }, [onExpandChange]);
+  
+  // Toggle handler for the dock button - memoized to prevent unnecessary re-renders
+  const handleToggle = React.useCallback(() => {
+    handleExpandChange(!isExpanded);
+  }, [isExpanded, handleExpandChange]);
+
+  if (!user) return null;
+
+  // Memoize nav items arrays to avoid recreation on every render
+  const entrepreneurItems = useMemo<NavItem[]>(() => [
+    { to: ROUTES.DASHBOARD.ENTREPRENEUR, icon: <Home size={20} />, text: 'Dashboard' },
+    { to: ROUTES.PROFILE.ENTREPRENEUR(user.id), icon: <Building2 size={20} />, text: 'My Startup' },
+    { to: ROUTES.INVESTORS, icon: <CircleDollarSign size={20} />, text: 'Find Investors' },
+    { to: ROUTES.CALENDAR, icon: <Calendar size={20} />, text: 'Calendar' },
+    { to: ROUTES.VIDEO.ROOT, icon: <Video size={20} />, text: 'Video Calls' },
+    { to: ROUTES.MESSAGES, icon: <MessageCircle size={20} />, text: 'Messages' },
+    { to: ROUTES.NOTIFICATIONS, icon: <Bell size={20} />, text: 'Notifications' },
+    { to: ROUTES.DOCUMENTS, icon: <FileText size={20} />, text: 'Documents' },
+  ], [user.id]);
+
+  const investorItems = useMemo<NavItem[]>(() => [
+    { to: ROUTES.DASHBOARD.INVESTOR, icon: <Home size={20} />, text: 'Dashboard' },
+    { to: ROUTES.PROFILE.INVESTOR(user.id), icon: <CircleDollarSign size={20} />, text: 'My Portfolio' },
+    { to: ROUTES.ENTREPRENEURS, icon: <Users size={20} />, text: 'Find Startups' },
+    { to: ROUTES.CALENDAR, icon: <Calendar size={20} />, text: 'Calendar' },
+    { to: ROUTES.VIDEO.ROOT, icon: <Video size={20} />, text: 'Video Calls' },
+    { to: ROUTES.MESSAGES, icon: <MessageCircle size={20} />, text: 'Messages' },
+    { to: ROUTES.NOTIFICATIONS, icon: <Bell size={20} />, text: 'Notifications' },
+    { to: ROUTES.DEALS, icon: <FileText size={20} />, text: 'Deals' },
+  ], [user.id]);
+
+  const navItems = useMemo(() => 
+    user.role === 'entrepreneur' ? entrepreneurItems : investorItems,
+    [user.role, entrepreneurItems, investorItems]
+  );
+
+  return (
+    <>
+      <aside className={`dock ${isExpanded ? 'dock--expanded' : ''}`}>
+        {/* Hamburger toggle */}
+        <div className="dock__header">
+          <div className="dock-toggle dock-toggle-wrapper"
+            onClick={handleToggle}
+            aria-label={isExpanded ? 'Collapse sidebar' : 'Expand sidebar'}
+            >
+          <button
+            className="dock-toggle-btn"
+            aria-label={isExpanded ? 'Collapse sidebar' : 'Expand sidebar'}
+          >
+            <Menu size={20} />
+          </button>
+          <img
+                src="/logo-nexus-inverted.png"
+                alt="Nexus Logo"
+                className="dock-logo-image h-[20px] w-auto"
+              />
+          </div>
+        </div>
+
+        {/* Top: Logo mark or brand dot — optional */}
+        <div className="dock__top">
+          {/* Main nav items */}
+          <nav className="dock__nav">
+            {navItems.map((item, i) => (
+              <DockItem key={item.to} {...item} isExpanded={isExpanded} />
+            ))}
+          </nav>
+        </div>
+
+        {/* Bottom: search + settings + avatar */}
+        <div className="dock__bottom">
+          {isExpanded ? (
+            <button
+              className="dock-item dock-item--expanded"
+              onClick={() => {/* wire to your search modal */ }}
+            >
+              <span className="dock-item__icon">
+                <Search size={20} />
+              </span>
+              <span className="dock-item__text">Search</span>
+            </button>
+          ) : (
+            <Tooltip label="Search  ⌘K">
+              <button
+                className="dock-item"
+                onClick={() => {/* wire to your search modal */ }}
+              >
+                <Search size={20} />
+              </button>
+            </Tooltip>
+          )}
+
+          {isExpanded ? (
+            <NavLink
+              to={ROUTES.SETTINGS}
+              className={({ isActive }) => `dock-item dock-item--expanded ${isActive ? 'dock-item--active' : ''}`}
+            >
+              <span className="dock-item__icon">
+                <Settings size={20} />
+              </span>
+              <span className="dock-item__text">Settings</span>
+            </NavLink>
+          ) : (
+            <Tooltip label="Settings">
+              <NavLink
+                to={ROUTES.SETTINGS}
+                className={({ isActive }) => `dock-item ${isActive ? 'dock-item--active' : ''}`}
+              >
+                <Settings size={20} />
+              </NavLink>
+            </Tooltip>
+          )}
+
+          <AccountMenu
+            user={user}
+            onLogout={() => setShowLogoutConfirm(true)}
+            isExpanded={isExpanded}
+          />
+        </div>
+      </aside>
+
+      <ConfirmDialog
+        isOpen={showLogoutConfirm}
+        title="Sign out"
+        message="Are you sure you want to sign out? You will need to log in again to access your account."
+        confirmText="Sign out"
+        cancelText="Cancel"
+        onConfirm={() => {
+          logout();
+          setShowLogoutConfirm(false);
+          navigate(ROUTES.AUTH.LOGIN);
+        }}
+        onCancel={() => setShowLogoutConfirm(false)}
+        type="danger"
+      />
+    </>
+  );
+});

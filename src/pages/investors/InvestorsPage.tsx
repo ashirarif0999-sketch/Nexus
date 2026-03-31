@@ -12,6 +12,7 @@ const ITEMS_PER_PAGE = 6;
 
 export const InvestorsPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [appliedSearchQuery, setAppliedSearchQuery] = useState('');
   const [selectedStages, setSelectedStages] = useState<string[]>([]);
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -27,11 +28,11 @@ export const InvestorsPage: React.FC = () => {
   
   // Filter investors based on search and filters
   const filteredInvestors = investors.filter(investor => {
-    const matchesSearch = searchQuery === '' || 
-      investor.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      investor.bio.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      investor.investmentInterests.some(interest => 
-        interest.toLowerCase().includes(searchQuery.toLowerCase())
+    const matchesSearch = appliedSearchQuery === '' ||
+      investor.name.toLowerCase().includes(appliedSearchQuery.toLowerCase()) ||
+      investor.bio.toLowerCase().includes(appliedSearchQuery.toLowerCase()) ||
+      investor.investmentInterests.some(interest =>
+        interest.toLowerCase().includes(appliedSearchQuery.toLowerCase())
       );
     
     const matchesStages = selectedStages.length === 0 ||
@@ -63,7 +64,7 @@ export const InvestorsPage: React.FC = () => {
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, selectedStages, selectedInterests]);
+  }, [appliedSearchQuery, selectedStages, selectedInterests]);
 
   const toggleStage = (stage: string) => {
     setSelectedStages(prev => 
@@ -82,15 +83,15 @@ export const InvestorsPage: React.FC = () => {
   };
   
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Find Investors</h1>
-        <p className="text-gray-600">Connect with investors who match your startup's needs</p>
+    <div className="investors-page page-main-content space-y-6 animate-fade-in">
+      <div className="investors-header page-header">
+        <h1 className="investors-title text-2xl font-bold text-gray-900">Find Investors</h1>
+        <p className="investors-subtitle text-gray-600">Connect with investors who match your startup's needs</p>
       </div>
       
-      <div className="space-y-6">
+      <div className="investors-content page-content space-y-6">
         {/* Filter Buttons */}
-        <div className="flex flex-wrap gap-3">
+        <div className="investors-filters page-filters flex flex-wrap gap-3">
           <FilterButton
             label="Investment Stage"
             count={allStages.length}
@@ -106,25 +107,30 @@ export const InvestorsPage: React.FC = () => {
         </div>
         
         {/* Main content */}
-        <div>
-          <div className="flex items-center gap-4 mb-6">
+        <div className="investors-main page-main">
+          <div className="investors-search-section page-search flex items-center gap-4 mb-6">
             <Input
+              className="investors-search-input flex-1"
               placeholder="Search investors by name, interests, or keywords..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  setAppliedSearchQuery(searchQuery);
+                }
+              }}
               startAdornment={<Search size={18} />}
-              fullWidth
             />
             
-            <div className="flex items-center gap-2">
+            <div className="investors-results-count flex items-center gap-2 whitespace-nowrap">
               <Filter size={18} className="text-gray-500" />
-              <span className="text-sm text-gray-600">
+              <span className="investors-results-text text-sm text-gray-600">
                 {filteredInvestors.length} results
               </span>
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="investors-grid page-grid grid grid-cols-1 md:grid-cols-2 gap-6">
             {isLoading ? (
               // Show skeleton cards while loading
               Array.from({ length: ITEMS_PER_PAGE }).map((_, index) => (
@@ -142,11 +148,11 @@ export const InvestorsPage: React.FC = () => {
 
           {/* Pagination */}
           {!isLoading && totalPages > 1 && (
-            <div className="flex justify-center items-center gap-2 py-6">
+            <div className="investors-pagination page-pagination flex justify-center items-center gap-2 py-6">
               <button
+                className="investors-pagination-prev p-2 rounded-md border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="p-2 rounded-md border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <ChevronLeft size={20} />
               </button>
@@ -154,22 +160,22 @@ export const InvestorsPage: React.FC = () => {
               {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                 <button
                   key={page}
-                  onClick={() => handlePageChange(page)}
                   className={clsx(
-                    'w-10 h-10 rounded-md font-medium',
+                    'investors-pagination-page w-10 h-10 rounded-md font-medium',
                     currentPage === page
                       ? 'bg-primary-600 text-white'
                       : 'border border-gray-300 hover:bg-gray-50'
                   )}
+                  onClick={() => handlePageChange(page)}
                 >
                   {page}
                 </button>
               ))}
               
               <button
+                className="investors-pagination-next p-2 rounded-md border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="p-2 rounded-md border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <ChevronRight size={20} />
               </button>

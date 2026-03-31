@@ -1,6 +1,6 @@
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { MessageCircle, Building2, MapPin, UserCircle, BarChart3, Briefcase } from 'lucide-react';
+import { useParams, Link, useNavigate } from 'react-router-dom';
+import { MessageCircle, Building2, MapPin, UserCircle, BarChart3, Briefcase, Plus } from 'lucide-react';
 import { Avatar } from '../../components/ui/Avatar';
 import { Button } from '../../components/ui/Button';
 import { Card, CardBody, CardHeader } from '../../components/ui/Card';
@@ -8,20 +8,37 @@ import { Badge } from '../../components/ui/Badge';
 import { useAuth } from '../../context/AuthContext';
 import { findUserById } from '../../data/users';
 import { Investor } from '../../types';
+import { ROUTES } from '../../config/routes';
 
 export const InvestorProfile: React.FC = () => {
   const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const { user: currentUser } = useAuth();
   
   // Fetch investor data
   const investor = findUserById(id || '') as Investor | null;
   
   if (!investor || investor.role !== 'investor') {
+    // Check if this is the current user's profile (they haven't created their profile yet)
+    const isCurrentUser = currentUser?.id === id && currentUser?.role === 'investor';
+    
+    if (isCurrentUser) {
+      return (
+        <div className="text-center py-12">
+          <h2 className="text-2xl font-bold text-gray-900">Complete Your Investor Profile</h2>
+          <p className="text-gray-600 mt-2">You haven't created your investor profile yet. Complete it to connect with entrepreneurs.</p>
+          <Link to={ROUTES.PROFILE.CREATE_INVESTOR}>
+            <Button className="mt-4" leftIcon={<Plus size={18} />}>Create Your Profile</Button>
+          </Link>
+        </div>
+      );
+    }
+    
     return (
       <div className="text-center py-12">
         <h2 className="text-2xl font-bold text-gray-900">Investor not found</h2>
         <p className="text-gray-600 mt-2">The investor profile you're looking for doesn't exist or has been removed.</p>
-        <Link to="/dashboard/entrepreneur">
+        <Link to={ROUTES.DASHBOARD.ENTREPRENEUR}>
           <Button variant="outline" className="mt-4">Back to Dashboard</Button>
         </Link>
       </div>
@@ -52,10 +69,12 @@ export const InvestorProfile: React.FC = () => {
               </p>
               
               <div className="flex flex-wrap gap-2 justify-center sm:justify-start mt-3">
-                <Badge variant="primary">
-                  <MapPin size={14} className="mr-1" />
-                  San Francisco, CA
-                </Badge>
+                {investor.location && (
+                  <Badge variant="primary">
+                    <MapPin size={14} className="mr-1" />
+                    {investor.location}
+                  </Badge>
+                )}
                 {investor.investmentStage.map((stage, index) => (
                   <Badge key={index} variant="secondary" size="sm">{stage}</Badge>
                 ))}
@@ -65,7 +84,7 @@ export const InvestorProfile: React.FC = () => {
           
           <div className="mt-6 sm:mt-0 flex flex-col sm:flex-row gap-2 justify-center sm:justify-end">
             {!isCurrentUser && (
-              <Link to={`/chat/${investor.id}`}>
+              <Link to={ROUTES.CHAT.CONVERSATION(investor.id)}>
                 <Button
                   leftIcon={<MessageCircle size={18} />}
                 >
@@ -75,12 +94,14 @@ export const InvestorProfile: React.FC = () => {
             )}
             
             {isCurrentUser && (
-              <Button
-                variant="outline"
-                leftIcon={<UserCircle size={18} />}
-              >
-                Edit Profile
-              </Button>
+              <Link to={ROUTES.PROFILE.CREATE_INVESTOR}>
+                <Button
+                  variant="outline"
+                  leftIcon={<UserCircle size={18} />}
+                >
+                  Edit Profile
+                </Button>
+              </Link>
             )}
           </div>
         </CardBody>

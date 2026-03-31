@@ -6,6 +6,7 @@ import { Card, CardBody, CardFooter } from '../ui/Card';
 import { Avatar } from '../ui/Avatar';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
+import { ROUTES } from '../../config/routes';
 
 interface EntrepreneurCardProps {
   entrepreneur: Entrepreneur;
@@ -19,12 +20,12 @@ const EntrepreneurCardComponent: React.FC<EntrepreneurCardProps> = ({
   const navigate = useNavigate();
   
   const handleViewProfile = () => {
-    navigate(`/profile/entrepreneur/${entrepreneur.id}`);
+    navigate(ROUTES.PROFILE.ENTREPRENEUR(entrepreneur.id));
   };
   
   const handleMessage = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent card click
-    navigate(`/chat/${entrepreneur.id}`);
+    navigate(ROUTES.CHAT.CONVERSATION(entrepreneur.id));
   };
   
   return (

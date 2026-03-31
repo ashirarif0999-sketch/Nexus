@@ -18,6 +18,7 @@ import {
   X,
   Send,
 } from 'lucide-react';
+import { ROUTES } from '../../config/routes';
 
 // ============================================
 // ATOMS - Base UI Primitives
@@ -622,16 +623,16 @@ export const VideoRoom: React.FC = () => {
   // If not in call, show ended screen
   if (!isInCall) {
     return (
-      <div className="flex items-center justify-center h-screen bg-gray-900">
-        <div className="text-center">
-          <div className="animate-pulse mb-4">
+      <div className="video-call-ended-screen page-fullscreen flex items-center justify-center h-screen bg-gray-900">
+        <div className="call-ended-content text-center">
+          <div className="call-ended-icon animate-pulse mb-4">
             <PhoneOff className="w-16 h-16 text-red-500 mx-auto" />
           </div>
-          <h2 className="text-xl font-semibold text-white mb-2">Call Ended</h2>
-          <p className="text-gray-400">Duration: {Math.floor(callDuration / 60)}:{String(callDuration % 60).padStart(2, '0')}</p>
+          <h2 className="call-ended-title text-xl font-semibold text-white mb-2">Call Ended</h2>
+          <p className="call-ended-duration text-gray-400">Duration: {Math.floor(callDuration / 60)}:{String(callDuration % 60).padStart(2, '0')}</p>
           <button
-            onClick={() => navigate('/dashboard/entrepreneur')}
-            className="mt-6 px-6 py-3 bg-primary-600 text-white rounded-xl hover:bg-primary-700 transition-colors font-semibold"
+            onClick={() => navigate(ROUTES.DASHBOARD.ENTREPRENEUR)}
+            className="return-to-dashboard-button mt-6 px-6 py-3 bg-primary-600 text-white rounded-xl hover:bg-primary-700 transition-colors font-semibold"
           >
             Return to Dashboard
           </button>
@@ -641,11 +642,11 @@ export const VideoRoom: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col h-screen bg-gray-900 overflow-hidden">
+    <div className="video-room-page page-fullscreen flex flex-col h-screen bg-gray-900 overflow-hidden">
       {/* Main Content Area */}
-      <div className="flex-1 flex overflow-hidden relative">
+      <div className="video-room-content main-content flex-1 flex overflow-hidden relative">
         {/* Video Grid */}
-        <div className={`flex-1 p-4 transition-all duration-300 ${showParticipants || showChat ? 'mr-0 md:mr-0' : ''}`}>
+        <div className={`video-grid-container flex-1 p-4 transition-all duration-300 ${showParticipants || showChat ? 'mr-0 md:mr-0' : ''}`}>
           <VideoGrid
             participants={mockParticipants}
             localParticipant={localParticipant}

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { MessageCircle, Users, Calendar, Building2, MapPin, UserCircle, FileText, DollarSign, Send, X, Check } from 'lucide-react';
+import { MessageCircle, Users, Calendar, Building2, MapPin, UserCircle, FileText, DollarSign, Send, X, Check, Plus } from 'lucide-react';
+import toast from 'react-hot-toast';
 import { Avatar } from '../../components/ui/Avatar';
 import { Button } from '../../components/ui/Button';
 import { Card, CardBody, CardHeader } from '../../components/ui/Card';
@@ -10,11 +11,14 @@ import { useAuth } from '../../context/AuthContext';
 import { findUserById } from '../../data/users';
 import { createCollaborationRequest, getRequestsFromInvestor } from '../../data/collaborationRequests';
 import { Entrepreneur } from '../../types';
+import { ROUTES } from '../../config/routes';
 
 export const EntrepreneurProfile: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { user: currentUser } = useAuth();
   const [showInvestModal, setShowInvestModal] = useState(false);
+  const [showCollaborationModal, setShowCollaborationModal] = useState(false);
+  const [collaborationMessage, setCollaborationMessage] = useState('');
   const [investmentAmount, setInvestmentAmount] = useState('');
   const [investmentMessage, setInvestmentMessage] = useState('');
   
@@ -22,11 +26,26 @@ export const EntrepreneurProfile: React.FC = () => {
   const entrepreneur = findUserById(id || '') as Entrepreneur | null;
   
   if (!entrepreneur || entrepreneur.role !== 'entrepreneur') {
+    // Check if this is the current user's profile (they haven't created their profile yet)
+    const isCurrentUser = currentUser?.id === id && currentUser?.role === 'entrepreneur';
+    
+    if (isCurrentUser) {
+      return (
+        <div className="text-center py-12">
+          <h2 className="text-2xl font-bold text-gray-900">Complete Your Entrepreneur Profile</h2>
+          <p className="text-gray-600 mt-2">You haven't created your entrepreneur profile yet. Complete it to showcase your startup to investors.</p>
+          <Link to={ROUTES.PROFILE.CREATE_ENTREPRENEUR}>
+            <Button className="mt-4" leftIcon={<Plus size={18} />}>Create Your Profile</Button>
+          </Link>
+        </div>
+      );
+    }
+    
     return (
       <div className="text-center py-12">
         <h2 className="text-2xl font-bold text-gray-900">Entrepreneur not found</h2>
         <p className="text-gray-600 mt-2">The entrepreneur profile you're looking for doesn't exist or has been removed.</p>
-        <Link to="/dashboard/investor">
+        <Link to={ROUTES.DASHBOARD.INVESTOR}>
           <Button variant="outline" className="mt-4">Back to Dashboard</Button>
         </Link>
       </div>
@@ -46,12 +65,12 @@ export const EntrepreneurProfile: React.FC = () => {
       createCollaborationRequest(
         currentUser.id,
         id,
-        `I'm interested in learning more about ${entrepreneur.startupName} and would like to explore potential investment opportunities.`
+        collaborationMessage || `I'm interested in learning more about ${entrepreneur.startupName} and would like to explore potential investment opportunities.`
       );
 
-      // In a real app, we would refresh the data or update state
-      // For this demo, we'll force a page reload
-      window.location.reload();
+      toast.success(`Collaboration request sent to ${entrepreneur.name}!`);
+      setShowCollaborationModal(false);
+      setCollaborationMessage('');
     }
   };
 
@@ -107,7 +126,7 @@ export const EntrepreneurProfile: React.FC = () => {
           <div className="card-buttons-parent mt-6 sm:mt-0 flex flex-col sm:flex-row gap-2 justify-center sm:justify-end">
             {!isCurrentUser && (
               <>
-                <Link to={`/chat/${entrepreneur.id}`}>
+                <Link to={ROUTES.CHAT.CONVERSATION(entrepreneur.id)}>
                   <Button
                     variant="outline"
                     leftIcon={<MessageCircle size={18} />}
@@ -121,7 +140,7 @@ export const EntrepreneurProfile: React.FC = () => {
                     <Button
                       leftIcon={<Send size={18} />}
                       disabled={hasRequestedCollaboration}
-                      onClick={handleSendRequest}
+                      onClick={() => setShowCollaborationModal(true)}
                     >
                       {hasRequestedCollaboration ? 'Request Sent' : 'Request Collaboration'}
                     </Button>
@@ -139,12 +158,14 @@ export const EntrepreneurProfile: React.FC = () => {
             )}
             
             {isCurrentUser && (
-              <Button
-                variant="outline"
-                leftIcon={<UserCircle size={18} />}
-              >
-                Edit Profile
-              </Button>
+              <Link to={ROUTES.PROFILE.CREATE_ENTREPRENEUR}>
+                <Button
+                  variant="outline"
+                  leftIcon={<UserCircle size={18} />}
+                >
+                  Edit Profile
+                </Button>
+              </Link>
             )}
           </div>
         </CardBody>
@@ -170,33 +191,39 @@ export const EntrepreneurProfile: React.FC = () => {
             </CardHeader>
             <CardBody>
               <div className="space-y-4">
-                <div>
-                  <h3 className="text-md font-medium text-gray-900">Problem Statement</h3>
-                  <p className="text-gray-700 mt-1">
-                    {entrepreneur?.pitchSummary?.split('.')[0]}.
-                  </p>
-                </div>
+                {entrepreneur.problemStatement && (
+                  <div>
+                    <h3 className="text-md font-medium text-gray-900">Problem Statement</h3>
+                    <p className="text-gray-700 mt-1">
+                      {entrepreneur.problemStatement}
+                    </p>
+                  </div>
+                )}
                 
                 <div>
                   <h3 className="text-md font-medium text-gray-900">Solution</h3>
                   <p className="text-gray-700 mt-1">
-                    {entrepreneur.pitchSummary}
+                    {entrepreneur.pitchSummary || 'No solution description available.'}
                   </p>
                 </div>
                 
-                <div>
-                  <h3 className="text-md font-medium text-gray-900">Market Opportunity</h3>
-                  <p className="text-gray-700 mt-1">
-                    The {entrepreneur.industry} market is experiencing significant growth, with a projected CAGR of 14.5% through 2027. Our solution addresses key pain points in this expanding market.
-                  </p>
-                </div>
+                {entrepreneur.marketOpportunity && (
+                  <div>
+                    <h3 className="text-md font-medium text-gray-900">Market Opportunity</h3>
+                    <p className="text-gray-700 mt-1">
+                      {entrepreneur.marketOpportunity}
+                    </p>
+                  </div>
+                )}
                 
-                <div>
-                  <h3 className="text-md font-medium text-gray-900">Competitive Advantage</h3>
-                  <p className="text-gray-700 mt-1">
-                    Unlike our competitors, we offer a unique approach that combines innovative technology with deep industry expertise, resulting in superior outcomes for our customers.
-                  </p>
-                </div>
+                {entrepreneur.competitiveAdvantage && (
+                  <div>
+                    <h3 className="text-md font-medium text-gray-900">Competitive Advantage</h3>
+                    <p className="text-gray-700 mt-1">
+                      {entrepreneur.competitiveAdvantage}
+                    </p>
+                  </div>
+                )}
               </div>
             </CardBody>
           </Card>
@@ -222,35 +249,31 @@ export const EntrepreneurProfile: React.FC = () => {
                   </div>
                 </div>
                 
-                <div className="flex items-center p-3 border border-gray-200 rounded-md">
-                  <Avatar
-                    src="https://images.pexels.com/photos/2379005/pexels-photo-2379005.jpeg"
-                    alt="Team Member"
-                    size="md"
-                    className="mr-3"
-                  />
-                  <div>
-                    <h3 className="text-sm font-medium text-gray-900">Alex Johnson</h3>
-                    <p className="text-xs text-gray-500">CTO</p>
+                {/* Dynamic team members from database */}
+                {entrepreneur.teamMembers && entrepreneur.teamMembers.map((member, index) => (
+                  <div key={index} className="flex items-center p-3 border border-gray-200 rounded-md">
+                    <Avatar
+                      src={member.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(member.name)}&background=random`}
+                      alt={member.name}
+                      size="md"
+                      className="mr-3"
+                    />
+                    <div>
+                      <h3 className="text-sm font-medium text-gray-900">{member.name}</h3>
+                      <p className="text-xs text-gray-500">{member.role}</p>
+                    </div>
                   </div>
-                </div>
+                ))}
                 
-                <div className="flex items-center p-3 border border-gray-200 rounded-md">
-                  <Avatar
-                    src="https://images.pexels.com/photos/773371/pexels-photo-773371.jpeg"
-                    alt="Team Member"
-                    size="md"
-                    className="mr-3"
-                  />
-                  <div>
-                    <h3 className="text-sm font-medium text-gray-900">Jessica Chen</h3>
-                    <p className="text-xs text-gray-500">Head of Product</p>
+                {(!entrepreneur.teamMembers || entrepreneur.teamMembers.length === 0) && entrepreneur.teamSize <= 1 && (
+                  <div className="flex items-center justify-center p-3 border border-dashed border-gray-200 rounded-md col-span-2">
+                    <p className="text-sm text-gray-500">No additional team members added yet.</p>
                   </div>
-                </div>
+                )}
                 
-                {entrepreneur.teamSize > 3 && (
+                {entrepreneur.teamSize > 1 && (!entrepreneur.teamMembers || entrepreneur.teamMembers.length < entrepreneur.teamSize - 1) && (
                   <div className="flex items-center justify-center p-3 border border-dashed border-gray-200 rounded-md">
-                    <p className="text-sm text-gray-500">+ {entrepreneur.teamSize - 3} more team members</p>
+                    <p className="text-sm text-gray-500">+ {entrepreneur.teamSize - 1} more team members</p>
                   </div>
                 )}
               </div>
@@ -275,33 +298,33 @@ export const EntrepreneurProfile: React.FC = () => {
                   </div>
                 </div>
                 
-                <div>
-                  <span className="text-sm text-gray-500">Valuation</span>
-                  <p className="text-md font-medium text-gray-900">$8M - $12M</p>
-                </div>
+                {entrepreneur.valuation && (
+                  <div>
+                    <span className="text-sm text-gray-500">Valuation</span>
+                    <p className="text-md font-medium text-gray-900">{entrepreneur.valuation}</p>
+                  </div>
+                )}
                 
-                <div>
-                  <span className="text-sm text-gray-500">Previous Funding</span>
-                  <p className="text-md font-medium text-gray-900">$750K Seed (2022)</p>
-                </div>
-                
-                <div className="pt-3 border-t border-gray-100">
-                  <span className="text-sm text-gray-500">Funding Timeline</span>
-                  <div className="mt-2 space-y-2">
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs font-medium">Pre-seed</span>
-                      <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">Completed</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs font-medium">Seed</span>
-                      <span className="text-xs bg-green-100 text-green-800 px-2 py-0.5 rounded-full">Completed</span>
-                    </div>
-                    <div className="flex justify-between items-center">
-                      <span className="text-xs font-medium">Series A</span>
-                      <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full">In Progress</span>
+                {/* Dynamic Funding Timeline */}
+                {entrepreneur.fundingTimeline && entrepreneur.fundingTimeline.length > 0 && (
+                  <div className="pt-3 border-t border-gray-100">
+                    <span className="text-sm text-gray-500">Funding Timeline</span>
+                    <div className="mt-2 space-y-2">
+                      {entrepreneur.fundingTimeline.map((round, index) => (
+                        <div key={index} className="flex justify-between items-center">
+                          <span className="text-xs font-medium">{round.name} {round.year && `(${round.year})`}</span>
+                          <span className={`text-xs px-2 py-0.5 rounded-full ${
+                            round.status === 'completed' ? 'bg-green-100 text-green-800' :
+                            round.status === 'in-progress' ? 'bg-yellow-100 text-yellow-800' :
+                            'bg-gray-100 text-gray-800'
+                          }`}>
+                            {round.status === 'completed' ? 'Completed' : round.status === 'in-progress' ? 'In Progress' : 'Planned'}
+                          </span>
+                        </div>
+                      ))}
                     </div>
                   </div>
-                </div>
+                )}
               </div>
             </CardBody>
           </Card>
@@ -313,38 +336,33 @@ export const EntrepreneurProfile: React.FC = () => {
             </CardHeader>
             <CardBody>
               <div className="space-y-3">
-                <div className="flex items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors">
-                  <div className="p-2 bg-primary-50 rounded-md mr-3">
-                    <FileText size={18} className="text-primary-700" />
+                {/* Dynamic documents from database */}
+                {entrepreneur.documents && entrepreneur.documents.length > 0 ? (
+                  entrepreneur.documents.map((doc, index) => (
+                    <div key={index} className="flex items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors">
+                      <div className="p-2 bg-primary-50 rounded-md mr-3">
+                        <FileText size={18} className="text-primary-700" />
+                      </div>
+                      <div className="flex-1">
+                        <h3 className="text-sm font-medium text-gray-900">{doc.name}</h3>
+                        {doc.lastUpdated && (
+                          <p className="text-xs text-gray-500">Updated {new Date(doc.lastUpdated).toLocaleDateString()}</p>
+                        )}
+                      </div>
+                      {doc.url ? (
+                        <a href={doc.url} target="_blank" rel="noopener noreferrer">
+                          <Button variant="outline" size="sm">View</Button>
+                        </a>
+                      ) : (
+                        <Button variant="outline" size="sm" disabled>View</Button>
+                      )}
+                    </div>
+                  ))
+                ) : (
+                  <div className="flex items-center justify-center p-4 border border-dashed border-gray-200 rounded-md">
+                    <p className="text-sm text-gray-500">No documents uploaded yet.</p>
                   </div>
-                  <div className="flex-1">
-                    <h3 className="text-sm font-medium text-gray-900">Pitch Deck</h3>
-                    <p className="text-xs text-gray-500">Updated 2 months ago</p>
-                  </div>
-                  <Button variant="outline" size="sm">View</Button>
-                </div>
-                
-                <div className="flex items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors">
-                  <div className="p-2 bg-primary-50 rounded-md mr-3">
-                    <FileText size={18} className="text-primary-700" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-sm font-medium text-gray-900">Business Plan</h3>
-                    <p className="text-xs text-gray-500">Updated 1 month ago</p>
-                  </div>
-                  <Button variant="outline" size="sm">View</Button>
-                </div>
-                
-                <div className="flex items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50 transition-colors">
-                  <div className="p-2 bg-primary-50 rounded-md mr-3">
-                    <FileText size={18} className="text-primary-700" />
-                  </div>
-                  <div className="flex-1">
-                    <h3 className="text-sm font-medium text-gray-900">Financial Projections</h3>
-                    <p className="text-xs text-gray-500">Updated 2 weeks ago</p>
-                  </div>
-                  <Button variant="outline" size="sm">View</Button>
-                </div>
+                )}
               </div>
               
               {!isCurrentUser && isInvestor && (
@@ -356,7 +374,7 @@ export const EntrepreneurProfile: React.FC = () => {
                   {!hasRequestedCollaboration ? (
                     <Button
                       className="mt-3 w-full"
-                      onClick={handleSendRequest}
+                      onClick={() => setShowCollaborationModal(true)}
                     >
                       Request Collaboration
                     </Button>
@@ -486,6 +504,65 @@ export const EntrepreneurProfile: React.FC = () => {
                     Confirm Investment
                   </Button>
                 </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
+      {/* Collaboration Request Modal */}
+      {showCollaborationModal && (
+        <>
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-[-30px] bg-black/50 z-40"
+            onClick={() => setShowCollaborationModal(false)}
+          />
+          {/* Modal */}
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            <div className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 animate-pop-in" style={{ position: 'fixed', top: '50%', left: '50%', transform: 'translate(-50%, -50%)' }}>
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-lg font-semibold text-gray-900">Request Collaboration</h3>
+                <button 
+                  onClick={() => setShowCollaborationModal(false)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  <X size={20} />
+                </button>
+              </div>
+              
+              <p className="text-sm text-gray-600 mb-4">
+                Send a collaboration request to <span className="font-medium">{entrepreneur.name}</span> about their startup <span className="font-medium">{entrepreneur.startupName}</span>.
+              </p>
+
+              {/* Message Input */}
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Your Message
+                </label>
+                <textarea
+                  className="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+                  rows={4}
+                  placeholder="Introduce yourself and explain why you're interested in collaborating..."
+                  value={collaborationMessage}
+                  onChange={(e) => setCollaborationMessage(e.target.value)}
+                />
+              </div>
+
+              {/* Actions */}
+              <div className="flex justify-end gap-3 mt-6">
+                <Button 
+                  variant="outline"
+                  onClick={() => setShowCollaborationModal(false)}
+                >
+                  Cancel
+                </Button>
+                <Button 
+                  onClick={handleSendRequest}
+                  leftIcon={<Send size={18} />}
+                >
+                  Send Request
+                </Button>
               </div>
             </div>
           </div>

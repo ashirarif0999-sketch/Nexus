@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { User, Lock, Bell, Globe, Palette, CreditCard, DollarSign, ArrowUpCircle, ArrowDownCircle, History, Wallet, X } from 'lucide-react';
 import { clsx } from 'clsx';
 import { Card, CardHeader, CardBody } from '../../components/ui/Card';
@@ -8,6 +8,7 @@ import { Badge } from '../../components/ui/Badge';
 import { Avatar } from '../../components/ui/Avatar';
 import { PasswordStrengthMeter } from '../../components/ui/PasswordStrengthMeter';
 import { useAuth } from '../../context/AuthContext';
+import { save2FAEnabledEmail, is2FAEnabledForEmail, remove2FAEnabledEmail } from '../../utils/2faStorage';
 
 type SettingsTab = 'profile' | 'security' | 'notifications' | 'language' | 'appearance' | 'billing';
 
@@ -19,20 +20,28 @@ export const SettingsPage: React.FC = () => {
   const [otpCode, setOtpCode] = useState('');
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
 
+  // Load 2FA status from localStorage on mount
+  useEffect(() => {
+    if (user?.email) {
+      const isEnabled = is2FAEnabledForEmail(user.email);
+      setTwoFactorEnabled(isEnabled);
+    }
+  }, [user?.email]);
+
   if (!user) return null;
   
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Settings</h1>
-        <p className="text-gray-600">Manage your account preferences and settings</p>
+    <div className="settings-page page-main-content space-y-6 animate-fade-in">
+      <div className="settings-header page-header">
+        <h1 className="settings-title text-2xl font-bold text-gray-900">Settings</h1>
+        <p className="settings-subtitle text-gray-600">Manage your account preferences and settings</p>
       </div>
       
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="settings-content grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Settings navigation */}
-        <Card className="lg:col-span-1">
-          <CardBody className="p-2">
-            <nav className="space-y-1">
+        <Card className="settings-nav-card lg:col-span-1">
+          <CardBody className="settings-nav-body p-2">
+            <nav className="settings-nav-list space-y-1">
               <button
                 onClick={() => setActiveTab('profile')}
                 className={clsx(
@@ -115,12 +124,12 @@ export const SettingsPage: React.FC = () => {
         </Card>
         
         {/* Main settings content */}
-        <div className="lg:col-span-3 space-y-6">
+        <div className="settings-main lg:col-span-3 space-y-6">
           {/* Profile Settings */}
           {activeTab === 'profile' && (
-            <Card>
-              <CardHeader>
-                <h2 className="text-lg font-medium text-gray-900">Profile Settings</h2>
+            <Card className="settings-profile-card">
+              <CardHeader className="settings-profile-header">
+                <h2 className="settings-profile-title text-lg font-medium text-gray-900">Profile Settings</h2>
               </CardHeader>
               <CardBody className="space-y-6">
                 <div className="flex items-center gap-6">
@@ -185,9 +194,9 @@ export const SettingsPage: React.FC = () => {
 
           {/* Security Settings */}
           {activeTab === 'security' && (
-            <Card>
-              <CardHeader>
-                <h2 className="text-lg font-medium text-gray-900">Security Settings</h2>
+            <Card className="settings-security-card">
+              <CardHeader className="settings-security-header">
+                <h2 className="settings-security-title text-lg font-medium text-gray-900">Security Settings</h2>
               </CardHeader>
               <CardBody className="space-y-6">
                 <div>
@@ -201,13 +210,30 @@ export const SettingsPage: React.FC = () => {
                         {twoFactorEnabled ? "Enabled" : "Not Enabled"}
                       </Badge>
                     </div>
-                    <Button
-                      variant="outline"
-                      onClick={() => setShow2FAModal(true)}
-                      disabled={twoFactorEnabled}
-                    >
-                      {twoFactorEnabled ? "Enabled" : "Enable"}
-                    </Button>
+                    <div className="flex gap-2">
+                      {twoFactorEnabled ? (
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            if (user?.email) {
+                              remove2FAEnabledEmail(user.email);
+                              setTwoFactorEnabled(false);
+                              alert('Two-Factor Authentication has been disabled!');
+                            }
+                          }}
+                          className="text-red-600 border-red-300 hover:bg-red-50"
+                        >
+                          Disable
+                        </Button>
+                      ) : (
+                        <Button
+                          variant="outline"
+                          onClick={() => setShow2FAModal(true)}
+                        >
+                          Enable
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </div>
 
@@ -246,8 +272,8 @@ export const SettingsPage: React.FC = () => {
           {activeTab === 'billing' && (
             <>
               {/* Wallet Balance Card */}
-              <Card>
-                <CardBody className="p-6">
+              <Card className="settings-wallet-card">
+                <CardBody className="settings-wallet-body p-6">
                   <div className="flex items-center justify-between">
                     <div>
                       <h3 className="text-lg font-medium text-gray-900">Wallet Balance</h3>
@@ -275,9 +301,9 @@ export const SettingsPage: React.FC = () => {
               </Card>
 
               {/* Transaction History */}
-              <Card>
-                <CardHeader>
-                  <div className="flex items-center gap-2">
+              <Card className="settings-transactions-card">
+                <CardHeader className="settings-transactions-header">
+                  <div className="settings-transactions-title flex items-center gap-2">
                     <History size={20} />
                     <h2 className="text-lg font-medium text-gray-900">Transaction History</h2>
                   </div>
@@ -472,7 +498,10 @@ export const SettingsPage: React.FC = () => {
                   </Button>
                   <Button
                     onClick={() => {
-                      // Mock 2FA enable - in a real app, this would verify the OTP
+                      // Save 2FA enabled email to localStorage
+                      save2FAEnabledEmail(user.email);
+                      console.log('2FA enabled for:', user.email);
+                      // Update state
                       setTwoFactorEnabled(true);
                       setShow2FAModal(false);
                       setOtpCode('');

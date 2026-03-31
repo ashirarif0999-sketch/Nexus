@@ -9,6 +9,27 @@ export interface User {
   bio: string;
   isOnline?: boolean;
   createdAt: string;
+  company?: string;
+  phone?: string;
+}
+
+export interface TeamMember {
+  name: string;
+  role: string;
+  avatarUrl?: string;
+}
+
+export interface FundingRound {
+  name: string;
+  amount?: string;
+  year?: number;
+  status: 'completed' | 'in-progress' | 'planned';
+}
+
+export interface StartupDocument {
+  name: string;
+  url?: string;
+  lastUpdated?: string;
 }
 
 export interface Entrepreneur extends User {
@@ -20,6 +41,15 @@ export interface Entrepreneur extends User {
   location: string;
   foundedYear: number;
   teamSize: number;
+  // Additional fields
+  problemStatement?: string;
+  solution?: string;
+  marketOpportunity?: string;
+  competitiveAdvantage?: string;
+  valuation?: string;
+  teamMembers?: TeamMember[];
+  fundingTimeline?: FundingRound[];
+  documents?: StartupDocument[];
 }
 
 export interface Investor extends User {
@@ -30,6 +60,18 @@ export interface Investor extends User {
   totalInvestments: number;
   minimumInvestment: string;
   maximumInvestment: string;
+  // Additional fields
+  location?: string;
+  investmentPhilosophy?: string;
+  background?: string;
+  linkedinUrl?: string;
+  websiteUrl?: string;
+}
+
+export interface MessageReaction {
+  emoji: string;
+  userId: string;
+  createdAt: string;
 }
 
 export interface Message {
@@ -39,6 +81,10 @@ export interface Message {
   content: string;
   timestamp: string;
   isRead: boolean;
+  isDelivered?: boolean;
+  reactions?: MessageReaction[];
+  isStarred?: boolean;
+  isDeleted?: boolean;
 }
 
 export interface ChatConversation {

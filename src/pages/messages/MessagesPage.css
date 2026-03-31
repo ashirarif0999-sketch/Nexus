@@ -1,0 +1,40 @@
+.messages-page-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.messages-content-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.messages-content-card:hover {
+  border-color: rgba(99, 102, 241, 0.2);
+}
+
+/* Custom Scrollbar for premium feel - Slate theme */
+.messages-content-card ::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messages-content-card ::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.messages-content-card ::-webkit-scrollbar-thumb {
+  background: #e2e8f0; /* slate-200 */
+  border-radius: 10px;
+}
+
+.messages-content-card ::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1; /* slate-300 */
+}
+
+/* Animation for the empty state appearance */
+@keyframes fadeInScale {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.messages-content-card > div {
+  animation: fadeInScale 0.4s ease-out;
+}

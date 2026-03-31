@@ -1,25 +1,20 @@
-import React, { useState } from 'react';
+import React, { useState, memo } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
-import { Menu, X, Bell, MessageCircle, User, LogOut, Building2, CircleDollarSign } from 'lucide-react';
+import { AlignJustify, Bell, MessageCircle, User, LogOut, Building2, CircleDollarSign } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { Avatar } from '../ui/Avatar';
 import { Button } from '../ui/Button';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
+import { ROUTES } from '../../config/routes';
 
 interface NavbarProps {
-  onToggleSidebar?: () => void;
-  isSidebarCollapsed?: boolean;
+  onToggleDock?: () => void;
 }
 
-export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarCollapsed = false }) => {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+export const Navbar: React.FC<NavbarProps> = memo(({ onToggleDock }) => {
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const { user, logout } = useAuth();
   const navigate = useNavigate();
-  
-  const toggleMenu = () => {
-    setIsMenuOpen(!isMenuOpen);
-  };
   
   const handleLogout = () => {
     setShowLogoutConfirm(true);
@@ -27,19 +22,19 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarCollap
   
   const confirmLogout = () => {
     logout();
-    navigate('/login');
+    navigate(ROUTES.AUTH.LOGIN);
     setShowLogoutConfirm(false);
   };
   
   // User dashboard route based on role
   const dashboardRoute = user?.role === 'entrepreneur' 
-    ? '/dashboard/entrepreneur' 
-    : '/dashboard/investor';
+    ? ROUTES.DASHBOARD.ENTREPRENEUR 
+    : ROUTES.DASHBOARD.INVESTOR;
   
   // User profile route based on role and ID
   const profileRoute = user 
     ? `/profile/${user.role}/${user.id}` 
-    : '/login';
+    : ROUTES.AUTH.LOGIN;
   
   const navLinks = [
     {
@@ -50,12 +45,12 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarCollap
     {
       icon: <MessageCircle size={18} />,
       text: 'Messages',
-      path: user ? '/messages' : '/login',
+      path: user ? ROUTES.MESSAGES : ROUTES.AUTH.LOGIN,
     },
     {
       icon: <Bell size={18} />,
       text: 'Notifications',
-      path: user ? '/notifications' : '/login',
+      path: user ? ROUTES.NOTIFICATIONS : ROUTES.AUTH.LOGIN,
     },
     {
       icon: <User size={18} />,
@@ -69,27 +64,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarCollap
       <nav className="navbar bg-white shadow-md">
       <div className="navbar-container max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="navbar-content flex justify-between h-16">
-          {/* Logo and brand */}
-          <div className="navbar-logo flex-shrink-0 flex items-center">
-            <button
-              onClick={onToggleSidebar}
-              className="sidebar-toggle-btn mr-3 p-1.5 rounded-md text-gray-600 hover:text-primary-600 hover:bg-gray-100 transition-colors duration-200"
-              aria-label={isSidebarCollapsed ? 'Expand sidebar' : 'Collapse sidebar'}
-            >
-              {isSidebarCollapsed ? (
-                <i className='bx bx-dock-right text-xl' />
-              ) : (
-                <i className='bx bx-dock-left text-xl' />
-              )}
-            </button>
-            <Link to="/" className="navbar-brand-link flex items-center space-x-2">
-              <img 
-                src="/logo-nexus.png" 
-                alt="Nexus Logo" 
-                className="navbar-logo-image h-8 w-auto"
-              />
-            </Link>
-          </div>
+          {/* Sidebar toggle button (acts as logo button to toggle dock) */}
+          <button
+            onClick={onToggleDock}
+            className="navbar-sidebar-toggle flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-primary-600 hover:bg-gray-50 focus:outline-none"
+            aria-label="Toggle sidebar"
+          >
+            <AlignJustify className="navbar-sidebar-toggle-icon block h-6 w-6" />
+          </button>
+          
+         
           
           {/* Desktop navigation */}
           <div className="navbar-desktop hidden md:flex md:items-center md:ml-6">
@@ -114,111 +98,44 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarCollap
                 >
                   Logout
                 </Button>
-                
-                <Link to={profileRoute} className="navbar-profile-link flex items-center space-x-2 ml-2">
-                  <Avatar
-                    src={user.avatarUrl}
-                    alt={user.name}
-                    size="sm"
-                    status={user.isOnline ? 'online' : 'offline'}
-                    className="navbar-avatar"
-                  />
-                  <span className="navbar-user-name text-sm font-medium text-gray-700">{user.name}</span>
-                </Link>
               </div>
             ) : (
               <div className="navbar-auth-buttons flex items-center space-x-4">
-                <Link to="/login">
+                <Link to={ROUTES.AUTH.LOGIN}>
                   <Button variant="outline">Log in</Button>
                 </Link>
-                <Link to="/register">
+                <Link to={ROUTES.AUTH.REGISTER}>
                   <Button>Sign up</Button>
                 </Link>
               </div>
             )}
           </div>
           
-          {/* Mobile menu button */}
-          <div className="navbar-mobile-toggle md:hidden flex items-center">
-            <button
-              onClick={toggleMenu}
-              className="navbar-toggle-btn inline-flex items-center justify-center p-2 rounded-md text-gray-700 hover:text-primary-600 hover:bg-gray-50 focus:outline-none"
-            >
-              {isMenuOpen ? (
-                <X className="navbar-toggle-icon block h-6 w-6" />
-              ) : (
-                <Menu className="navbar-toggle-icon block h-6 w-6" />
-              )}
-            </button>
-          </div>
-        </div>
-      </div>
-      
-      {/* Mobile menu */}
-      {isMenuOpen && (
-        <div className="navbar-mobile-menu md:hidden bg-white border-b border-gray-200 animate-fade-in">
-          <div className="navbar-mobile-content px-2 pt-2 pb-3 space-y-1 sm:px-3">
+          {/* Avatar button at flex end */}
+          <div className="navbar-avatar-button flex items-center">
             {user ? (
-              <>
-                <div className="navbar-mobile-user flex items-center space-x-3 px-3 py-2">
-                  <Avatar
-                    src={user.avatarUrl}
-                    alt={user.name}
-                    size="sm"
-                    status={user.isOnline ? 'online' : 'offline'}
-                  />
-                  <div>
-                    <p className="navbar-mobile-user-name text-sm font-medium text-gray-800">{user.name}</p>
-                    <p className="navbar-mobile-user-role text-xs text-gray-500 capitalize">{user.role}</p>
-                  </div>
-                </div>
-                
-                <div className="navbar-mobile-links border-t border-gray-200 pt-2">
-                  {navLinks.map((link, index) => (
-                    <Link
-                      key={index}
-                      to={link.path}
-                      className="navbar-mobile-link flex items-center px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50 rounded-md"
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      <span className="navbar-mobile-link-icon mr-3">{link.icon}</span>
-                      <span className="navbar-mobile-link-text">{link.text}</span>
-                    </Link>
-                  ))}
-                  
-                  <button
-                    onClick={() => {
-                      setShowLogoutConfirm(true);
-                      setIsMenuOpen(false);
-                    }}
-                    className="navbar-mobile-logout flex w-full items-center px-3 py-2 text-base font-medium text-gray-700 hover:text-primary-600 hover:bg-gray-50 rounded-md"
-                  >
-                    <LogOut size={18} className="navbar-mobile-logout-icon mr-3" />
-                    Logout
-                  </button>
-                </div>
-              </>
+              <Link to={profileRoute} className="navbar-profile-link flex items-center space-x-2">
+                <Avatar
+                  src={user.avatarUrl}
+                  alt={user.name}
+                  size="lg"
+                  status={user.isOnline ? 'online' : 'offline'}
+                  className="navbar-avatar"
+                />
+              </Link>
             ) : (
-              <div className="navbar-mobile-auth flex flex-col space-y-2 px-3 py-2">
-                <Link 
-                  to="/login" 
-                  className="navbar-mobile-login-link w-full"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <Button variant="outline" fullWidth>Log in</Button>
-                </Link>
-                <Link 
-                  to="/register" 
-                  className="navbar-mobile-register-link w-full"
-                  onClick={() => setIsMenuOpen(false)}
-                >
-                  <Button fullWidth>Sign up</Button>
-                </Link>
-              </div>
+              <Link to={ROUTES.AUTH.LOGIN}>
+                <Avatar
+                  src=""
+                  alt="Login"
+                  size="lg"
+                  className="navbar-avatar-guest"
+                />
+              </Link>
             )}
           </div>
         </div>
-      )}
+      </div>
     </nav>
       
       <ConfirmDialog
@@ -233,4 +150,4 @@ export const Navbar: React.FC<NavbarProps> = ({ onToggleSidebar, isSidebarCollap
       />
     </>
   );
-};
+});

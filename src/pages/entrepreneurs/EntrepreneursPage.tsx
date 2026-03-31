@@ -12,6 +12,7 @@ const ITEMS_PER_PAGE = 6;
 
 export const EntrepreneursPage: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
+  const [appliedSearchQuery, setAppliedSearchQuery] = useState('');
   const [selectedIndustries, setSelectedIndustries] = useState<string[]>([]);
   const [selectedFundingRange, setSelectedFundingRange] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
@@ -27,11 +28,11 @@ export const EntrepreneursPage: React.FC = () => {
   
   // Filter entrepreneurs based on search and filters
   const filteredEntrepreneurs = entrepreneurs.filter(entrepreneur => {
-    const matchesSearch = searchQuery === '' || 
-      entrepreneur.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      entrepreneur.startupName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      entrepreneur.industry.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      entrepreneur.pitchSummary.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesSearch = appliedSearchQuery === '' ||
+      entrepreneur.name.toLowerCase().includes(appliedSearchQuery.toLowerCase()) ||
+      entrepreneur.startupName.toLowerCase().includes(appliedSearchQuery.toLowerCase()) ||
+      entrepreneur.industry.toLowerCase().includes(appliedSearchQuery.toLowerCase()) ||
+      entrepreneur.pitchSummary.toLowerCase().includes(appliedSearchQuery.toLowerCase());
     
     const matchesIndustry = selectedIndustries.length === 0 ||
       selectedIndustries.includes(entrepreneur.industry);
@@ -72,7 +73,7 @@ export const EntrepreneursPage: React.FC = () => {
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchQuery, selectedIndustries, selectedFundingRange]);
+  }, [appliedSearchQuery, selectedIndustries, selectedFundingRange]);
 
   const toggleIndustry = (industry: string) => {
     setSelectedIndustries(prev => 
@@ -91,15 +92,15 @@ export const EntrepreneursPage: React.FC = () => {
   };
   
   return (
-    <div className="space-y-6 animate-fade-in">
-      <div>
-        <h1 className="text-2xl font-bold text-gray-900">Find Startups</h1>
-        <p className="text-gray-600">Discover promising startups looking for investment</p>
+    <div className="entrepreneurs-page page-main-content space-y-6 animate-fade-in">
+      <div className="entrepreneurs-header page-header">
+        <h1 className="entrepreneurs-title text-2xl font-bold text-gray-900">Find Startups</h1>
+        <p className="entrepreneurs-subtitle text-gray-600">Discover promising startups looking for investment</p>
       </div>
       
-      <div className="space-y-6">
+      <div className="entrepreneurs-content page-content space-y-6">
         {/* Filter Buttons */}
-        <div className="flex flex-wrap gap-3">
+        <div className="entrepreneurs-filters page-filters flex flex-wrap gap-3">
           <FilterButton
             label="Industry"
             count={allIndustries.length}
@@ -115,25 +116,30 @@ export const EntrepreneursPage: React.FC = () => {
         </div>
         
         {/* Main content */}
-        <div className="lg:col-span-3 space-y-6">
-          <div className="flex items-center gap-4">
+        <div className="entrepreneurs-main page-main lg:col-span-3 space-y-6">
+          <div className="entrepreneurs-search-section page-search flex items-center gap-4">
             <Input
+              className="entrepreneurs-search-input flex-1"
               placeholder="Search startups by name, industry, or keywords..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  setAppliedSearchQuery(searchQuery);
+                }
+              }}
               startAdornment={<Search size={18} />}
-              fullWidth
             />
             
-            <div className="flex items-center gap-2">
+            <div className="entrepreneurs-results-count flex items-center gap-2 whitespace-nowrap">
               <Filter size={18} className="text-gray-500" />
-              <span className="text-sm text-gray-600">
+              <span className="entrepreneurs-results-text text-sm text-gray-600">
                 {filteredEntrepreneurs.length} results
               </span>
             </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="entrepreneurs-grid page-grid grid grid-cols-1 md:grid-cols-2 gap-6">
             {isLoading ? (
               // Show skeleton cards while loading
               Array.from({ length: ITEMS_PER_PAGE }).map((_, index) => (
@@ -151,11 +157,11 @@ export const EntrepreneursPage: React.FC = () => {
 
           {/* Pagination */}
           {!isLoading && totalPages > 1 && (
-            <div className="flex justify-center items-center gap-2 py-6">
+            <div className="entrepreneurs-pagination page-pagination flex justify-center items-center gap-2 py-6">
               <button
+                className="entrepreneurs-pagination-prev p-2 rounded-md border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className="p-2 rounded-md border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <ChevronLeft size={20} />
               </button>
@@ -163,22 +169,22 @@ export const EntrepreneursPage: React.FC = () => {
               {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
                 <button
                   key={page}
-                  onClick={() => handlePageChange(page)}
                   className={clsx(
-                    'w-10 h-10 rounded-md font-medium',
+                    'entrepreneurs-pagination-page w-10 h-10 rounded-md font-medium',
                     currentPage === page
                       ? 'bg-primary-600 text-white'
                       : 'border border-gray-300 hover:bg-gray-50'
                   )}
+                  onClick={() => handlePageChange(page)}
                 >
                   {page}
                 </button>
               ))}
               
               <button
+                className="entrepreneurs-pagination-next p-2 rounded-md border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className="p-2 rounded-md border border-gray-300 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 <ChevronRight size={20} />
               </button>

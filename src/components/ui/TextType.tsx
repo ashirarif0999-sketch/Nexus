@@ -19,6 +19,7 @@ interface TextTypeProps {
   cursorClassName?: string;
   cursorBlinkDuration?: number;
   textColors?: string[];
+  textGradient?: string; // Linear gradient CSS for text (e.g., 'linear-gradient(90deg, #ff0000, #0000ff)')
   variableSpeed?: { min: number; max: number };
   onSentenceComplete?: (sentence: string, index: number) => void;
   startOnVisible?: boolean;
@@ -28,7 +29,7 @@ interface TextTypeProps {
 
 const TextType: React.FC<TextTypeProps> = ({
   text,
-  as: Component = 'div',
+  as: Component = 'span',
   typingSpeed = 50,
   initialDelay = 0,
   pauseDuration = 2000,
@@ -41,6 +42,7 @@ const TextType: React.FC<TextTypeProps> = ({
   cursorClassName = '',
   cursorBlinkDuration = 0.5,
   textColors = [],
+  textGradient,
   variableSpeed,
   onSentenceComplete,
   startOnVisible = false,
@@ -66,7 +68,19 @@ const TextType: React.FC<TextTypeProps> = ({
 
   const getCurrentTextColor = () => {
     if (textColors.length === 0) return 'inherit';
-    return textColors[currentTextIndex % textColors.length];
+    const color = textColors[currentTextIndex % textColors.length];
+    // Check if the color is a gradient string
+    if (typeof color === 'string' && color.includes('linear-gradient')) {
+      return color;
+    }
+    return color;
+  };
+
+  // Check if current text color is a gradient
+  const isCurrentColorGradient = () => {
+    if (textColors.length === 0) return false;
+    const color = textColors[currentTextIndex % textColors.length];
+    return typeof color === 'string' && color.includes('linear-gradient');
   };
 
   useEffect(() => {
@@ -138,9 +152,20 @@ const TextType: React.FC<TextTypeProps> = ({
 
   useEffect(() => {
     if (!isVisible) return;
+    
+    // Guard against empty textArray
+    if (!textArray || textArray.length === 0) {
+      return;
+    }
 
     let timeout: ReturnType<typeof setTimeout>;
     const currentText = textArray[currentTextIndex];
+    
+    // Guard against undefined currentText
+    if (!currentText) {
+      return;
+    }
+    
     const processedText = reverseMode ? currentText.split('').reverse().join('') : currentText;
 
     const executeTypingAnimation = () => {
@@ -151,7 +176,7 @@ const TextType: React.FC<TextTypeProps> = ({
             return;
           }
 
-          if (onSentenceComplete) {
+          if (onSentenceComplete && textArray[currentTextIndex]) {
             onSentenceComplete(textArray[currentTextIndex], currentTextIndex);
           }
 
@@ -207,7 +232,23 @@ const TextType: React.FC<TextTypeProps> = ({
   ]);
 
   const shouldHideCursor =
-    hideCursorWhileTyping && (currentCharIndex < textArray[currentTextIndex].length || isDeleting);
+    textArray[currentTextIndex] && hideCursorWhileTyping && (currentCharIndex < textArray[currentTextIndex].length || isDeleting);
+
+  // Determine if we should use gradient (textGradient takes precedence over textColors)
+  const useGradient = !!textGradient;
+  const currentColor = getCurrentTextColor();
+  const colorIsGradient = isCurrentColorGradient();
+  const backgroundValue = textGradient || (textColors.length > 0 ? currentColor : undefined);
+
+  const textStyle = useGradient || colorIsGradient ? {
+    background: backgroundValue,
+    backgroundClip: 'text',
+    WebkitBackgroundClip: 'text',
+    WebkitTextFillColor: 'transparent',
+    color: 'transparent'
+  } : {
+    color: getCurrentTextColor() || 'inherit'
+  };
 
   return createElement(
     Component,
@@ -216,7 +257,10 @@ const TextType: React.FC<TextTypeProps> = ({
       className: `text-type ${className}`,
       ...props
     },
-    <span className="text-type__content" style={{ color: getCurrentTextColor() || 'inherit' }}>
+    <span 
+      className="text-type__content" 
+      style={textStyle}
+    >
       {displayedText}
     </span>,
     showCursor && (

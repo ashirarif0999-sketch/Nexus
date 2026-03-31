@@ -6,6 +6,7 @@ import { Card, CardBody, CardFooter } from '../ui/Card';
 import { Avatar } from '../ui/Avatar';
 import { Badge } from '../ui/Badge';
 import { Button } from '../ui/Button';
+import { ROUTES } from '../../config/routes';
 
 interface InvestorCardProps {
   investor: Investor;
@@ -19,12 +20,12 @@ const InvestorCardComponent: React.FC<InvestorCardProps> = ({
   const navigate = useNavigate();
   
   const handleViewProfile = () => {
-    navigate(`/profile/investor/${investor.id}`);
+    navigate(ROUTES.PROFILE.INVESTOR(investor.id));
   };
   
   const handleMessage = (e: React.MouseEvent) => {
     e.stopPropagation(); // Prevent card click
-    navigate(`/chat/${investor.id}`);
+    navigate(ROUTES.CHAT.CONVERSATION(investor.id));
   };
   
   return (

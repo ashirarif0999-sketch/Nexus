@@ -1,4 +1,4 @@
-import React, { createContext, useState, useContext, useEffect } from 'react';
+import React, { createContext, useState, useContext, useEffect, useCallback, useMemo } from 'react';
 import { User, UserRole, AuthContextType, Entrepreneur, Investor } from '../types';
 import { users } from '../data/users';
 import toast from 'react-hot-toast';
@@ -24,8 +24,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(false);
   }, []);
 
-  // Mock login function - in a real app, this would make an API call
-  const login = async (email: string, password: string, role: UserRole): Promise<void> => {
+  // Mock login function - memoized to prevent re-renders
+  // Note: password parameter is unused in mock implementation (demo mode accepts any password)
+  const login = useCallback(async (email: string, _password: string, role: UserRole): Promise<void> => {
     setIsLoading(true);
     
     try {
@@ -90,10 +91,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  // Mock register function - in a real app, this would make an API call
-  const register = async (name: string, email: string, password: string, role: UserRole): Promise<void> => {
+  // Mock register function - memoized
+  // Note: password parameter is unused in mock implementation (demo mode accepts any password)
+  const register = useCallback(async (name: string, email: string, _password: string, role: UserRole): Promise<void> => {
     setIsLoading(true);
     
     try {
@@ -106,19 +108,43 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       
       // Create new user
-      const newUser: User = {
-        id: `${role[0]}${users.length + 1}`,
-        name,
-        email,
-        role,
-        avatarUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`,
-        bio: '',
-        isOnline: true,
-        createdAt: new Date().toISOString()
-      };
+      const newUser: Entrepreneur | Investor = role === 'entrepreneur' 
+        ? {
+            id: `${role[0]}${users.length + 1}`,
+            name,
+            email,
+            role: 'entrepreneur',
+            avatarUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`,
+            bio: '',
+            isOnline: true,
+            createdAt: new Date().toISOString(),
+            startupName: 'My Startup',
+            pitchSummary: 'A promising startup',
+            fundingNeeded: '$500,000',
+            industry: 'Technology',
+            location: 'San Francisco, CA',
+            foundedYear: 2024,
+            teamSize: 1
+          }
+        : {
+            id: `${role[0]}${users.length + 1}`,
+            name,
+            email,
+            role: 'investor',
+            avatarUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=random`,
+            bio: '',
+            isOnline: true,
+            createdAt: new Date().toISOString(),
+            investmentInterests: ['Technology'],
+            investmentStage: ['Seed'],
+            portfolioCompanies: [],
+            totalInvestments: 0,
+            minimumInvestment: '$50,000',
+            maximumInvestment: '$500,000'
+          };
       
       // Add user to mock data
-      users.push(newUser);
+      users.push(newUser as Entrepreneur | Investor);
       
       setUser(newUser);
       localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(newUser));
@@ -129,10 +155,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  // Mock forgot password function
-  const forgotPassword = async (email: string): Promise<void> => {
+  // Mock forgot password function - memoized
+  const forgotPassword = useCallback(async (email: string): Promise<void> => {
     try {
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -153,10 +179,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       toast.error((error as Error).message);
       throw error;
     }
-  };
+  }, []);
 
-  // Mock reset password function
-  const resetPassword = async (token: string, newPassword: string): Promise<void> => {
+  // Mock reset password function - memoized
+  // Note: newPassword parameter is unused in mock implementation (demo only)
+  const resetPassword = useCallback(async (token: string, _newPassword: string): Promise<void> => {
     try {
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -174,17 +201,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       toast.error((error as Error).message);
       throw error;
     }
-  };
+  }, []);
 
-  // Logout function
-  const logout = (): void => {
+  // Logout function - memoized
+  const logout = useCallback((): void => {
     setUser(null);
     localStorage.removeItem(USER_STORAGE_KEY);
     toast.success('Logged out successfully');
-  };
+  }, []);
 
-  // Update user profile
-  const updateProfile = async (userId: string, updates: Partial<User>): Promise<void> => {
+  // Update user profile - memoized
+  const updateProfile = useCallback(async (userId: string, updates: Partial<User>): Promise<void> => {
     try {
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -196,11 +223,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
       
       const updatedUser = { ...users[userIndex], ...updates };
-      users[userIndex] = updatedUser;
+      (users as unknown as User[])[userIndex] = updatedUser;
       
       // Update current user if it's the same user
       if (user?.id === userId) {
-        setUser(updatedUser);
+        setUser(updatedUser as User);
         localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(updatedUser));
       }
       
@@ -209,9 +236,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       toast.error((error as Error).message);
       throw error;
     }
-  };
+  }, [user]);
 
-  const value = {
+  // Memoized context value to prevent unnecessary re-renders
+  const value = useMemo(() => ({
     user,
     login,
     register,
@@ -221,7 +249,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     updateProfile,
     isAuthenticated: !!user,
     isLoading
-  };
+  }), [user, login, register, logout, forgotPassword, resetPassword, updateProfile, isLoading]);
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

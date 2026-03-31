@@ -323,15 +323,16 @@ export const DocumentsPage: React.FC = () => {
   };
 
   return (
-    <div className="space-y-6 animate-fade-in p-4 md:p-6">
+    <div className="documents-page page-main-content space-y-6 animate-fade-in p-4 md:p-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Document Chamber</h1>
-          <p className="text-gray-600 mt-1">Manage contracts, deals, and e-signatures</p>
+      <div className="documents-header page-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="documents-title-section">
+          <h1 className="documents-title text-2xl md:text-3xl font-bold text-gray-900">Document Chamber</h1>
+          <p className="documents-subtitle text-gray-600 mt-1">Manage contracts, deals, and e-signatures</p>
         </div>
         
         <Button
+          className="documents-upload-btn"
           leftIcon={<Upload size={18} />}
           onClick={() => setShowUploadZone(!showUploadZone)}
         >
@@ -341,19 +342,19 @@ export const DocumentsPage: React.FC = () => {
 
       {/* Upload Zone */}
       {showUploadZone && (
-        <div className="animate-fade-in">
+        <div className="documents-upload-zone animate-fade-in">
           <UploadZone onUpload={handleFileUpload} />
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="documents-content grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Storage Info Sidebar */}
-        <Card className="lg:col-span-1">
-          <CardHeader>
-            <h2 className="text-lg font-semibold text-gray-900">Storage</h2>
+        <Card className="documents-storage-card lg:col-span-1">
+          <CardHeader className="documents-storage-header">
+            <h2 className="documents-storage-title text-lg font-semibold text-gray-900">Storage</h2>
           </CardHeader>
-          <CardBody className="space-y-4">
-            <div className="space-y-2">
+          <CardBody className="documents-storage-body space-y-4">
+            <div className="documents-storage-usage space-y-2">
               <div className="flex justify-between text-sm">
                 <span className="text-gray-600">Used</span>
                 <span className="font-medium text-gray-900">12.5 GB</span>
@@ -367,9 +368,9 @@ export const DocumentsPage: React.FC = () => {
               </div>
             </div>
             
-            <div className="pt-4 border-t border-gray-200">
-              <h3 className="text-sm font-medium text-gray-900 mb-3">Quick Filters</h3>
-              <div className="space-y-1">
+            <div className="documents-filters pt-4 border-t border-gray-200">
+              <h3 className="documents-filters-title text-sm font-medium text-gray-900 mb-3">Quick Filters</h3>
+              <div className="documents-filters-list space-y-1">
                 <button className="w-full text-left px-3 py-2 text-sm text-gray-700 hover:bg-gray-50 rounded-lg flex items-center justify-between">
                   <span>All Documents</span>
                   <span className="bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full text-xs">{documents.length}</span>
@@ -398,25 +399,25 @@ export const DocumentsPage: React.FC = () => {
         </Card>
         
         {/* Document List */}
-        <div className="lg:col-span-3">
-          <Card>
-            <CardHeader className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-              <h2 className="text-lg font-semibold text-gray-900">All Documents</h2>
-              <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm">
+        <div className="documents-list-section lg:col-span-3">
+          <Card className="documents-all-card">
+            <CardHeader className="documents-list-header flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+              <h2 className="documents-list-title text-lg font-semibold text-gray-900">All Documents</h2>
+              <div className="documents-list-actions flex items-center gap-2">
+                <Button className="documents-sort-btn" variant="outline" size="sm">
                   Sort by Date
                 </Button>
-                <Button variant="outline" size="sm">
+                <Button className="documents-filter-btn" variant="outline" size="sm">
                   Filter
                 </Button>
               </div>
             </CardHeader>
-            <CardBody>
-              <div className="space-y-2">
+            <CardBody className="documents-list-body">
+              <div className="documents-grid space-y-2">
                 {documents.map(doc => (
                   <div
                     key={doc.id}
-                    className="flex flex-col sm:flex-row sm:items-center p-4 hover:bg-gray-50 rounded-xl transition-colors duration-200 gap-4"
+                    className="documents-item flex flex-col sm:flex-row sm:items-center p-4 hover:bg-gray-50 rounded-xl transition-colors duration-200 gap-4"
                   >
                     <div className="flex items-center flex-1 min-w-0">
                       <div className={clsx(

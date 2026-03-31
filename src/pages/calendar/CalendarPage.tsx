@@ -7,6 +7,7 @@ import listPlugin from '@fullcalendar/list';
 import { Plus, X, Clock, Calendar as CalendarIcon, Video, ExternalLink, Menu } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
+import { ROUTES } from '../../config/routes';
 
 // Types
 interface CalendarEvent {
@@ -104,32 +105,32 @@ const AddAvailabilityModal: React.FC<AddAvailabilityModalProps> = ({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-y-auto">
-      <div className="flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+    <div className="schedule-meeting-modal modal-overlay fixed inset-0 z-50 overflow-y-auto">
+      <div className="schedule-meeting-container modal-container flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         {/* Background overlay */}
         <div
-          className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity"
+          className="modal-backdrop schedule-meeting-backdrop fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity"
           onClick={onClose}
         />
 
         {/* Modal panel */}
-        <div className="inline-block align-bottom bg-white rounded-2xl px-6 pt-6 pb-6 text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
-          <div className="flex items-center justify-between mb-6">
-            <h3 className="text-xl font-semibold text-gray-900 flex items-center">
+        <div className="schedule-meeting-panel modal-panel inline-block align-bottom bg-white rounded-2xl px-6 pt-6 pb-6 text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+          <div className="schedule-meeting-header modal-header flex items-center justify-between mb-6">
+            <h3 className="modal-title text-xl font-semibold text-gray-900 flex items-center">
               <CalendarIcon className="w-5 h-5 mr-2 text-primary-600" />
               Schedule Meeting
             </h3>
             <button
               onClick={onClose}
-              className="text-gray-400 hover:text-gray-500 transition-colors p-1"
+              className="modal-close-button text-gray-400 hover:text-gray-500 transition-colors p-1"
             >
               <X className="w-5 h-5" />
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label htmlFor="title" className="block text-sm font-semibold text-gray-700">
+          <form onSubmit={handleSubmit} className="schedule-meeting-form modal-form space-y-5">
+            <div className="form-field meeting-title-field">
+              <label htmlFor="title" className="form-label block text-sm font-semibold text-gray-700">
                 Meeting Title
               </label>
               <input
@@ -138,13 +139,13 @@ const AddAvailabilityModal: React.FC<AddAvailabilityModalProps> = ({
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
                 placeholder="e.g., Investor Pitch Session"
-                className="mt-2 block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                className="form-input mt-2 block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                 required
               />
             </div>
 
-            <div>
-              <label htmlFor="date" className="block text-sm font-semibold text-gray-700">
+            <div className="form-field meeting-date-field">
+              <label htmlFor="date" className="form-label block text-sm font-semibold text-gray-700">
                 Date
               </label>
               <input
@@ -152,14 +153,14 @@ const AddAvailabilityModal: React.FC<AddAvailabilityModalProps> = ({
                 id="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="mt-2 block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                className="form-input mt-2 block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                 required
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label htmlFor="startTime" className="block text-sm font-semibold text-gray-700">
+              <div className="form-field meeting-start-time-field">
+                <label htmlFor="startTime" className="form-label block text-sm font-semibold text-gray-700">
                   Start Time
                 </label>
                 <input
@@ -167,12 +168,12 @@ const AddAvailabilityModal: React.FC<AddAvailabilityModalProps> = ({
                   id="startTime"
                   value={startTime}
                   onChange={(e) => setStartTime(e.target.value)}
-                  className="mt-2 block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                  className="form-input mt-2 block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                   required
                 />
               </div>
-              <div>
-                <label htmlFor="endTime" className="block text-sm font-semibold text-gray-700">
+              <div className="form-field meeting-end-time-field">
+                <label htmlFor="endTime" className="form-label block text-sm font-semibold text-gray-700">
                   End Time
                 </label>
                 <input
@@ -180,14 +181,14 @@ const AddAvailabilityModal: React.FC<AddAvailabilityModalProps> = ({
                   id="endTime"
                   value={endTime}
                   onChange={(e) => setEndTime(e.target.value)}
-                  className="mt-2 block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                  className="form-input mt-2 block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
                   required
                 />
               </div>
             </div>
 
-            <div>
-              <label htmlFor="description" className="block text-sm font-semibold text-gray-700">
+            <div className="form-field meeting-description-field">
+              <label htmlFor="description" className="form-label block text-sm font-semibold text-gray-700">
                 Description (Optional)
               </label>
               <textarea
@@ -196,14 +197,14 @@ const AddAvailabilityModal: React.FC<AddAvailabilityModalProps> = ({
                 onChange={(e) => setDescription(e.target.value)}
                 rows={2}
                 placeholder="Add meeting notes..."
-                className="mt-2 block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                className="form-input mt-2 block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
               />
             </div>
 
             {/* Google Meet Toggle */}
             <div 
               className={clsx(
-                'flex items-center justify-between p-4 rounded-xl transition-colors',
+                'google-meet-toggle flex items-center justify-between p-4 rounded-xl transition-colors',
                 generateMeetLink ? 'bg-blue-50 border-2 border-primary-200' : 'bg-gray-50 border-2 border-gray-100'
               )}
             >
@@ -229,23 +230,23 @@ const AddAvailabilityModal: React.FC<AddAvailabilityModalProps> = ({
 
             {/* Generated Meeting Link Display */}
             {meetingLink && (
-              <div className="p-4 bg-green-50 border-2 border-green-200 rounded-xl">
+              <div className="meeting-link-display p-4 bg-green-50 border-2 border-green-200 rounded-xl">
                 <p className="text-xs font-semibold text-green-700 mb-1">Meeting Link Generated</p>
                 <p className="text-sm text-green-800 font-mono truncate">{meetingLink}</p>
               </div>
             )}
 
-            <div className="flex gap-3 pt-2">
+            <div className="form-actions flex gap-3 pt-2">
               <button
                 type="button"
                 onClick={onClose}
-                className="flex-1 px-4 py-3 text-sm font-semibold text-gray-700 bg-gray-100 border border-gray-200 rounded-xl hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors"
+                className="cancel-button flex-1 px-4 py-3 text-sm font-semibold text-gray-700 bg-gray-100 border border-gray-200 rounded-xl hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                className="flex-1 px-4 py-3 text-sm font-semibold text-white bg-primary-600 border border-transparent rounded-xl hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 shadow-lg shadow-primary-200 transition-all"
+                className="submit-button flex-1 px-4 py-3 text-sm font-semibold text-white bg-primary-600 border border-transparent rounded-xl hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 shadow-lg shadow-primary-200 transition-all"
               >
                 Confirm
               </button>
@@ -367,9 +368,9 @@ export const CalendarPage: React.FC = () => {
   const initialView = isMobile ? 'listWeek' : 'dayGridMonth';
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="calendar-page page-main-content min-h-screen bg-gray-50">
       {/* Mobile Header */}
-      <div className="md:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between sticky top-0 z-10">
+      <div className="calendar-mobile-header md:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between sticky top-0 z-10">
         <button
           onClick={() => setShowMobileMenu(!showMobileMenu)}
           className="p-2 rounded-lg hover:bg-gray-100"
@@ -381,12 +382,12 @@ export const CalendarPage: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <div className="flex flex-col md:flex-row">
+      <div className="calendar-content flex flex-col md:flex-row">
         {/* Page Content */}
-        <main className="flex-1 p-4 md:p-8">
+        <main className="calendar-main page-content flex-1 p-4 md:p-8">
           {/* Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
-            <div>
+          <div className="calendar-header page-header flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+            <div className="calendar-title-section">
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Scheduling Hub</h1>
               <p className="mt-1 text-sm text-gray-500">
                 Manage your investor meetings and availability
@@ -394,7 +395,7 @@ export const CalendarPage: React.FC = () => {
             </div>
             <div className="flex items-center space-x-3">
               <button
-                onClick={() => navigate('/video/meeting-1')}
+                onClick={() => navigate(ROUTES.VIDEO.ROOM('meeting-1'))}
                 className="inline-flex items-center px-4 py-2.5 text-sm font-semibold text-white bg-green-600 border border-transparent rounded-xl hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 shadow-lg shadow-green-200 transition-all"
               >
                 <Video className="w-4 h-4 mr-2" />
@@ -547,24 +548,24 @@ export const CalendarPage: React.FC = () => {
 
       {/* Event Detail Modal */}
       {selectedEvent && (
-        <div className="fixed inset-0 z-50 overflow-y-auto">
-          <div className="flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
+        <div className="event-detail-modal modal-overlay fixed inset-0 z-50 overflow-y-auto">
+          <div className="event-detail-container modal-container flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
             <div
-              className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity"
+              className="modal-backdrop event-detail-backdrop fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity"
               onClick={closeEventModal}
             />
-            <div className="inline-block align-bottom bg-white rounded-2xl px-6 pt-6 pb-6 text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full">
-              <div className="flex items-center justify-between mb-4">
-                <h3 className="text-xl font-semibold text-gray-900">{selectedEvent.title}</h3>
+            <div className="event-detail-panel modal-panel inline-block align-bottom bg-white rounded-2xl px-6 pt-6 pb-6 text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full">
+              <div className="event-detail-header modal-header flex items-center justify-between mb-4">
+                <h3 className="event-detail-title text-xl font-semibold text-gray-900">{selectedEvent.title}</h3>
                 <button
                   onClick={closeEventModal}
-                  className="text-gray-400 hover:text-gray-500 p-1"
+                  className="modal-close-button text-gray-400 hover:text-gray-500 p-1"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
-              <div className="space-y-3">
-                <div className="flex items-center text-gray-600">
+              <div className="event-detail-content space-y-3">
+                <div className="event-detail-time flex items-center text-gray-600">
                   <Clock className="w-5 h-5 mr-3" />
                   <span>
                     {new Date(selectedEvent.start).toLocaleDateString('en-US', {
@@ -584,12 +585,12 @@ export const CalendarPage: React.FC = () => {
                   </span>
                 </div>
                 {selectedEvent.extendedProps?.description && (
-                  <p className="text-gray-500 text-sm">{selectedEvent.extendedProps.description}</p>
+                  <p className="event-detail-description text-gray-500 text-sm">{selectedEvent.extendedProps.description}</p>
                 )}
                 {selectedEvent.extendedProps?.meetingLink && (
                   <button
                     onClick={() => handleJoinMeeting(selectedEvent.extendedProps!.meetingLink!)}
-                    className="w-full mt-4 inline-flex items-center justify-center px-4 py-3 text-sm font-semibold text-white bg-primary-600 rounded-xl hover:bg-primary-700 transition-colors"
+                    className="join-meeting-button w-full mt-4 inline-flex items-center justify-center px-4 py-3 text-sm font-semibold text-white bg-primary-600 rounded-xl hover:bg-primary-700 transition-colors"
                   >
                     <Video className="w-4 h-4 mr-2" />
                     Join Google Meet
