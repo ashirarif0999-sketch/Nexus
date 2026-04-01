@@ -20,6 +20,13 @@
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
     <style>
+        @font-face {
+    font-family: 'oldschool-grotesk-regular';
+    src: url('/fonts/OldschoolGroteskTrial-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
         /* ============================================
            CSS RESET & BASE STYLES
            ============================================ */
@@ -584,18 +591,25 @@
         }
 
         .hero-headline {
-            font-family: 'DM Serif Display', serif;
-            font-size: clamp(40px, 5.5vw, 72px);
-            color: var(--text-inverse);
-            line-height: 1.0;
-            letter-spacing: -0.03em;
-            margin-bottom: 24px;
+            font-family: 'oldschool-grotesk-regular', 'DM Sans', sans-serif;
+    font-size: clamp(52px, 7vw, 100px);
+    font-weight: 600;
+    line-height: 1.0;
+    letter-spacing: -0.03em;
+    max-width: max-content;
+    margin-bottom: var(--spacing-lg);
+    transition: color 300ms var(--ease-in-out);
         }
-
+        
         .hero-headline-word {
             display: inline-block;
             opacity: 0;
+            letter-spacing: 0px;
+            background: linear-gradient(200deg, #efa7a6, #cdcbff);
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
             transform: translateY(24px);
+            transition: opacity 600ms var(--ease-out-expo), transform 600ms var(--ease-out-expo);
         }
 
         .hero-headline-word.animate {
@@ -604,6 +618,7 @@
 
         .hero-headline-italic {
             font-style: italic;
+            font-family: 'DM serif Display', sans-serif !important;
         }
 
         .hero-subtext {
@@ -2748,16 +2763,10 @@
         document.head.appendChild(style);
 
         // ============================================
-        // SCROLL TO TOP ON LOGO CLICK
+        // NAVBAR BRAND LINK BEHAVIOR
+        // The href="landingpage.html" in the HTML handles navigation
         // ============================================
-        const navbarBrand = document.querySelectorAll('.navbar-brand');
-
-        navbarBrand.forEach(brand => {
-            brand.addEventListener('click', (e) => {
-                e.preventDefault();
-                lenis.scrollTo(0);
-            });
-        });
+        // Removed: Scroll to top on logo click - let the link navigate naturally
 
         // ============================================
         // FORM CHARACTER COUNTER (OPTIONAL ENHANCEMENT)

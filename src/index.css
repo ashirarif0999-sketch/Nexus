@@ -13,7 +13,7 @@
 }
 @font-face {
     font-family: 'oldschool-grotesk-regular';
-    src: url('/fonts/OldschoolGroteskTrail-Regular.ttf') format('opentype');
+    src: url('/fonts/OldschoolGroteskTrial-Regular.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -25,8 +25,9 @@
     font-weight: 500;
 }
 .login-welcome-subtitle, .register-welcome-subtitle{
-    font-family: 'mileast', sans-serif;
+    font-family: 'oldschool-grotesk-regular', sans-serif;
     font-size:xx-large;
+    font-weight: 500;
     margin-top: 16px;
 }
 .login-welcome-title, .register-welcome-title{

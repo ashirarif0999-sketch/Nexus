@@ -142,7 +142,13 @@ document.addEventListener('DOMContentLoaded', function () {
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
     
    <style>
-
+@font-face {
+    font-family: 'oldschool-grotesk-regular';
+    src: url('/fonts/OldschoolGroteskTrial-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
     html {
@@ -800,7 +806,7 @@ height: stretch;
        
         
         .hero-headline {
-            font-family: 'montserrat', 'DM Sans', sans-serif;
+            font-family: 'oldschool-grotesk-regular', 'DM Sans', sans-serif;
     font-size: clamp(52px, 7vw, 100px);
     font-weight: 600;
     line-height: 1.0;
@@ -813,6 +819,7 @@ height: stretch;
         .hero-headline-word {
             display: inline-block;
             opacity: 0;
+            letter-spacing: 0px;
             background: linear-gradient(200deg, #efa7a6, #cdcbff);
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -1100,16 +1107,16 @@ font-family: 'DM Sans', sans-serif;
         }
         
         .full-service-heading {
-            font-family: 'DM Serif Display', serif;
+            font-family: 'oldschool-grotesk-regular', serif;
             font-size: 36px;
-            font-weight: 400;
+            font-weight: 900;
             line-height: 1.1;
             color: aliceblue;
             margin-bottom: var(--spacing-lg);
         }
         
         .full-service-body {
-            font-family: 'DM Sans', sans-serif;
+            font-family: 'oldschool-grotesk-regular', sans-serif;
             font-size: 16px;
             font-weight: 400;
             line-height: 1.65;
@@ -1190,7 +1197,7 @@ display: flex;
         }
         
         .stats-heading {
-            font-family: 'DM Serif Display', serif;
+            font-family: 'oldschool-grotesk-regular', serif;
             font-size: clamp(36px, 4vw, 52px);
             font-weight: 400;
             line-height: 1.1;
@@ -1315,13 +1322,12 @@ display: flex;
         }
         
         .testimonial-quote {
-            font-family: 'DM Serif Display', serif;
-            font-size: clamp(22px, 3vw, 34px);
-            font-weight: 400;
-            font-style: italic;
+            font-family: 'oldschool-grotesk-regular', serif;
+            font-size: clamp(22px, 3vw, 50px);
+            font-weight: 900;
             line-height: 1.35;
             color: var(--text-primary);
-            max-width: 760px;
+            max-width: 1400px;
             margin: 0 auto;
             text-align: center;
         }
@@ -1753,7 +1759,7 @@ display: flex;
         .cta-heading {
             font-family: 'DM Serif Display', serif;
             font-size: clamp(36px, 4vw, 52px);
-            font-weight: 400;
+            font-weight: 800;
             line-height: 1.05;
             color: var(--text-inverse);
             margin-bottom: var(--spacing-lg);
@@ -1834,7 +1840,7 @@ display: flex;
         .social-proof-heading {
             font-family: 'DM Serif Display', serif;
             font-size: 32px;
-            font-weight: 400;
+            font-weight: 800;
             line-height: 1.2;
             text-align: center;
             margin-bottom: 40px;

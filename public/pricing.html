@@ -43,21 +43,11 @@
             color: var(--text-primary);
             background-color: var(--bg-light);
             overflow-x: hidden;
-            cursor: none;
-        }
-
-        @media (hover: none) {
-            body {
-                cursor: auto;
-            }
-            #cursor, #cursor-ring {
-                display: none;
-            }
         }
 
         a {
             text-decoration: none;
-            color: inherit;
+            color: whitesmoke;
             transition: color var(--transition-fast);
         }
 
@@ -223,52 +213,6 @@
         }
 
         /* ============================================
-           CUSTOM CURSOR
-           ============================================ */
-        
-        #cursor {
-            width: 8px;
-            height: 8px;
-            background: var(--primary-500);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9998;
-            transition: transform 150ms var(--ease-out-expo), opacity 150ms ease;
-            transform: translate(-50%, -50%);
-        }
-
-        #cursor-ring {
-            width: 32px;
-            height: 32px;
-            border: 1.5px solid rgba(64, 92, 255, 0.4);
-            border-radius: 50%;
-            position: fixed;
-            pointer-events: none;
-            z-index: 9997;
-            transition: all 100ms ease;
-            transform: translate(-50%, -50%);
-        }
-
-        #cursor.hovered {
-            transform: translate(-50%, -50%) scale(3);
-            opacity: 0;
-        }
-
-        #cursor-ring.hovered {
-            opacity: 0;
-            transform: translate(-50%, -50%) scale(1.5);
-        }
-
-        #cursor.dark-mode {
-            background: var(--text-inverse);
-        }
-
-        #cursor-ring.dark-mode {
-            border-color: rgba(255, 255, 255, 0.4);
-        }
-
-        /* ============================================
            ANIMATIONS
            ============================================ */
         
@@ -374,285 +318,233 @@
         }
 
         /* ============================================
-           SECTION 1 - NAVBAR
+           SECTION 1 — NAVBAR (PILL-SHAPED)
            ============================================ */
-        
         .navbar {
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 64px;
+            top: 24px;
+            left: 50%;
+            transform: translateX(-50%);
             z-index: 1000;
-            background: transparent;
-            transition: background var(--transition-slow), backdrop-filter var(--transition-slow), border-bottom var(--transition-slow);
+            width: fit-content;
+            max-width: 90vw;
+            pointer-events: auto;
+            
+            /* Pill Styling */
+            background: #20243b !important;
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: var(--radius-full);
+            padding: 12px 24px;
+            box-shadow: var(--shadow-lg);
+            
+            transition: all 300ms var(--ease-out-expo);
         }
-
-        .navbar.scrolled-light {
-            background: rgba(248, 248, 250, 0.88);
-            backdrop-filter: blur(16px) saturate(180%);
-            border-bottom: 1px solid var(--border-light);
+        
+        /* Scrolled State - Dark Section */
+        .navbar.scrolled-on-dark {
+            background: #1a1b20b3;
+            color: aliceblue;
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: var(--shadow-xl);
         }
-
-        .navbar.scrolled-dark {
-            background: rgba(13, 14, 18, 0.88);
-            backdrop-filter: blur(16px) saturate(180%);
-            border-bottom: 1px solid var(--border-dark-section);
-        }
-
-        .navbar-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 24px;
-            height: 100%;
+        
+        
+        
+        .navbar-inner {
             display: flex;
             align-items: center;
-            justify-content: space-between;
+            gap: 16px;
+            height: 40px;
+            pointer-events: auto;
+            position: relative;
+            z-index: 1001;
         }
-
+        
         .navbar-brand {
-            font-family: 'Mileast', serif;
-            font-size: 22px;
-            color: var(--text-inverse);
+            font-family: 'DM Serif Display', serif;
+            font-size: 20px;
+            font-weight: 400;
             letter-spacing: -0.02em;
-            transition: opacity var(--transition-fast);
+            color: aliceblue;
+            transition: color var(--transition-fast);
+            white-space: nowrap;
+            display: flex;
+            width: max-content;
+            align-items: center;
+            pointer-events: auto;
+            position: relative;
+            z-index: 1001;
         }
-
-        .navbar-brand.light {
-            color: var(--text-primary);
+        
+        .navbar-logo {
+height: stretch;
+    width: 81px;
+    margin-right: 4px;
         }
-
+        
+        .navbar.scrolled-on-light .navbar-brand {
+            color: white;
+        }
+        
+        .navbar.scrolled-on-light .navbar-logo {
+            filter: brightness(0) invert(1);
+        }
+        
         .navbar-nav {
             display: flex;
             align-items: center;
-            gap: 32px;
         }
-
+        .navbar-link:hover{
+            background: #E6E6F2;
+            color: #20243b !important;
+        }
         .navbar-link {
-            font-family: 'DM Sans', sans-serif;
-            font-size: 14px;
-            font-weight: 400;
-            color: rgba(255, 255, 255, 0.55);
-            display: flex;
-            align-items: center;
-            gap: 2px;
-            transition: color var(--transition-fast);
-            position: relative;
+     font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    transition: color var(--transition-base);
+    white-space: nowrap;
+    padding: 9px 18px;
+    border-radius: 30px;
         }
-
-        .navbar-link.light {
-            color: var(--text-secondary);
-        }
-
+        
         .navbar-link:hover {
-            color: rgba(255, 255, 255, 0.9);
+            color: white;
         }
-
-        .navbar-link.light:hover {
-            color: var(--text-primary);
+        
+        .navbar.scrolled-on-light .navbar-link {
+            color: white;
         }
-
-        .navbar-link.active {
-            color: var(--primary-500);
+        
+        .navbar.scrolled-on-light .navbar-link:hover {
+            color: white;
         }
-
-        .navbar-link.active::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: var(--primary-500);
-            border-radius: 2px;
-        }
-
+        
         .navbar-link svg {
             width: 12px;
             height: 12px;
             opacity: 0.5;
-            transition: opacity var(--transition-fast);
         }
-
-        .navbar-link:hover svg {
-            opacity: 0.9;
-        }
-
+        
         .navbar-actions {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: var(--spacing-md);
+            padding-left: var(--spacing-md);
+            border-left: 1px solid rgba(255, 255, 255, 0.15);
         }
-
-        .navbar-btn-ghost {
+        
+        .navbar.scrolled-on-light .navbar-actions {
+            border-left: 1px solid var(--border-medium);
+        }
+        
+        .navbar-signin {
             font-family: 'DM Sans', sans-serif;
             font-size: 14px;
             font-weight: 400;
-            color: rgba(255, 255, 255, 0.55);
-            padding: 10px 16px;
-            border-radius: var(--radius-full);
+            color: white;
             transition: color var(--transition-fast);
+            white-space: nowrap;
         }
-
-        .navbar-btn-ghost.light {
-            color: var(--text-secondary);
+        
+        .navbar-signin:hover {
+            color: white;
         }
-
-        .navbar-btn-ghost:hover {
-            color: rgba(255, 255, 255, 0.9);
+        
+        .navbar.scrolled-on-light .navbar-signin {
+            color: white;
         }
-
-        .navbar-btn-ghost.light:hover {
-            color: var(--text-primary);
+        
+        .navbar.scrolled-on-light .navbar-signin:hover {
+            color: white;
         }
-
-        .navbar-btn-primary {
+        
+        .navbar-cta {
             font-family: 'DM Sans', sans-serif;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
-            background: var(--neutral-900);
+            color: white;
+            background: #405CFF !important;
+            padding: 8px 16px;
+            border-radius: 6px;
+            transition: all var(--transition-fast);
+            white-space: nowrap;
+        }
+        
+        .navbar-cta:hover {
+            background: #1a1b20b3;
+            transform: scale(1.02);
+            box-shadow: var(--shadow-primary);
+        }
+        
+        .navbar.scrolled-on-light .navbar-cta {
             color: var(--text-inverse);
-            padding: 10px 20px;
-            border-radius: var(--radius-full);
-            transition: background var(--transition-fast), box-shadow var(--transition-fast);
+            background: #1a1b20b3;
         }
-
-        .navbar-btn-primary:hover {
-            background: var(--neutral-800);
-            box-shadow: var(--shadow-md);
+        
+        .navbar.scrolled-on-light .navbar-cta:hover {
+            background: #1a1b20b3;
         }
-
-        .navbar-mobile-toggle {
+        
+        .navbar-hamburger {
             display: none;
-            width: 40px;
-            height: 40px;
-            align-items: center;
-            justify-content: center;
-            border-radius: var(--radius-md);
-            transition: background var(--transition-fast);
-        }
-
-        .navbar-mobile-toggle:hover {
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .navbar-mobile-toggle svg {
             width: 20px;
             height: 20px;
-            color: var(--text-inverse);
+            color: white;
+        }
+        
+        .navbar.scrolled-on-light .navbar-hamburger {
+            color: white;
         }
 
-        .navbar-mobile-toggle.light svg {
-            color: var(--text-primary);
-        }
-
-        .navbar-mobile-overlay {
+        /* Mobile Navigation Overlay */
+        .mobile-nav-overlay {
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
             background: var(--bg-dark);
-            z-index: 1001;
-            display: flex;
-            flex-direction: column;
-            padding: 24px;
-            opacity: 0;
-            visibility: hidden;
-            transition: opacity var(--transition-slower), visibility var(--transition-slower);
+            z-index: 999;
+            transform: translateX(100%);
+            transition: transform 400ms var(--ease-out-expo);
+            padding: 40px;
         }
-
-        .navbar-mobile-overlay.active {
-            opacity: 1;
-            visibility: visible;
+        
+        .mobile-nav-overlay.open {
+            transform: translateX(0);
         }
-
-        .navbar-mobile-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 48px;
-        }
-
-        .navbar-mobile-close {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: var(--radius-md);
-            transition: background var(--transition-fast);
-        }
-
-        .navbar-mobile-close:hover {
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .navbar-mobile-close svg {
-            width: 20px;
-            height: 20px;
+        
+        .mobile-nav-close {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            width: 24px;
+            height: 24px;
             color: var(--text-inverse);
         }
-
-        .navbar-mobile-links {
+        
+        .mobile-nav-links {
             display: flex;
             flex-direction: column;
-            gap: 0;
+            gap: 32px;
+            margin-top: 80px;
         }
-
-        .navbar-mobile-link {
+        
+        .mobile-nav-link {
             font-family: 'DM Sans', sans-serif;
             font-size: 24px;
             font-weight: 400;
-            color: rgba(255, 255, 255, 0.55);
-            padding: 20px 0;
-            border-bottom: 1px solid var(--border-dark-section);
+            color: var(--text-tertiary);
             transition: color var(--transition-fast);
         }
-
-        .navbar-mobile-link:hover {
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .navbar-mobile-link.active {
-            color: var(--primary-400);
-        }
-
-        .navbar-mobile-actions {
-            margin-top: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .navbar-mobile-btn {
-            font-family: 'DM Sans', sans-serif;
-            font-size: 16px;
-            font-weight: 500;
-            padding: 16px 24px;
-            border-radius: var(--radius-lg);
-            text-align: center;
-            transition: background var(--transition-fast), color var(--transition-fast);
-        }
-
-        .navbar-mobile-btn-ghost {
-            background: transparent;
-            color: rgba(255, 255, 255, 0.55);
-            border: 1px solid var(--border-dark-section);
-        }
-
-        .navbar-mobile-btn-ghost:hover {
-            background: rgba(255, 255, 255, 0.04);
-            color: rgba(255, 255, 255, 0.9);
-        }
-
-        .navbar-mobile-btn-primary {
-            background: var(--primary-500);
+        
+        .mobile-nav-link:hover {
             color: var(--text-inverse);
-        }
-
-        .navbar-mobile-btn-primary:hover {
-            background: var(--primary-600);
         }
 
         /* ============================================
@@ -1772,12 +1664,12 @@
         }
 
         @media (max-width: 768px) {
-            .navbar-nav, .navbar-actions {
+            .navbar-nav {
                 display: none;
             }
 
-            .navbar-mobile-toggle {
-                display: flex;
+            .navbar-hamburger {
+                display: block;
             }
 
             .hero {
@@ -1889,61 +1781,51 @@
     <!-- Scroll Progress Bar -->
     <div id="scroll-progress"></div>
 
-    <!-- Custom Cursor -->
-    <div id="cursor"></div>
-    <div id="cursor-ring"></div>
-
     <!-- ============================================
-         SECTION 1 - NAVBAR
+         SECTION 1 — NAVBAR
          ============================================ -->
     <nav class="navbar" id="navbar">
-        <div class="navbar-container">
-            <a href="landingpage.html" class="navbar-brand">Nexus</a>
+        <div class="navbar-inner">
+            <a href="landingpage.html" class="navbar-brand"><img src="logo-nexus-inverted.png" alt="Nexus" class="navbar-logo"></a>
             
             <div class="navbar-nav">
                 <a href="#" class="navbar-link">
                     Products
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                    <i data-lucide="chevron-down"></i>
                 </a>
                 <a href="#" class="navbar-link">
                     Solutions
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                    <i data-lucide="chevron-down"></i>
                 </a>
-                <a href="pricing.html" class="navbar-link active">Pricing</a>
+                <a href="pricing.html" class="navbar-link">Pricing</a>
                 <a href="#" class="navbar-link">
                     Resources
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+                    <i data-lucide="chevron-down"></i>
                 </a>
             </div>
-
+            
             <div class="navbar-actions">
-                <a href="/login" class="navbar-btn-ghost">Sign in</a>
-                <a href="contact-sales.html" class="navbar-btn-primary">Contact sales</a>
+                <a href="/login" class="navbar-signin">Sign in</a>
+                <a href="contact-sales.html" class="navbar-cta">Contact sales</a>
+                <button class="navbar-hamburger" id="navbar-hamburger" aria-label="Open menu">
+                    <i data-lucide="menu"></i>
+                </button>
             </div>
-
-            <button class="navbar-mobile-toggle" id="navbar-mobile-toggle" aria-label="Open menu">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
-            </button>
         </div>
     </nav>
-
-    <!-- Mobile Overlay -->
-    <div class="navbar-mobile-overlay" id="navbar-mobile-overlay">
-        <div class="navbar-mobile-header">
-            <a href="landingpage.html" class="navbar-brand">Nexus</a>
-            <button class="navbar-mobile-close" id="navbar-mobile-close" aria-label="Close menu">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
-            </button>
-        </div>
-        <div class="navbar-mobile-links">
-            <a href="#" class="navbar-mobile-link">Products</a>
-            <a href="#" class="navbar-mobile-link">Solutions</a>
-            <a href="pricing.html" class="navbar-mobile-link active">Pricing</a>
-            <a href="#" class="navbar-mobile-link">Resources</a>
-        </div>
-        <div class="navbar-mobile-actions">
-            <a href="/login" class="navbar-mobile-btn navbar-mobile-btn-ghost">Sign in</a>
-            <a href="contact-sales.html" class="navbar-mobile-btn navbar-mobile-btn-primary">Contact sales</a>
+    
+    <!-- Mobile Navigation Overlay -->
+    <div class="mobile-nav-overlay" id="mobile-nav-overlay">
+        <button class="mobile-nav-close" id="mobile-nav-close" aria-label="Close menu">
+            <i data-lucide="x"></i>
+        </button>
+        <div class="mobile-nav-links">
+            <a href="#" class="mobile-nav-link">Products</a>
+            <a href="#" class="mobile-nav-link">Solutions</a>
+            <a href="pricing.html" class="mobile-nav-link">Pricing</a>
+            <a href="#" class="mobile-nav-link">Resources</a>
+            <a href="/login" class="mobile-nav-link">Sign in</a>
+            <a href="contact-sales.html" class="mobile-nav-link" style="color: var(--text-white);">Contact sales</a>
         </div>
     </div>
 
@@ -2665,69 +2547,20 @@
 
             if (scrollY > 20) {
                 if (inDarkSection) {
-                    navbar.classList.remove('scrolled-light');
-                    navbar.classList.add('scrolled-dark');
+                    navbar.classList.remove('scrolled-on-light');
+                    navbar.classList.add('scrolled-on-dark');
                 } else {
-                    navbar.classList.remove('scrolled-dark');
-                    navbar.classList.add('scrolled-light');
+                    navbar.classList.remove('scrolled-on-dark');
+                    navbar.classList.add('scrolled-on-light');
                 }
             } else {
-                navbar.classList.remove('scrolled-light');
-                navbar.classList.remove('scrolled-dark');
-            }
-
-            // Update navbar brand color based on section
-            const navbarBrand = document.querySelector('.navbar-brand');
-            const navbarLinks = document.querySelectorAll('.navbar-link');
-            const navbarBtnGhost = document.querySelector('.navbar-btn-ghost');
-            const navbarMobileToggle = document.querySelector('.navbar-mobile-toggle');
-
-            if (inDarkSection || scrollY > 20) {
-                if (inDarkSection) {
-                    navbarBrand.classList.add('light');
-                    navbarLinks.forEach(link => link.classList.add('light'));
-                    navbarBtnGhost.classList.add('light');
-                    navbarMobileToggle.classList.add('light');
-                } else {
-                    navbarBrand.classList.remove('light');
-                    navbarLinks.forEach(link => link.classList.remove('light'));
-                    navbarBtnGhost.classList.remove('light');
-                    navbarMobileToggle.classList.remove('light');
-                }
-            } else {
-                navbarBrand.classList.remove('light');
-                navbarLinks.forEach(link => link.classList.remove('light'));
-                navbarBtnGhost.classList.remove('light');
-                navbarMobileToggle.classList.remove('light');
+                navbar.classList.remove('scrolled-on-light');
+                navbar.classList.remove('scrolled-on-dark');
             }
         }
 
         lenis.on('scroll', updateNavbarState);
         updateNavbarState();
-
-        // ============================================
-        // MOBILE NAVIGATION
-        // ============================================
-        const mobileToggle = document.getElementById('navbar-mobile-toggle');
-        const mobileOverlay = document.getElementById('navbar-mobile-overlay');
-        const mobileClose = document.getElementById('navbar-mobile-close');
-
-        function openMobileMenu() {
-            mobileOverlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeMobileMenu() {
-            mobileOverlay.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        mobileToggle.addEventListener('click', openMobileMenu);
-        mobileClose.addEventListener('click', closeMobileMenu);
-
-        document.querySelectorAll('.navbar-mobile-link').forEach(link => {
-            link.addEventListener('click', closeMobileMenu);
-        });
 
         // ============================================
         // HERO HEADLINE ANIMATION
@@ -2900,54 +2733,6 @@
         startAutoAdvance();
 
         // ============================================
-        // CUSTOM CURSOR
-        // ============================================
-        const cursor = document.getElementById('cursor');
-        const cursorRing = document.getElementById('cursor-ring');
-
-        function updateCursor(e) {
-            cursor.style.left = e.clientX + 'px';
-            cursor.style.top = e.clientY + 'px';
-            cursorRing.style.left = e.clientX + 'px';
-            cursorRing.style.top = e.clientY + 'px';
-        }
-
-        document.addEventListener('mousemove', updateCursor);
-
-        const interactiveElements = document.querySelectorAll('a, button, .tab-btn, .faq-item, .pricing-card, .services-card, .footer-link, .testimonial-nav-btn');
-
-        interactiveElements.forEach(el => {
-            el.addEventListener('mouseenter', () => {
-                cursor.classList.add('hovered');
-                cursorRing.classList.add('hovered');
-            });
-
-            el.addEventListener('mouseleave', () => {
-                cursor.classList.remove('hovered');
-                cursorRing.classList.remove('hovered');
-            });
-        });
-
-        function updateCursorForSection() {
-            const testimonialsRect = testimonialsSection.getBoundingClientRect();
-            const footerRect = footerSection.getBoundingClientRect();
-
-            const inDarkSection = (testimonialsRect.top <= window.innerHeight && testimonialsRect.bottom >= 0) ||
-                                  (footerRect.top <= window.innerHeight && footerRect.bottom >= 0);
-
-            if (inDarkSection) {
-                cursor.classList.add('dark-mode');
-                cursorRing.classList.add('dark-mode');
-            } else {
-                cursor.classList.remove('dark-mode');
-                cursorRing.classList.remove('dark-mode');
-            }
-        }
-
-        lenis.on('scroll', updateCursorForSection);
-        updateCursorForSection();
-
-        // ============================================
         // KEYBOARD NAVIGATION FOR CAROUSEL
         // ============================================
         document.addEventListener('keydown', (e) => {
@@ -3072,15 +2857,32 @@
         document.head.appendChild(style);
 
         // ============================================
-        // SCROLL TO TOP ON LOGO CLICK
+        // MOBILE NAVIGATION TOGGLE
         // ============================================
-        const navbarBrand = document.querySelectorAll('.navbar-brand');
-
-        navbarBrand.forEach(brand => {
-            brand.addEventListener('click', (e) => {
-                e.preventDefault();
-                lenis.scrollTo(0);
-            });
+        document.addEventListener('DOMContentLoaded', () => {
+            const hamburger = document.getElementById('navbar-hamburger');
+            const mobileNavOverlay = document.getElementById('mobile-nav-overlay');
+            const mobileNavClose = document.getElementById('mobile-nav-close');
+            
+            if (hamburger && mobileNavOverlay && mobileNavClose) {
+                hamburger.addEventListener('click', () => {
+                    mobileNavOverlay.classList.add('open');
+                    document.body.style.overflow = 'hidden';
+                });
+                
+                mobileNavClose.addEventListener('click', () => {
+                    mobileNavOverlay.classList.remove('open');
+                    document.body.style.overflow = '';
+                });
+                
+                // Close mobile nav when clicking outside
+                mobileNavOverlay.addEventListener('click', (e) => {
+                    if (e.target === mobileNavOverlay) {
+                        mobileNavOverlay.classList.remove('open');
+                        document.body.style.overflow = '';
+                    }
+                });
+            }
         });
 
         // ============================================
@@ -3092,7 +2894,6 @@
             clearTimeout(resizeTimeout);
             resizeTimeout = setTimeout(() => {
                 updateNavbarState();
-                updateCursorForSection();
             }, 250);
         });
 
