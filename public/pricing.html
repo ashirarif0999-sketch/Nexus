@@ -19,6 +19,13 @@
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
     <style>
+        @font-face {
+    font-family: 'oldschool-grotesk-bold';
+    src: url('/fonts/OldschoolGroteskTrial-ExtraBold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
         /* ============================================
            CSS RESET & BASE STYLES
            ============================================ */
@@ -191,26 +198,16 @@
             --transition-slowest: 500ms ease;
 
             /* Easing Curves */
-            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+            --ease-out-expo: cubic-bezier(0.93, 0.59, 0.11, 1.3);
             --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
-            --ease-out: cubic-bezier(0, 0, 0.2, 1);
+            --ease-out: cubic-bezier(0.85, 0.02, 0.5, 0.97);
         }
 
         /* ============================================
            SCROLL PROGRESS BAR
            ============================================ */
         
-        #scroll-progress {
-            position: fixed;
-            top: 0;
-            left: 0;
-            height: 3px;
-            width: 0%;
-            background: linear-gradient(90deg, var(--primary-500), var(--primary-300));
-            z-index: 9999;
-            pointer-events: none;
-            transition: none;
-        }
+       
 
         /* ============================================
            ANIMATIONS
@@ -308,40 +305,80 @@
         .chart-line-others {
             stroke-dasharray: 2000;
             stroke-dashoffset: 2000;
-            animation: drawLine 1.2s var(--ease-out-expo) 500ms forwards;
+            animation: drawLine 1.2s var(--ease-out) 1000ms forwards;
         }
 
         .chart-line-nexus {
             stroke-dasharray: 2000;
             stroke-dashoffset: 2000;
-            animation: drawLine 1.2s var(--ease-out-expo) 600ms forwards;
+            animation: drawLine 1.2s var(--ease-out) 1500ms forwards;
+        }
+        .nexus-fill-area {
+            clip-path: inset(0 100% 0 0);
+            animation: revealFillArea 1.195s var(--ease-out) 1390ms forwards;
+        }
+
+        @keyframes revealFillArea {
+            from {
+                clip-path: inset(0 100% 0 0);
+            }
+            to {
+                clip-path: inset(0 0% 0 0);
+            }
         }
 
         /* ============================================
            SECTION 1 — NAVBAR (PILL-SHAPED)
            ============================================ */
         .navbar {
-            position: fixed;
-            top: 24px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1000;
-            width: fit-content;
-            max-width: 90vw;
-            pointer-events: auto;
-            
-            /* Pill Styling */
-            background: #20243b !important;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: var(--radius-full);
-            padding: 12px 24px;
-            box-shadow: var(--shadow-lg);
-            
-            transition: all 300ms var(--ease-out-expo);
+  position: fixed;
+    top: 0px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
+    width: fit-content;
+    max-width: 90vw;
+    pointer-events: auto;
+    background: #20243b !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 0px 0px 12px 12px;
+    padding: 12px 24px;
+    box-shadow: 0px 0px 264px 18px white !important;
+    transition: all 300ms var(--ease-out-expo);
+        }
+        @media (max-width:768px){
+            .navbar{
+                width: 100vh;
+                .navbar-inner{
+                    justify-content: space-between;
+                    .navbar-actions{
+                        border-left:none;
+                    }
+                }
+            }
+        }
+       .navbar::before,
+        .navbar::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            width: 24px;
+            height: 18px;
+            background: rgba(255, 255, 255, 0);
         }
         
+        .navbar::before {
+left: -23px;
+    border-radius: 0px 30px 0px 0px;
+    box-shadow: 11px -1px 2px #23273d;
+        }
+        
+        .navbar::after {
+    right: -23px;
+    border-radius: 30px 0px 0px 0px;
+    box-shadow: -10px -1px 2px #23273d;
+}
         /* Scrolled State - Dark Section */
         .navbar.scrolled-on-dark {
             background: #1a1b20b3;
@@ -395,6 +432,50 @@ height: stretch;
         .navbar-nav {
             display: flex;
             align-items: center;
+            position: relative;
+        }
+        .navbar-nav:has(.navbar-link:hover) .navbar-dropdown-window {
+            max-height: 300px;
+        }
+        .navbar-link[href*="pricing"]:hover ~ .navbar-dropdown-window {
+            max-height: 0;
+        }
+        .navbar-dropdown-window {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            width: 100%;
+            max-height: 0;
+            overflow: hidden;
+            background: white;
+            transition: max-height 0.3s ease;
+            z-index: 100;
+            box-shadow: var(--shadow-lg);
+        }
+        .navbar-dropdown-content {
+            display: flex;
+            gap: 48px;
+            justify-content: center;
+            padding: 32px;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        .navbar-dropdown-group h4 {
+            font-size: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-tertiary);
+            margin-bottom: 12px;
+        }
+        .navbar-dropdown-group a {
+            display: block;
+            color: var(--text-primary);
+            font-size: 14px;
+            padding: 6px 0;
+        }
+        .navbar-dropdown-group a:hover {
+            color: var(--primary-500);
         }
         .navbar-link:hover{
             background: #E6E6F2;
@@ -621,11 +702,17 @@ height: stretch;
         .hero-headline-word {
             display: inline-block;
             opacity: 0;
-            transform: translateY(28px);
+            transform: translateY(100px);
+            display: inline-block;
+            opacity: 0;
+            letter-spacing: -2px;
+            background-clip: text;
+            transition: opacity 5000ms var(--ease-out), transform 3000ms var(--ease-out-expo) !important;
+        
         }
 
         .hero-headline-word.animate {
-            animation: fadeInUp 200ms var(--ease-out-expo) forwards;
+            animation: fadeInUp 1000ms var(--ease-out-expo) forwards;
         }
 
         .hero-subtext {
@@ -652,7 +739,7 @@ height: stretch;
             margin-top: 48px;
             overflow: hidden;
             opacity: 0;
-            animation: fadeIn 400ms var(--ease-out-expo) 500ms forwards;
+            animation: fadeIn 400ms var(--ease-out-expo) 400ms forwards;
         }
 
         .hero-chart svg {
@@ -663,6 +750,7 @@ height: stretch;
         .chart-label-others {
             position: absolute;
             top: 20px;
+            animation: fadeIn 2500ms cubic-bezier(0.98, 0.02, 0.51, 0.97);
             right: 40px;
             background: var(--neutral-100);
             border: 1px solid var(--border-medium);
@@ -678,6 +766,7 @@ height: stretch;
             position: absolute;
             top: 140px;
             right: 40px;
+            animation: fadeIn 3900ms cubic-bezier(0.98, 0.02, 0.51, 0.97);
             background: var(--primary-500);
             border-radius: var(--radius-sm);
             padding: 4px 10px;
@@ -704,7 +793,7 @@ height: stretch;
         .section-layout {
             display: grid;
             grid-template-columns: 180px 1fr;
-            gap: 48px;
+            gap: 0px;
         }
 
         .section-sidebar {
@@ -759,6 +848,7 @@ height: stretch;
             border: 1px solid var(--border-light);
             border-radius: var(--radius-2xl);
             padding: 36px;
+            overflow: hidden;
             background: var(--neutral-0);
             box-shadow: var(--shadow-card);
             position: relative;
@@ -1711,6 +1801,7 @@ height: stretch;
             .hero-tab-toggle {
                 flex-direction: column;
                 width: 100%;
+                border-radius: 22px;
             }
 
             .hero-tab-btn {
@@ -1778,9 +1869,7 @@ height: stretch;
     </style>
 </head>
 <body>
-    <!-- Scroll Progress Bar -->
-    <div id="scroll-progress"></div>
-
+   
     <!-- ============================================
          SECTION 1 — NAVBAR
          ============================================ -->
@@ -1789,19 +1878,33 @@ height: stretch;
             <a href="landingpage.html" class="navbar-brand"><img src="logo-nexus-inverted.png" alt="Nexus" class="navbar-logo"></a>
             
             <div class="navbar-nav">
-                <a href="#" class="navbar-link">
-                    Products
-                    <i data-lucide="chevron-down"></i>
-                </a>
-                <a href="#" class="navbar-link">
-                    Solutions
-                    <i data-lucide="chevron-down"></i>
-                </a>
+                <a href="#" class="navbar-link">Products <i data-lucide="chevron-down"></i></a>
+                <a href="#" class="navbar-link">Solutions <i data-lucide="chevron-down"></i></a>
                 <a href="pricing.html" class="navbar-link">Pricing</a>
-                <a href="#" class="navbar-link">
-                    Resources
-                    <i data-lucide="chevron-down"></i>
-                </a>
+                <a href="#" class="navbar-link">Resources <i data-lucide="chevron-down"></i></a>
+                <div class="navbar-dropdown-window">
+                    <div class="navbar-dropdown-content">
+                        <div class="navbar-dropdown-group">
+                            <h4>Products</h4>
+                            <a href="#">Fund administration</a>
+                            <a href="#">Investor portal</a>
+                            <a href="#">Capital calls</a>
+                            <a href="#">Reporting</a>
+                        </div>
+                        <div class="navbar-dropdown-group">
+                            <h4>Solutions</h4>
+                            <a href="#">For VCs</a>
+                            <a href="#">For LPs</a>
+                            <a href="#">For family offices</a>
+                        </div>
+                        <div class="navbar-dropdown-group">
+                            <h4>Resources</h4>
+                            <a href="#">Documentation</a>
+                            <a href="#">API reference</a>
+                            <a href="#">Guides</a>
+                        </div>
+                    </div>
+                </div>
             </div>
             
             <div class="navbar-actions">
@@ -1876,7 +1979,7 @@ height: stretch;
                     
                     <!-- Nexus Fill Area -->
                     <path d="M 0,170 L 1200,160 L 1200,200 L 0,200 Z" 
-                          fill="url(#nexusGrad)"/>
+                          fill="url(#nexusGrad)" class="nexus-fill-area"/>
                 </svg>
                 
                 <div class="chart-label-others">Others</div>
@@ -2502,13 +2605,53 @@ height: stretch;
          JAVASCRIPT
          ============================================ -->
     <script>
+
+
+ // DROPDOWN WINDOW SHOW/HIDE WITH DELAY
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropdownWindow = document.querySelector('.navbar-dropdown-window');
+            const triggerLinks = document.querySelectorAll('.navbar-link:not([href*="pricing"])');
+            let hideTimeout;
+            function showDropdown() {
+                clearTimeout(hideTimeout);
+                if (dropdownWindow) {
+                    dropdownWindow.style.maxHeight = '300px';
+                }
+            }
+            function hideDropdown() {
+                clearTimeout(hideTimeout);
+                hideTimeout = setTimeout(() => {
+                    if (dropdownWindow) {
+                        dropdownWindow.style.maxHeight = '0';
+                    }
+                }, 500);
+            }
+            triggerLinks.forEach(link => {
+                link.addEventListener('mouseenter', showDropdown);
+                link.addEventListener('mouseleave', hideDropdown);
+            });
+            if (dropdownWindow) {
+                dropdownWindow.addEventListener('mouseenter', showDropdown);
+                dropdownWindow.addEventListener('mouseleave', hideDropdown);
+            }
+        });
+        // ============================================
+
+        
         // ============================================
         // LENIS SMOOTH SCROLL INITIALIZATION
         // ============================================
+       // Initialize Lenis with smooth scrolling configuration
         const lenis = new Lenis({
-            duration: 1.2,
+            duration: 1,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            orientation: 'vertical',
+            gestureOrientation: 'vertical',
             smoothWheel: true,
+            wheelMultiplier: 1.5,
+            touchMultiplier: 2,
+            infinite: false,
         });
 
         function raf(time) {
@@ -2517,16 +2660,7 @@ height: stretch;
         }
         requestAnimationFrame(raf);
 
-        // ============================================
-        // SCROLL PROGRESS BAR
-        // ============================================
-        const progressBar = document.getElementById('scroll-progress');
-
-        lenis.on('scroll', ({ scroll, limit }) => {
-            const progress = (scroll / limit) * 100;
-            progressBar.style.width = progress + '%';
-        });
-
+       
         // ============================================
         // NAVBAR SCROLL STATE
         // ============================================
@@ -2866,8 +3000,13 @@ height: stretch;
             
             if (hamburger && mobileNavOverlay && mobileNavClose) {
                 hamburger.addEventListener('click', () => {
-                    mobileNavOverlay.classList.add('open');
-                    document.body.style.overflow = 'hidden';
+                    if (mobileNavOverlay.classList.contains('open')) {
+                        mobileNavOverlay.classList.remove('open');
+                        document.body.style.overflow = '';
+                    } else {
+                        mobileNavOverlay.classList.add('open');
+                        document.body.style.overflow = 'hidden';
+                    }
                 });
                 
                 mobileNavClose.addEventListener('click', () => {
@@ -2943,6 +3082,39 @@ height: stretch;
         // ============================================
         document.addEventListener('DOMContentLoaded', () => {
             lucide.createIcons();
+
+            // ============================================
+            // DROPDOWN WINDOW SHOW/HIDE WITH DELAY
+            // ============================================
+            const dropdownWindow = document.querySelector('.navbar-dropdown-window');
+            const triggerLinks = document.querySelectorAll('.navbar-link:not([href*="pricing"])');
+            let hideTimeout;
+
+            function showDropdown() {
+                clearTimeout(hideTimeout);
+                if (dropdownWindow) {
+                    dropdownWindow.style.maxHeight = '300px';
+                }
+            }
+
+            function hideDropdown() {
+                clearTimeout(hideTimeout);
+                hideTimeout = setTimeout(() => {
+                    if (dropdownWindow) {
+                        dropdownWindow.style.maxHeight = '0';
+                    }
+                }, 500);
+            }
+
+            triggerLinks.forEach(link => {
+                link.addEventListener('mouseenter', showDropdown);
+                link.addEventListener('mouseleave', hideDropdown);
+            });
+
+            if (dropdownWindow) {
+                dropdownWindow.addEventListener('mouseenter', showDropdown);
+                dropdownWindow.addEventListener('mouseleave', hideDropdown);
+            }
         });
 
         // ============================================
