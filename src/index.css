@@ -6,14 +6,14 @@
 /* Custom Font - Mileast */
 @font-face {
     font-family: 'Mileast';
-    src: url('/fonts/Mileast.otf') format('opentype');
+    src: url(/fonts/Mileast.otf) format('opentype');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
 }
 @font-face {
     font-family: 'oldschool-grotesk-regular';
-    src: url('/fonts/OldschoolGroteskTrial-Regular.ttf') format('truetype');
+    src: url(/fonts/OldschoolGroteskTrial-Regular.ttf) format('truetype');
     font-weight: normal;
     font-style: normal;
     font-display: swap;
@@ -132,7 +132,7 @@
     left: -20px;
     right: -20px;
     bottom: -20px;
-    background: url(auth-bg-image.png);
+    background: url(/auth-bg-image.png);
     background-size: cover;
     background-position: center;
     filter: blur(3px);
@@ -511,7 +511,7 @@
 }
 @media(max-width:1024px){
     .register-page-container, .login-page-container{
-    background: url(auth-bg-image.png);
+    background: url(/auth-bg-image.png);
     backdrop-filter: blur(20px);
     }
     .register-form-section, .login-form-section{
