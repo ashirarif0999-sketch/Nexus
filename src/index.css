@@ -530,7 +530,7 @@
 @media (max-width: 480px) {
   .login-page-header {
     position: relative;
-    top: 70px;
+    bottom: 70px;
     transition: all 0.5s ease-out;
   }
 
