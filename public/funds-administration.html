@@ -1,0 +1,3365 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fund Administration | Nexus</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;500;600;700&family=DM+Serif+Display:ital@0;1&family=Instrument+Serif:ital@0;1&family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+   
+    
+    <!-- CDN Libraries -->
+    <script src="https://unpkg.com/lenis@latest/dist/lenis.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/dist/boxicons.js" integrity="sha512-Dm5UxqUSgNd93XG7eseoOrScyM1BVs65GrwmavP0D0DujOA8mjiBfyj71wmI2VQZKnnZQsSWWsxDKNiQIqk8sQ==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <style>
+@font-face {
+    font-family: 'oldschool-grotesk-regular';
+    src: url('/fonts/OldschoolGroteskTrial-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+@font-face {
+    font-family: 'oldschool-grotesk-bold';
+    src: url('/fonts/OldschoolGroteskTrial-ExtraBold.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* Custom Font - Mileast */
+@font-face {
+    font-family: 'Mileast';
+    src: url('/fonts/Mileast.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Font utility */
+.font-mileast {
+    font-family: 'Mileast', sans-serif;
+}
+a {
+    text-decoration: none;}
+
+        :root {
+
+            /* Primary Colors */
+            --primary-500: #405CFF;
+            --primary-600: #364EDF;
+            --primary-700: #2D3FBF;
+            --primary-400: #5A72FF;
+            --primary-300: #7488FF;
+            --primary-200: #8E9EFF;
+            --primary-100: #A8B4FF;
+            --primary-50: #E8EBFF;
+
+            /* Secondary Colors */
+            --secondary-500: #6672BC;
+            --secondary-600: #5A64A5;
+            --secondary-700: #4E568E;
+            --secondary-400: #7A84C9;
+            --secondary-300: #8E96D6;
+            --secondary-200: #A2A8E3;
+            --secondary-100: #B6BAF0;
+            --secondary-50: #F0F1FA;
+
+            /* Tertiary Colors */
+            --tertiary-500: #C14800;
+            --tertiary-600: #A83E00;
+            --tertiary-700: #8F3500;
+            --tertiary-400: #D45A0A;
+            --tertiary-300: #E76C14;
+            --tertiary-200: #F08230;
+            --tertiary-100: #F5984C;
+            --tertiary-50: #FEF4EC;
+
+            /* Neutral Colors */
+            --neutral-900: #1A1A1E;
+            --neutral-800: #2D2D32;
+            --neutral-700: #404046;
+            --neutral-600: #5A5A62;
+            --neutral-500: #767682;
+            --neutral-400: #92929E;
+            --neutral-300: #AEAEBA;
+            --neutral-200: #CACAD6;
+            --neutral-100: #E6E6F2;
+            --neutral-50: #F8F8FA;
+            --neutral-0: #FFFFFF;
+
+            /* Semantic Colors */
+            --bg-dark: #0D0E12;
+            --bg-surface: #1A1B20;
+            --bg-card: #24252B;
+            --bg-light: #F8F8FA;
+
+            /* Text Colors */
+            --text-primary: #1A1A1E;
+            --text-secondary: #404046;
+            --text-tertiary: #767682;
+            --text-inverse: #FFFFFF;
+            --text-muted: rgba(26, 26, 30, 0.6);
+
+            /* Border Colors */
+            --border-light: rgba(26, 26, 30, 0.08);
+            --border-medium: rgba(26, 26, 30, 0.15);
+            --border-dark: rgba(26, 26, 30, 0.25);
+            --border-primary: rgba(64, 92, 255, 0.3);
+
+            /* Shadows */
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+            --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+            --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.16);
+            --shadow-primary: 0 4px 16px rgba(64, 92, 255, 0.25);
+
+            /* Spacing */
+            --spacing-xs: 4px;
+            --spacing-sm: 8px;
+            --spacing-md: 16px;
+            --spacing-lg: 24px;
+            --spacing-xl: 32px;
+            --spacing-2xl: 48px;
+            --spacing-3xl: 64px;
+            --spacing-4xl: 80px;
+            --spacing-5xl: 100px;
+            --spacing-6xl: 120px;
+
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            --radius-2xl: 20px;
+            --radius-full: 100px;
+
+            /* Transitions */
+            --transition-fast: 150ms ease;
+            --transition-base: 200ms ease;
+            --transition-slow: 300ms ease;
+            --transition-slower: 400ms ease;
+            --transition-slowest: 500ms ease;
+
+            /* Easing Curves */
+            --ease-out-expo: cubic-bezier(0.93, 0.59, 0.11, 1.3);
+            --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+            --custom-curve:cubic-bezier(1, 2.07, 0.06, 0.66);
+            --ease-out: cubic-bezier(0.85, 0.02, 0.5, 0.97);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--text-primary);
+    background-color: #0D0E12;
+    overflow-x: hidden;
+    padding-top:100px !important;
+}
+
+        /* ============================================
+            UTILITY CLASSES
+            ============================================ */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 48px;
+        }
+
+        .container-narrow {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 48px;
+        }
+
+        .container-small {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 0 48px;
+        }
+
+        .section-label {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            margin-bottom: var(--spacing-lg);
+            display: block;
+        }
+
+        .section-label-light {
+            color: var(--primary-500);
+        }
+
+        .section-label-olive {
+            color: var(--tertiary-500);
+        }
+
+        .section-heading {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(36px, 4.5vw, 56px);
+            font-weight: 400;
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+        }
+
+        .section-sub {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.65;
+            color: var(--text-secondary);
+            max-width: 560px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .sr-only {
+            position: absolute;
+            width: 1px;
+            height: 1px;
+            padding: 0;
+            margin: -1px;
+            overflow: hidden;
+            clip: rect(0, 0, 0, 0);
+            white-space: nowrap;
+            border: 0;
+        }
+
+        /* ============================================
+            ANIMATION UTILITIES
+            ============================================ */
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: opacity 500ms var(--ease-out-expo), transform 500ms var(--ease-out-expo);
+        }
+
+        .reveal-on-scroll.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-label {
+            opacity: 0;
+            transform: translateX(-12px);
+            transition: opacity 300ms var(--ease-out-expo), transform 300ms var(--ease-out-expo);
+        }
+
+        .reveal-label.revealed {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .reveal-card {
+            opacity: 0;
+            transform: translateY(16px);
+            transition: opacity 400ms var(--ease-out-expo), transform 400ms var(--ease-out-expo);
+        }
+
+        .reveal-card.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-table-row {
+            opacity: 0;
+            transform: translateY(8px);
+            transition: opacity 300ms var(--ease-out-expo), transform 300ms var(--ease-out-expo);
+        }
+
+        .reveal-table-row.revealed {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+
+
+        /* ============================================
+            SECTION 1 — NAVBAR (PILL-SHAPED)
+            ============================================ */
+        .navbar {
+    position: fixed;
+        top: 0px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 1000;
+        width: fit-content;
+        max-width: 90vw;
+        pointer-events: auto;
+        background: #20243b !important;
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border-radius: 0px 0px 12px 12px;
+        padding: 12px 24px;
+        box-shadow: 0px 0px 264px 18px white !important;
+        transition: all 300ms var(--ease-out-expo);
+        }
+
+        .navbar::before,
+        .navbar::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            width: 24px;
+            height: 18px;
+            background: rgba(255, 255, 255, 0);
+        }
+
+        .navbar::before {
+    left: -23px;
+        border-radius: 0px 30px 0px 0px;
+        box-shadow: 11px -1px 2px #23273d;
+        }
+
+        .navbar::after {
+        right: -23px;
+        border-radius: 30px 0px 0px 0px;
+    box-shadow: -10px -1px 2px #23273d;
+    }
+
+        /* Scrolled State - Dark Section */
+        .navbar.scrolled-on-dark {
+            background: #1a1b20b3;
+            color: aliceblue;
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: var(--shadow-xl);
+        }
+
+
+
+        .navbar-inner {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            height: 40px;
+            pointer-events: auto;
+            position: relative;
+            z-index: 1001;
+        }
+
+        .navbar-brand {
+            font-family: 'DM Serif Display', serif;
+            font-size: 20px;
+            font-weight: 400;
+            letter-spacing: -0.02em;
+            color: aliceblue;
+            transition: color var(--transition-fast);
+            white-space: nowrap;
+            display: flex;
+            width: max-content;
+            align-items: center;
+            pointer-events: auto;
+            position: relative;
+            z-index: 1001;
+        }
+
+        .navbar-logo {
+    height: stretch;
+        width: 81px;
+        margin-right: 4px;
+        }
+
+        .navbar.scrolled-on-light .navbar-brand {
+            color: white;
+        }
+
+        .navbar.scrolled-on-light .navbar-logo {
+            filter: brightness(0) invert(1);
+        }
+
+        .navbar.scrolled-on-light .navbar-link {
+            color: white;
+        }
+
+        .navbar.scrolled-on-light .navbar-link:hover {
+            color: #20243b;
+        }
+
+        .navbar.scrolled-on-light .navbar-actions {
+            border-left: 1px solid var(--border-medium);
+        }
+
+        .navbar.scrolled-on-light .navbar-signin {
+            color: white;
+        }
+
+        .navbar.scrolled-on-light .navbar-signin:hover {
+            color: white;
+        }
+
+        .navbar.scrolled-on-light .navbar-cta {
+            color: var(--text-inverse);
+            background: #1a1b20b3;
+        }
+
+        .navbar.scrolled-on-light .navbar-cta:hover {
+            background: #1a1b20b3;
+        }
+
+        .navbar.scrolled-on-light .navbar-hamburger {
+            color: white;
+        }
+
+        .navbar-nav {
+            display: flex;
+            align-items: center;
+            position: relative;
+            gap: 3px;
+        }
+
+        .navbar-dropdown-showcase-card-g2 .navbar-dropdown-showcase-image{
+            width: stretch !important;
+            height: stretch !important;
+            max-width: 400px;
+        }
+        .navbar-dropdown-showcase-card-g3 .navbar-dropdown-showcase-image{
+            width: stretch !important;
+            height: stretch !important;
+            max-width: 200px !important;
+            aspect-ratio: 16/9;
+        }
+        .showcase-wrapper-group-3{
+            align-self: center;
+        }
+        /* ============================================
+            NAVBAR DROPDOWN WINDOW (Main Container)
+            ============================================ */
+        .navbar-dropdown-window {
+       position: absolute;
+        top: calc(60px + 0.5rem);
+        left: 50%;
+        transform: translateX(-45%);
+        width: 90vw;
+        max-width: 1000px;
+        max-height: 0;
+        overflow: hidden;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 20px 48px rgba(0, 0, 0, 0.12);
+        transition: max-height 300ms var(--ease-out);
+        z-index: 100;
+        }
+
+        /* Dropdown visibility controlled by JavaScript */
+        .navbar-dropdown-window {
+            max-height: 0;
+        }
+
+        /* ============================================
+            NAVBAR DROPDOWN GROUPS
+            (Products / Solutions / Resources)
+            ============================================ */
+        .navbar-dropdown-group {
+            display: none;
+        }
+
+        .navbar-dropdown-group.active {
+            display: block;
+        }
+    .navbar-dropdown-showcase-card.navbar-dropdown-showcase-card-g3{
+        width: 400px;
+    }
+        /* ============================================
+            DROPDOWN CONTENT WRAPPER
+            ============================================ */
+        .navbar-dropdown-content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            padding: 20px;
+            min-height: 350px;
+            justify-items: center;
+            width: fit-content;
+            margin: 0 auto;
+        }
+
+        /* ============================================
+            DROPDOWN COLUMNS
+            ============================================ */
+        .navbar-dropdown-column {
+    display: flex;
+        flex-direction: column;
+        gap: 16px;
+        width: 182px;
+        }
+
+         .navbar-dropdown-column.navbar-dropdown-showcase {
+    gap: 12px;
+    background: #f1f3ff;
+    padding: 20px;
+    width: max-content;
+    border-radius: 8px;
+}
+        /* ============================================
+            SECTION TITLES
+            ============================================ */
+        .navbar-dropdown-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #999999;
+            margin: 0;
+            line-height: 1;
+        }
+
+        /* ============================================
+            DROPDOWN LIST (Container for links)
+            ============================================ */
+        .navbar-dropdown-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* ============================================
+            DROPDOWN LINKS
+            ============================================ */
+        .navbar-dropdown-link {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 18px;
+            font-weight: 400;
+            color: #1a1a1a;
+            text-decoration: none;
+            transition: color 200ms var(--ease-out);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 0;
+        }
+
+        .navbar-dropdown-link:hover {
+            color: #405CFF;
+        }
+
+        .navbar-dropdown-link-inline {
+            color: #405CFF;
+            font-weight: 500;
+        }
+
+        /* ============================================
+            BETA BADGE
+            ============================================ */
+        .badge-beta {
+font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #999999;
+    background: #d8d8d8;
+    letter-spacing: 0.05em;
+    margin-left: 4px;
+    padding: 0px 4px;
+    border-radius: 3px;
+        }
+
+        /* ============================================
+            FOOTER TEXT (in dropdown)
+            ============================================ */
+.navbar-dropdown-footer-text {
+    font-size: 14px;
+    color: #666666;
+    margin-top: 8px;
+    line-height: 1.4;
+    position: absolute;
+    bottom: 24px;
+    left: 28px;
+    width: max-content;
+        }
+
+        /* ============================================
+            SHOWCASE CARDS
+            ============================================ */
+        .navbar-dropdown-showcase {
+            gap: 12px;
+        }
+
+        .navbar-dropdown-showcase-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .navbar-dropdown-showcase-card {
+            display: flex;
+            gap: 16px;
+            padding: 16px;
+            border-radius: 12px;
+            background: #f8f9ff;
+            transition: background 200ms var(--ease-out);
+            cursor: pointer;
+        }
+
+        .navbar-dropdown-showcase-card:hover {
+            background: #e8ebff;
+        }
+
+        .navbar-dropdown-showcase-card.navbar-dropdown-showcase-card-g1 .navbar-dropdown-showcase-image {
+            width: 130px;
+            height: 130px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .navbar-dropdown-showcase-card.navbar-dropdown-showcase-card-g1 .navbar-dropdown-showcase-image video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        .navbar-dropdown-showcase-card.navbar-dropdown-showcase-card-g2 .navbar-dropdown-showcase-image {
+            width: 100%;
+            height: 100%;
+            max-width: 400px;
+            aspect-ratio: 16/9;
+        }
+
+        .navbar-dropdown-showcase-card.navbar-dropdown-showcase-card-g3 .navbar-dropdown-showcase-image {
+            width: 100%;
+            height: 100%;
+            max-width: 200px;
+            aspect-ratio: 16/9;
+        }
+
+        .navbar-dropdown-showcase-card-g2{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    .navbar-dropdown-showcase-image{
+        width: max-content !important;
+        aspect-ratio: 16/9;
+        border-radius: 6px;
+    }
+}
+        .navbar-dropdown-showcase-card-single .navbar-dropdown-showcase-image {
+            width: stretch !important;
+
+            aspect-ratio: 3 / 2;
+            min-width: 120px;
+            border-radius: 6px;
+        }
+
+        .navbar-dropdown-showcase-image {
+            border-radius: 8px;
+            overflow: hidden;
+            flex-shrink: 0;
+            height: -webkit-fill-available;
+            aspect-ratio: 1/1;
+            background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
+        }
+
+        .navbar-dropdown-showcase-title {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 400;
+            color: #1a1a1a;
+            margin: 0;
+            line-height: 1.3;
+        }
+
+        /* ============================================
+            SHOWCASE DESCRIPTION & TAG
+            ============================================ */
+        .navbar-dropdown-showcase-description {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12px;
+            color: #666666;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .navbar-dropdown-showcase-tag {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #999999;
+            margin: 0;
+            letter-spacing: 0.05em;
+        }
+
+        .showcase-wrapper-group-1 {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .showcase-wrapper-group-3 {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .navbar-dropdown-showcase-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+            line-height: 1.3;
+        }
+
+        /* ============================================
+            NAVBAR LINK STYLING
+            ============================================ */
+
+        .navbar-dropdown-showcase-description {
+            font-size: 12px;
+            color: #666666;
+            line-height: 1.4;
+        }
+
+        .navbar-dropdown-showcase-tag {
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: #666666;
+            margin-top: 4px;
+        }
+
+        .showcase-wrapper-group-1 {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .showcase-wrapper-group-3 {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .navbar-link {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 200ms var(--custom-curve) !important;
+            white-space: nowrap;
+            padding: 9px 18px;
+            border-radius: 30px;
+            position: relative;
+            color: aliceblue;
+        }
+
+        .navbar-link:hover {
+            background: #E6E6F2;
+    color: #20243b !important;
+    transition: all 300ms var(--ease-in-out) !important;
+        }
+
+.navbar-link.active .navbar-dropdown-content{
+    outline: 1px solid #3e00ff;
+    outline-offset: -4px ;
+}
+        .navbar-link.active {
+    background-color: #405cff;
+    color: #ffffff !important;
+    font-size: 21px;
+    border-radius: 7px;
+    padding: 5px 23px;
+    outline-offset: -4px;
+    outline: 1px solid #3e00ff;
+    background-clip: border-box;
+    transition: all 200ms var(--custom-curve) !important;
+        }
+
+        .navbar-link svg {
+            width: 12px;
+            height: 12px;
+            opacity: 0.6;
+        }
+
+        .navbar-link:hover svg {
+            opacity: 1;
+        }
+
+        .navbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .navbar-signin {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 16px;
+            color: white;
+            white-space: nowrap;
+            text-decoration: none;
+            transition: color 200ms var(--ease-out);
+        }
+
+
+          .navbar-cta {
+font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: white;
+    background: #405CFF !important;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+
+        }
+
+        .navbar-cta:hover {
+            background: #364edf;
+        }
+
+        .navbar-hamburger {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            cursor: pointer;
+            padding: 4px;
+        }
+
+        @media (max-width: 1024px) {
+            .navbar-nav {
+                display: none;
+            }
+            .navbar {
+                width: calc(100% - 32px);
+            }
+            .navbar-inner {
+                justify-content: space-between;
+            }
+            .navbar-hamburger {
+                display: block;
+            }
+            .navbar-actions {
+                border-left: none;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar-dropdown-content {
+                grid-template-columns: 1fr;
+                gap: 24px;
+            }
+            .navbar {
+                padding: 10px 16px;
+            }
+            .navbar-inner {
+                gap: 8px;
+            }
+            .navbar-signin {
+                display: none;
+            }
+            .navbar-cta {
+                display: none;
+            }
+        }
+
+        /* Mobile Navigation Overlay */
+        .mobile-nav-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: var(--bg-dark);
+            z-index: 999;
+            transform: translateX(100%);
+            transition: transform 400ms var(--ease-out-expo);
+            padding: 40px;
+        }
+
+        .mobile-nav-overlay.open {
+            transform: translateX(0);
+        }
+
+        .mobile-nav-close {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            width: 24px;
+            height: 24px;
+            color: var(--text-inverse);
+        }
+
+        .mobile-nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+            margin-top: 80px;
+        }
+
+        .mobile-nav-link {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 24px;
+            font-weight: 400;
+            color: var(--text-tertiary);
+            transition: color var(--transition-fast);
+        }
+
+        .mobile-nav-link:hover {
+            color: var(--text-inverse);
+        }
+
+        /* ============================================
+            FOOTER
+            ============================================ */
+        .footer {
+            background: var(--bg-dark);
+            padding: 80px 0 48px;
+        }
+
+        .footer-inner {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 48px;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 64px;
+            margin-bottom: 48px;
+        }
+
+        .footer-brand-section {
+            max-width: 280px;
+        }
+
+        .footer-brand {
+            font-family: 'DM Serif Display', serif;
+            font-size: 28px;
+            font-weight: 400;
+            color: var(--text-inverse);
+            margin-bottom: var(--spacing-lg);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .footer-brand-logo {
+            height: 32px;
+            width: auto;
+        }
+
+        .footer-brand-logo-bottom {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-top: 16px;
+        }
+
+        .footer-brand-logo-full {
+            max-width: 200px;
+            width: 100%;
+            height: auto;
+        }
+
+        .footer-brand-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+        }
+
+        .footer-cta-small {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+            background: var(--neutral-0);
+            padding: 8px 16px;
+            border-radius: var(--radius-full);
+            transition: all var(--transition-fast);
+        }
+
+        .footer-cta-small:hover {
+            background: var(--neutral-100);
+        }
+
+        .footer-signin-small {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-inverse);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: var(--radius-full);
+            transition: all var(--transition-fast);
+        }
+
+        .footer-signin-small:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .footer-links-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 32px;
+        }
+
+        .footer-column-title {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            margin-bottom: var(--spacing-lg);
+        }
+
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+
+        .footer-link {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+            color: aliceblue;
+            transition: color 150ms ease;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
+        }
+
+        .footer-link:hover {
+            color: var(--text-inverse);
+        }
+
+        .footer-link svg {
+            width: 10px;
+            height: 10px;
+        }
+
+        .footer-beta-pill {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 9px;
+            font-weight: 500;
+            background: rgba(64, 92, 255, 0.2);
+            color: var(--primary-400);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 4px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: var(--spacing-lg);
+        }
+
+        .footer-legal {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--text-tertiary);
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+        }
+
+        .footer-legal-separator {
+            color: var(--text-tertiary);
+            opacity: 0.5;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 20px;
+        }
+
+        .footer-social-link {
+            color: var(--text-tertiary);
+            transition: color var(--transition-fast);
+        }
+
+        .footer-social-link:hover {
+            color: var(--text-inverse);
+        }
+
+        .footer-social-link svg {
+            width: 18px;
+            height: 18px;
+        }
+
+        .footer-disclaimer {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 11px;
+            font-weight: 400;
+            line-height: 1.6;
+            color: var(--text-tertiary);
+            opacity: 0.4;
+            max-width: 900px;
+            margin-top: 24px;
+        }
+
+        /* Hero Section */
+        #hero {
+            background-color: var(--bg-dark);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 80px 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-label {
+            border: 1px solid rgba(255,255,255,0.15);
+            background: rgba(255,255,255,0.05);
+            border-radius: var(--radius-full);
+            color: rgba(255,255,255,0.7);
+            font-size: 12px;
+            padding: 6px 16px;
+            margin-bottom: 32px;
+            font-family: 'DM Sans', sans-serif;
+            letter-spacing: 0.02em;
+        }
+
+        .hero-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(48px, 6vw, 80px);
+            line-height: 1.05;
+            color: white;
+            letter-spacing: -0.02em;
+            text-align: center;
+            margin-bottom: 24px;
+            max-width: 900px;
+        }
+
+        .hero-title span {
+            background: linear-gradient(135deg, var(--primary-400), var(--primary-500));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero-subtext {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 16px;
+            color: rgba(255,255,255,0.55);
+            max-width: 500px;
+            text-align: center;
+            margin: 0 auto 40px;
+            line-height: 1.6;
+        }
+
+        .hero-cta {
+            background: white;
+            color: var(--bg-dark);
+            border-radius: var(--radius-full);
+            padding: 14px 28px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 200ms var(--transition-base);
+            margin-bottom: 80px;
+        }
+
+        .hero-cta:hover {
+            background: var(--primary-500);
+            color: white;
+        }
+
+        /* Hero Coil Animation */
+        .hero-coil {
+            width: 100%;
+            max-width: 800px;
+            height: 200px;
+            position: relative;
+            margin-bottom: 40px;
+            animation: float 4s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+
+        .coil-svg {
+            width: 100%;
+            height: 100%;
+        }
+
+        .coil-ellipse {
+            fill: none;
+            stroke: rgba(160, 170, 255, 0.7);
+            stroke-width: 2.5;
+        }
+
+        .coil-labels {
+            display: flex;
+            justify-content: space-between;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .coil-label {
+            font-size: 11px;
+            color: rgba(255,255,255,0.7);
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .trusted-logos {
+            text-align: center;
+            margin-top: 60px;
+        }
+
+        .trusted-label {
+            font-size: 12px;
+            color: rgba(255,255,255,0.4);
+            margin-bottom: 20px;
+            font-family: 'DM Sans', sans-serif;
+        }
+
+        .logo-row {
+            display: flex;
+            justify-content: center;
+            gap: 24px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .logo-item {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.3);
+        }
+
+        .logo-divider {
+            color: rgba(255,255,255,0.2);
+        }
+
+        /* Features Section */
+        #features {
+            background-color: #EDECE8;
+            padding: 120px 20px;
+        }
+
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 40% 60%;
+            gap: 60px;
+            align-items: start;
+        }
+
+        .features-overline {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--neutral-500);
+            margin-bottom: 16px;
+        }
+
+        .features-heading {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(32px, 3.5vw, 44px);
+            color: var(--neutral-900);
+            line-height: 1.1;
+            margin-bottom: 48px;
+        }
+
+        .accordion {
+            border-top: 1px solid rgba(26,26,30,0.1);
+        }
+
+        .accordion-item {
+            border-bottom: 1px solid rgba(26,26,30,0.1);
+            cursor: pointer;
+            transition: all var(--transition-base);
+        }
+
+        .accordion-item:last-child {
+            border-bottom: none;
+        }
+
+        .accordion-title {
+            font-family: 'DM Serif Display', serif;
+            font-size: 20px;
+            color: var(--neutral-500);
+            padding: 24px 0;
+            transition: color var(--transition-base);
+        }
+
+        .accordion-item.active .accordion-title {
+            color: var(--neutral-900);
+            font-weight: 700;
+        }
+
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 400ms var(--ease-out);
+        }
+
+        .accordion-item.active .accordion-content {
+            max-height: 200px;
+        }
+
+        .accordion-desc {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.65;
+            padding-bottom: 24px;
+        }
+
+        .accordion-underline {
+            width: 40px;
+            height: 2px;
+            background: var(--primary-500);
+            margin-top: 12px;
+            margin-bottom: 24px;
+            opacity: 0;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: all 300ms var(--ease-out-expo);
+        }
+
+        .accordion-item.active .accordion-underline {
+            opacity: 1;
+            transform: scaleX(1);
+        }
+
+        .progress-bar {
+            height: 3px;
+            background: rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+            margin-top: 8px;
+            border-radius: 2px;
+        }
+
+        .progress-bar::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 100%;
+            width: 0%;
+            background: var(--primary-500);
+            animation: progress-fill 10s linear forwards;
+        }
+
+        .accordion-item:not(.active) .progress-bar::after {
+            animation: none;
+            width: 0%;
+        }
+
+        @keyframes progress-fill {
+            from { width: 0%; }
+            to { width: 100%; }
+        }
+
+        /* Orbit Visualization */
+        .orbit-panel {
+            background: #0D1117;
+            border-radius: var(--radius-2xl);
+            width: stretch;
+            height: 500px;
+            max-width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+        @media(max-width:1350px){
+            .orbit-panel {
+            width: auto;
+            height: 425px;
+        }
+    }
+        .orbit-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            opacity: 0;
+            transition: opacity 300ms var(--ease-out-expo);
+        }
+
+        .orbit-image.active {
+            opacity: 1;
+        }
+
+        /* Investment Vehicles Section */
+        #vehicles {
+            background-color: #FFFFFF;
+            padding: 120px 20px;
+        }
+
+        .vehicles-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .vehicles-heading {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(36px, 4vw, 52px);
+            color: var(--neutral-900);
+            max-width: 600px;
+            margin-bottom: 64px;
+            line-height: 1.1;
+        }
+
+        .vehicles-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .vehicle-card {
+            background: #F0EFEB;
+            border-radius: var(--radius-2xl);
+            padding: 24px;
+            min-height: 340px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: all 300ms ease;
+        }
+
+        .vehicle-icon {
+            color: var(--neutral-700);
+            width: 24px;
+            height: 24px;
+            position: relative;
+            z-index: 2;
+        }
+
+        .vehicle-desc {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            color: var(--text-secondary);
+            position: absolute;
+            top: 56px;
+            left: 24px;
+            right: 24px;
+            opacity: 0;
+            transition: opacity 250ms ease;
+            line-height: 1.5;
+        }
+
+        .vehicle-blob {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(circle, rgba(120, 100, 220, 0.35) 0%, transparent 70%);
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.8);
+            opacity: 0;
+            transition: opacity 300ms ease, transform 400ms ease;
+        }
+
+        .vehicle-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .vehicle-title {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--neutral-900);
+        }
+
+        .vehicle-arrow {
+            width: 40px;
+            height: 40px;
+            background: #E0DDD8;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--neutral-700);
+            transition: all 300ms ease;
+            cursor: pointer;
+        }
+
+        .vehicle-card:hover {
+            background: #EBEAE6;
+        }
+
+        .vehicle-card:hover .vehicle-blob {
+            opacity: 1;
+            transform: translate(-50%, -50%) scale(1);
+        }
+
+        .vehicle-card:hover .vehicle-desc {
+            opacity: 1;
+        }
+
+        .vehicle-card:hover .vehicle-arrow {
+            background: var(--primary-500);
+            color: white;
+        }
+
+        /* Stats Section */
+        #stats {
+            background-color: var(--bg-dark);
+            padding: 80px 20px;
+            text-align: center;
+        }
+
+        .stats-overline {
+            font-family: 'DM Serif Display', serif;
+            font-size: 28px;
+            font-style: italic;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 48px;
+        }
+
+        .stats-row {
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(48px, 6vw, 72px);
+            color: white;
+            letter-spacing: -0.02em;
+            line-height: 1;
+        }
+
+        .stat-label {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            color: rgba(255,255,255,0.45);
+            margin-top: 8px;
+            max-width: 160px;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        /* Testimonials Section */
+        #testimonials {
+            background-color: #EDE8F8;
+            padding: 100px 20px;
+        }
+
+        .testimonials-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        .testimonial-carousel {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .testimonial-slide {
+            display: none;
+            animation: fadeIn 500ms var(--ease-out);
+        }
+
+        .testimonial-slide.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .testimonial-card {
+            border-radius: var(--radius-2xl);
+            overflow: hidden;
+            min-height: 260px;
+            display: grid;
+            grid-template-columns: 65% 35%;
+        }
+
+        .testimonial-slide:nth-child(1) .testimonial-card {
+            background: var(--primary-500);
+        }
+
+        .testimonial-slide:nth-child(2) .testimonial-card {
+            background: #1A2744;
+        }
+
+        .testimonial-content {
+            padding: 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .testimonial-quote {
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+            font-size: 20px;
+            color: white;
+            line-height: 1.5;
+            max-width: 520px;
+        }
+
+        .testimonial-attribution {
+            margin-top: 32px;
+        }
+
+        .testimonial-name {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .testimonial-role {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            color: rgba(255,255,255,0.65);
+            margin-bottom: 12px;
+        }
+
+        .testimonial-logo {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 0.05em;
+        }
+
+        .testimonial-photo {
+            background: rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .person-silhouette {
+            width: 120px;
+            height: 160px;
+            position: relative;
+        }
+
+        .person-head {
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .person-body {
+            width: 80px;
+            height: 100px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 40px 40px 0 0;
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        .testimonial-nav {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            display: flex;
+            gap: 12px;
+        }
+
+        .nav-arrow {
+            width: 40px;
+            height: 40px;
+            border: 1px solid rgba(26,26,30,0.2);
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .nav-arrow:hover {
+            background: var(--primary-500);
+            border-color: var(--primary-500);
+            color: white;
+        }
+
+        .testimonial-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 24px;
+        }
+
+        .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(26,26,30,0.2);
+            cursor: pointer;
+            transition: all var(--transition-fast);
+        }
+
+        .dot.active {
+            background: var(--primary-500);
+            width: 24px;
+            border-radius: 4px;
+        }
+
+        /* CTA Section */
+        #cta {
+            background-color: #EDE8F8;
+            padding: 0 20px 100px;
+        }
+
+        .cta-card {
+            max-width: 800px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #c4b5fd 0%, #a5b4fc 50%, #bfdbfe 100%);
+            border-radius: var(--radius-2xl);
+            padding: 80px 60px;
+            text-align: center;
+        }
+
+        .cta-heading {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(36px, 4vw, 48px);
+            color: var(--neutral-900);
+            margin-bottom: 16px;
+            line-height: 1.1;
+        }
+
+        .cta-subtext {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 16px;
+            color: rgba(26,26,30,0.7);
+            max-width: 520px;
+            margin: 0 auto 32px;
+            line-height: 1.6;
+        }
+
+        .cta-button {
+            background: var(--neutral-900);
+            color: white;
+            border-radius: var(--radius-full);
+            padding: 14px 32px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 15px;
+            font-weight: 500;
+            text-decoration: none;
+            display: inline-block;
+            transition: background 200ms var(--transition-base);
+        }
+
+        .cta-button:hover {
+            background: var(--primary-500);
+        }
+
+        /* FAQ Section */
+        #faq {
+            background-color: var(--bg-light);
+            padding: 100px 20px;
+        }
+
+        .faq-container {
+            max-width: 780px;
+            margin: 0 auto;
+        }
+
+        .faq-overline {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--primary-500);
+            margin-bottom: 16px;
+        }
+
+        .faq-heading {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(32px, 4vw, 48px);
+            color: var(--neutral-900);
+            margin-bottom: 48px;
+        }
+
+        .faq-item {
+            border-top: 1px solid var(--border-medium);
+        }
+
+        .faq-question {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--neutral-900);
+            padding: 20px 0;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: color var(--transition-fast);
+        }
+
+        .faq-question:hover {
+            color: var(--primary-500);
+        }
+
+        .faq-icon {
+            width: 18px;
+            height: 18px;
+            color: var(--neutral-500);
+            transition: transform var(--transition-base);
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(45deg);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 350ms var(--ease-out);
+        }
+
+        .faq-item.active .faq-answer {
+            max-height: 400px;
+        }
+
+        .faq-answer-text {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.75;
+            padding-bottom: 20px;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-dark);
+            padding: 80px 20px 40px;
+        }
+
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .footer-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 60px;
+            flex-wrap: wrap;
+            gap: 24px;
+        }
+
+        .footer-brand {
+            font-family: 'DM Serif Display', serif;
+            font-size: 32px;
+            color: white;
+        }
+
+        .footer-buttons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .footer-btn {
+            padding: 10px 20px;
+            border-radius: var(--radius-full);
+            text-decoration: none;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all var(--transition-fast);
+        }
+
+        .footer-btn-primary {
+            background: var(--primary-500);
+            color: white;
+        }
+
+        .footer-btn-primary:hover {
+            background: var(--primary-600);
+        }
+
+        .footer-btn-secondary {
+            background: transparent;
+            color: white;
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .footer-btn-secondary:hover {
+            background: rgba(255,255,255,0.1);
+        }
+
+        .footer-links {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+
+        .footer-column h4 {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .footer-column ul {
+            list-style: none;
+        }
+
+        .footer-column li {
+            margin-bottom: 12px;
+        }
+
+        .footer-column a {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            color: rgba(255,255,255,0.45);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+
+        .footer-column a:hover {
+            color: white;
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        .footer-legal {
+            display: flex;
+            gap: 24px;
+        }
+
+        .footer-legal a {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            color: rgba(255,255,255,0.3);
+            text-decoration: none;
+            transition: color var(--transition-fast);
+        }
+
+        .footer-legal a:hover {
+            color: white;
+        }
+
+        .footer-copyright {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            color: rgba(255,255,255,0.3);
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 16px;
+        }
+
+        .footer-social a {
+            color: rgba(255,255,255,0.3);
+            transition: color var(--transition-fast);
+        }
+
+        .footer-social a:hover {
+            color: white;
+        }
+
+        /* Responsive */
+        @media (max-width: 968px) {
+            .features-container {
+                grid-template-columns: 1fr;
+            }
+
+            .orbit-panel {
+                order: -1;
+                margin-bottom: 40px;
+            }
+
+            .vehicles-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .testimonial-card {
+                grid-template-columns: 1fr;
+            }
+
+            .testimonial-photo {
+                display: none;
+            }
+
+            .footer-links {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 640px) {
+            .navbar {
+                min-width: 95%;
+                padding: 10px 16px;
+                gap: 16px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .vehicles-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats-row {
+                gap: 40px;
+            }
+
+            .cta-card {
+                padding: 48px 24px;
+            }
+
+            .footer-links {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Base styling for context */
+body { margin: 0; padding: 0; }
+
+.white-section {
+  background-color: #ffffff;
+  height: 150px;
+}
+
+/* The Magic Effect */
+.striped-transition {
+  height: 120px; /* Adjust height based on how many stripes you want */
+  width: 100%;
+  
+  /* 
+   We stack multiple backgrounds. 
+   The first one listed is the top layer.
+  */
+  background: 
+    /* 
+      LAYER 1 (TOP): The "Blinds" 
+      This creates horizontal hard-stopped stripes of the dark background color.
+      The opacity decreases by 10% for every 10% of height.
+    */
+    linear-gradient(to bottom, rgba(11, 14, 20, 1) 0%, rgba(11, 14, 20, 1) 9.09%, rgba(11, 14, 20, 0.9) 9.09%, rgba(11, 14, 20, 0.9) 18.18%, rgba(11, 14, 20, 0.8) 18.18%, rgba(11, 14, 20, 0.8) 27.27%, rgba(11, 14, 20, 0.7) 27.27%, rgba(11, 14, 20, 0.7) 36.36%, rgba(11, 14, 20, 0.6) 36.36%, rgba(11, 14, 20, 0.6) 45.45%, rgba(11, 14, 20, 0.5) 45.45%, rgba(11, 14, 20, 0.5) 54.54%, rgba(11, 14, 20, 0.4) 54.54%, rgba(11, 14, 20, 0.4) 63.63%, rgba(11, 14, 20, 0.3) 63.63%, rgba(11, 14, 20, 0.3) 72.72%, rgba(11, 14, 20, 0.2) 72.72%, rgba(11, 14, 20, 0.2) 81.81%, rgba(11, 14, 20, 0.1) 81.81%, rgba(11, 14, 20, 0.1) 90.9%, rgba(11, 14, 20, 0) 90.9%, rgba(11, 14, 20, 0) 100%), /* LAYER 2 (BOTTOM): The Color A smooth horizontal gradient from muted slate to lavender. */ linear-gradient(to right, #e38c50fa 0%, #998fe1 100%), /* LAYER 2 (BOTTOM): The Color A smooth horizontal gradient from muted slate to lavender. */ linear-gradient(to right, #2a3c48 0%, #b9b4f0 100%),
+    /* 
+      LAYER 2 (BOTTOM): The Color 
+      A smooth horizontal gradient from muted slate to lavender.
+    */
+    linear-gradient(to right, #2a3c48 0%, #b9b4f0 100%);
+}
+    </style>
+</head>
+<body>
+    <!-- ============================================
+          SECTION 1 — NAVBAR
+          ============================================ -->
+    <nav class="navbar" id="navbar">
+        <div class="navbar-inner">
+            <a href="landingpage.html" class="navbar-brand"><img src="logo-nexus-inverted.png" alt="Nexus" class="navbar-logo"></a>
+
+            <div class="navbar-nav">
+                <a href="#" class="navbar-link">Products <i data-lucide="chevron-down"></i></a>
+                <a href="#" class="navbar-link">Solutions <i data-lucide="chevron-down"></i></a>
+                <a href="pricing.html" class="navbar-link">Pricing</a>
+                <a href="#" class="navbar-link">Resources <i data-lucide="chevron-down"></i></a>
+                <div class="navbar-dropdown-window">
+
+                    <!-- PRODUCTS DROPDOWN GROUP -->
+                    <div class="navbar-dropdown-group navbar-dropdown-group-products">
+                        <div class="navbar-dropdown-content">
+                            <!-- Left Column: Fund Administration -->
+                            <div class="navbar-dropdown-column">
+                                <h4 class="navbar-dropdown-section-title">FUND ADMINISTRATION</h4>
+                                <div class="navbar-dropdown-list">
+                                    <a href="#" class="navbar-dropdown-link">Venture Funds</a>
+                                    <a href="#" class="navbar-dropdown-link">Rolling Funds</a>
+                                    <a href="#" class="navbar-dropdown-link">Scout Funds</a>
+                                    <a href="#" class="navbar-dropdown-link">SPVs</a>
+                                    <a href="#" class="navbar-dropdown-link">Roll Up Vehicles</a>
+                                    <p class="navbar-dropdown-footer-text">Looking for tools for startups? Explore <a href="#" class="navbar-dropdown-link-inline">Rollups</a></p>
+                                </div>
+                            </div>
+
+                            <!-- Center Column: Investor Management + Intelligence -->
+                            <div class="navbar-dropdown-column">
+                                <h4 class="navbar-dropdown-section-title">INVESTOR MANAGEMENT</h4>
+                                <div class="navbar-dropdown-list">
+                                    <a href="#" class="navbar-dropdown-link">Digital Subscriptions</a>
+                                    <a href="#" class="navbar-dropdown-link">Data Room</a>
+                                </div>
+
+                                <h4 class="navbar-dropdown-section-title" style="margin-top: 16px;">INTELLIGENCE</h4>
+                                <div class="navbar-dropdown-list">
+                                    <a href="#" class="navbar-dropdown-link">Fin <span class="badge-beta">BETA</span></a>
+                                </div>
+
+
+                            </div>
+
+                            <!-- Right Column: Product Suites Showcase -->
+                            <div class="navbar-dropdown-column navbar-dropdown-showcase">
+                                <h4 class="navbar-dropdown-section-title">PRODUCT SUITES</h4>
+                                <div class="navbar-dropdown-showcase-list">
+                                    <div class="navbar-dropdown-showcase-card navbar-dropdown-showcase-card-g1">
+                                        <div class="navbar-dropdown-showcase-image">
+                                            <!-- Image placeholder - leave for user -->
+                                             <video src="videos/Video Project 3.mp4" width="100%" height="100%" muted></video>
+                                        </div>
+                                        <div class="showcase-wrapper-group-1">
+                                        <h5 class="navbar-dropdown-showcase-title">Fund Administration</h5>
+                                        <p class="navbar-dropdown-showcase-description">All-in-one partner to launch an investment vehicle</p>
+                                        </div>
+                                    </div>
+                                    <div class="navbar-dropdown-showcase-card navbar-dropdown-showcase-card-g1">
+                                        <div class="navbar-dropdown-showcase-image">
+                                            <!-- Image placeholder - leave for user -->
+                                             <video src="videos/Video Project (1).mp4" width="100%" height="100%" muted></video>
+                                        </div>
+                                        <div class="showcase-wrapper-group-1">
+                                        <h5 class="navbar-dropdown-showcase-title">Investor Management</h5>
+                                        <p class="navbar-dropdown-showcase-description">Explore all offerings to streamline the investor experience</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- SOLUTIONS DROPDOWN GROUP -->
+                    <div class="navbar-dropdown-group navbar-dropdown-group-solutions">
+                        <div class="navbar-dropdown-content">
+                            <!-- Left Column: By Product Suite -->
+                            <div class="navbar-dropdown-column">
+                                <h4 class="navbar-dropdown-section-title">BY PRODUCT SUITE</h4>
+                                <div class="navbar-dropdown-list">
+                                    <a href="funds-administration.html" class="navbar-dropdown-link">Fund Administration</a>
+                                    <a href="investor-management.html" class="navbar-dropdown-link">Investor Management</a>
+                                </div>
+                            </div>
+
+                            <!-- Center Column: Who We Serve -->
+                            <div class="navbar-dropdown-column">
+                                <h4 class="navbar-dropdown-section-title">WHO WE SERVE</h4>
+                                <div class="navbar-dropdown-list">
+                                    <a href="#" class="navbar-dropdown-link">Emerging Managers</a>
+                                    <a href="#" class="navbar-dropdown-link">Established Venture</a>
+                                    <a href="#" class="navbar-dropdown-link">Institutional Investors</a>
+                                    <a href="#" class="navbar-dropdown-link">Crypto</a>
+                                </div>
+                            </div>
+
+                            <!-- Right Column: Featured Use Case -->
+                            <div class="navbar-dropdown-column navbar-dropdown-showcase">
+                                <h4 class="navbar-dropdown-section-title">FEATURED USE CASE</h4>
+                                <div class="navbar-dropdown-showcase-card navbar-dropdown-showcase-card-single">
+                                    <div class="navbar-dropdown-showcase-card-content navbar-dropdown-showcase-card-g2">
+                                        <div class="navbar-dropdown-showcase-image">
+                                            <img src="https://www.rillion.com/hs-fs/hubfs/website-images/Featured/1_1_Custom%20approval%20workflows_Featured8_1080x1080.png?width=600&height=600&name=1_1_Custom%20approval%20workflows_Featured8_1080x1080.png" width="100%" height="100%" alt="Browder Capital" style="object-fit: cover; border-radius: var(--radius-lg);">
+                                            <!-- Image placeholder - leave for user -->
+                                        </div>
+                                        <div class="showcase-wrapper-group-2">
+
+                                            <h5 class="navbar-dropdown-showcase-title"></h5>
+                                            <p class="navbar-dropdown-showcase-description">Switch your fund admin with confidence</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RESOURCES DROPDOWN GROUP -->
+                    <div class="navbar-dropdown-group navbar-dropdown-group-resources">
+                        <div class="navbar-dropdown-content">
+                            <!-- Left Column: Explore -->
+                            <div class="navbar-dropdown-column">
+                                <h4 class="navbar-dropdown-section-title">EXPLORE</h4>
+                                <div class="navbar-dropdown-list">
+                                    <a href="#" class="navbar-dropdown-link">Blog</a>
+                                    <a href="#" class="navbar-dropdown-link">Help Center</a>
+                                    <a href="#" class="navbar-dropdown-link">Education Center</a>
+                                    <a href="#" class="navbar-dropdown-link">Data Center</a>
+                                </div>
+                            </div>
+
+                            <!-- Center Column: Company -->
+                            <div class="navbar-dropdown-column">
+                                <h4 class="navbar-dropdown-section-title">COMPANY</h4>
+                                <div class="navbar-dropdown-list">
+                                    <a href="#" class="navbar-dropdown-link">About Us</a>
+                                    <a href="#" class="navbar-dropdown-link">Careers</a>
+                                    <a href="#" class="navbar-dropdown-link">Engineering</a>
+                                </div>
+                            </div>
+
+                            <!-- Right Column: Featured Resources -->
+                            <div class="navbar-dropdown-column navbar-dropdown-showcase">
+                                <h4 class="navbar-dropdown-section-title">FEATURED</h4>
+                                <div class="navbar-dropdown-showcase-list">
+                                    <div class="navbar-dropdown-showcase-card navbar-dropdown-showcase-card-g3">
+                                        <div class="navbar-dropdown-showcase-image">
+                                            <image src="navbar 3.png" width="100%" height="100%" alt="Fund Benchmarks Report 2025" style="object-fit: cover; border-radius: var(--radius-lg);">
+                                            <!-- Image placeholder - leave for user -->
+                                        </div>
+                                        <div class="showcase-wrapper-group-3">
+                                        <h5 class="navbar-dropdown-showcase-title">The Fund Benchmarks Report 2025</h5>
+                                        <p class="navbar-dropdown-showcase-tag">DATA CENTER</p>
+                                        </div>
+                                    </div>
+                                    <div class="navbar-dropdown-showcase-card navbar-dropdown-showcase-card-g3">
+                                        <div class="navbar-dropdown-showcase-image">
+                                            <img src="navbar 4.png" width="100%" height="100%" alt="How Browder Capital Launched Institutional Fund IV with Nexus" style="object-fit: cover; border-radius: var(--radius-lg);">
+                                            <!-- Image placeholder - leave for user -->
+                                        </div>
+                                        <div class="showcase-wrapper-group-3">
+                                        <h5 class="navbar-dropdown-showcase-title">How Browder Capital Launched Institutional Fund IV with Nexus</h5>
+                                        <p class="navbar-dropdown-showcase-tag">BLOG</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="navbar-actions">
+                <a href="/login" class="navbar-signin">Sign in</a>
+                <a href="contact-sales.html" class="navbar-cta">Contact sales</a>
+                <button class="navbar-hamburger" id="navbar-hamburger" aria-label="Open menu">
+                    <i data-lucide="menu"></i>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Navigation Overlay -->
+    <div class="mobile-nav-overlay" id="mobile-nav-overlay">
+        <button class="mobile-nav-close" id="mobile-nav-close" aria-label="Close menu">
+            <i data-lucide="x"></i>
+        </button>
+        <div class="mobile-nav-links">
+            <a href="#" class="mobile-nav-link">Products</a>
+            <a href="#" class="mobile-nav-link">Solutions</a>
+            <a href="pricing.html" class="mobile-nav-link">Pricing</a>
+            <a href="#" class="mobile-nav-link">Resources</a>
+            <a href="/login" class="mobile-nav-link">Sign in</a>
+            <a href="contact-sales.html" class="mobile-nav-link" style="color: var(--text-white);">Contact sales</a>
+        </div>
+    </div>
+
+    <!-- Hero Section -->
+    <section id="hero">
+        <div class="hero-label">Fund Administration</div>
+        <h1 class="hero-title reveal-on-scroll">
+            <span>Launch and scale</span> your fund<br>without the complexity
+        </h1>
+        <p class="hero-subtext reveal-on-scroll">
+            All-in-one doesn't mean one-size-fits-all. Partner with Nexus for modern fund software and premium back-office support.
+        </p>
+        <a href="contact-sales.html" class="hero-cta reveal-on-scroll">Talk to an expert</a>
+
+        <div class="hero-coil reveal-on-scroll">
+            <svg class="coil-svg" viewBox="0 0 800 200" preserveAspectRatio="xMidYMid meet">
+                <ellipse class="coil-ellipse" cx="400" cy="100" rx="380" ry="60" transform="rotate(-5 400 100)"/>
+                <ellipse class="coil-ellipse" cx="420" cy="100" rx="340" ry="55" transform="rotate(-3 420 100)"/>
+                <ellipse class="coil-ellipse" cx="440" cy="100" rx="300" ry="50" transform="rotate(-1 440 100)"/>
+                <ellipse class="coil-ellipse" cx="460" cy="100" rx="260" ry="45" transform="rotate(1 460 100)"/>
+                <ellipse class="coil-ellipse" cx="480" cy="100" rx="220" ry="40" transform="rotate(3 480 100)"/>
+                <ellipse class="coil-ellipse" cx="500" cy="100" rx="180" ry="35" transform="rotate(5 500 100)"/>
+            </svg>
+        </div>
+
+        <div class="coil-labels reveal-on-scroll">
+            <span class="coil-label">Deploy</span>
+            <span class="coil-label">Run</span>
+            <span class="coil-label">Scale</span>
+        </div>
+
+        <div class="trusted-logos reveal-on-scroll">
+            <div class="trusted-label">Trusted by leading fund managers</div>
+            <div class="logo-row">
+                <span class="logo-item">GTMfund</span>
+                <span class="logo-divider">|</span>
+                <span class="logo-item">Hustle Fund</span>
+                <span class="logo-divider">|</span>
+                <span class="logo-item">Sancus</span>
+                <span class="logo-divider">|</span>
+                <span class="logo-item">Shrug</span>
+                <span class="logo-divider">|</span>
+                <span class="logo-item">Two Sigma Ventures</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+ 
+<!-- This div creates the striped transition effect -->
+<div class="striped-transition"></div>
+
+
+    <section id="features">
+        <div class="features-container">
+            <div class="features-left">
+                <div class="features-overline reveal-on-scroll">Focus on deals, not admin, while delivering more to your investors</div>
+                <h2 class="features-heading reveal-on-scroll">Elevate investor experiences</h2>
+                
+                <div class="accordion reveal-on-scroll">
+                    <div class="accordion-item active" data-tab="1">
+                        <div class="accordion-title">Elevate investor experiences</div>
+                        <div class="accordion-content">
+                            <div class="accordion-desc">Simplify onboarding with a digital-first process, and give LPs a single, secure portal to access documents, fulfill capital calls, and receive distributions—no back-and-forth, no friction.</div>
+                            
+                        </div>
+                        <div class="progress-bar"></div>
+                    </div>
+                    
+                    <div class="accordion-item" data-tab="2">
+                        <div class="accordion-title">Manage portfolio performance</div>
+                        <div class="accordion-content">
+                            <div class="accordion-desc">Track performance metrics, initiate capital calls, and engage with investors, all within a modern platform backed by white-glove support.</div>
+                            
+                        </div>
+                        <div class="progress-bar"></div>
+                    </div>
+                    
+                    <div class="accordion-item" data-tab="3">
+                        <div class="accordion-title">Keep financials accurate and accessible</div>
+                        <div class="accordion-content">
+                            <div class="accordion-desc">Ensure accurate data and reporting with accountant-verified financial records, accessible directly through your dashboard for full transparency.</div>
+                            
+                        </div>
+                        <div class="progress-bar"></div>
+                    </div>
+                    
+                    <div class="accordion-item" data-tab="4">
+                        <div class="accordion-title">Receive compliance and tax support</div>
+                        <div class="accordion-content">
+                            <div class="accordion-desc">From fund formation to AML/KYC and year-end tax filings, get hands-on support for every compliance need, including delivery of investor K-1s.</div>
+                            
+                        </div>
+                        <div class="progress-bar"></div>
+                    </div>
+                </div>
+            </div>
+
+           <div class="orbit-panel reveal-on-scroll revealed">
+               <img src="funds-admin-1.png" data-image="1" class="orbit-image active" alt="Fund Administration Feature 1">
+               <img src="funds-admin-2.png" data-image="2" class="orbit-image" alt="Fund Administration Feature 2">
+               <img src="funds-admin-3.png" data-image="3" class="orbit-image" alt="Fund Administration Feature 3">
+               <img src="funds-admin-4.png" data-image="4" class="orbit-image" alt="Fund Administration Feature 4">
+           </div>
+                
+                
+            </div>
+        </div>
+    </section>
+
+    <!-- Investment Vehicles Section -->
+    <section id="vehicles">
+        <div class="vehicles-container">
+            <h2 class="vehicles-heading reveal-on-scroll">Access full-service support for every investment vehicle</h2>
+            
+            <div class="vehicles-grid">
+                <div class="vehicle-card reveal-card">
+                    <i data-lucide="box" class="vehicle-icon"></i>
+                    <div class="vehicle-blob"></div>
+                    <div class="vehicle-desc">Raise capital, close deals, and manage your portfolio, while we handle your overhead and back-office.</div>
+                    <div class="vehicle-bottom">
+                        <span class="vehicle-title">Venture Funds</span>
+                        <div class="vehicle-arrow">
+                            <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vehicle-card reveal-card">
+                    <i data-lucide="crosshair" class="vehicle-icon"></i>
+                    <div class="vehicle-blob"></div>
+                    <div class="vehicle-desc">Fundraise continuously. LPs subscribe quarterly, so you can regularly accept capital.</div>
+                    <div class="vehicle-bottom">
+                        <span class="vehicle-title">Rolling Funds</span>
+                        <div class="vehicle-arrow">
+                            <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vehicle-card reveal-card">
+                    <i data-lucide="asterisk" class="vehicle-icon"></i>
+                    <div class="vehicle-blob"></div>
+                    <div class="vehicle-desc">Grow your scout program, expand your network, and increase deal flow — with no extra back-office burden.</div>
+                    <div class="vehicle-bottom">
+                        <span class="vehicle-title">Scout Funds</span>
+                        <div class="vehicle-arrow">
+                            <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="vehicle-card reveal-card">
+                    <i data-lucide="circle-dot" class="vehicle-icon"></i>
+                    <div class="vehicle-blob"></div>
+                    <div class="vehicle-desc">Raise privately on a deal-by-deal basis with proven SPV infrastructure.</div>
+                    <div class="vehicle-bottom">
+                        <span class="vehicle-title">SPVs</span>
+                        <div class="vehicle-arrow">
+                            <i data-lucide="arrow-right" style="width: 16px; height: 16px;"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section id="stats">
+        <div class="stats-overline reveal-on-scroll">A partnership built to scale with you</div>
+        <div class="stats-row">
+            <div class="stat-item reveal-on-scroll">
+                <div class="stat-number">$80.6B+</div>
+                <div class="stat-label">Capital deployed on our platform</div>
+            </div>
+            <div class="stat-item reveal-on-scroll">
+                <div class="stat-number">25K</div>
+                <div class="stat-label">Funds and syndicates supported</div>
+            </div>
+            <div class="stat-item reveal-on-scroll">
+                <div class="stat-number">72K+</div>
+                <div class="stat-label">Active investors</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials">
+        <div class="testimonials-container">
+            <div class="testimonial-carousel">
+                <div class="testimonial-slide active">
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <div class="testimonial-quote">"One of the most valuable aspects of Nexus's service is their responsive team of experts, who are always available to address our questions promptly. This proactive support has saved us significant costs and enabled us to build stronger LP relationships."</div>
+                            <div class="testimonial-attribution">
+                                <div class="testimonial-name">Layla Hassan</div>
+                                <div class="testimonial-role">General Partner, Meridian Ventures</div>
+                                <div class="testimonial-logo">MERIDIAN</div>
+                            </div>
+                        </div>
+                        <div class="testimonial-photo">
+                            <div class="person-silhouette">
+                                <div class="person-head"></div>
+                                <div class="person-body"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-slide">
+                    <div class="testimonial-card">
+                        <div class="testimonial-content">
+                            <div class="testimonial-quote">"For Fund II, we transitioned to a traditional closed-end structure with institutional support. We worked closely with Nexus throughout, and their team was incredible in supporting that transition."</div>
+                            <div class="testimonial-attribution">
+                                <div class="testimonial-name">Omar Siddiqui</div>
+                                <div class="testimonial-role">Partner & Platform Director, GTMfund</div>
+                                <div class="testimonial-logo">GTMfund</div>
+                            </div>
+                        </div>
+                        <div class="testimonial-photo">
+                            <div class="person-silhouette">
+                                <div class="person-head"></div>
+                                <div class="person-body"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="testimonial-nav">
+                <div class="nav-arrow" data-direction="prev">
+                    <i data-lucide="chevron-left" style="width: 18px; height: 18px;"></i>
+                </div>
+                <div class="nav-arrow" data-direction="next">
+                    <i data-lucide="chevron-right" style="width: 18px; height: 18px;"></i>
+                </div>
+            </div>
+
+            <div class="testimonial-dots">
+                <div class="dot active" data-slide="0"></div>
+                <div class="dot" data-slide="1"></div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section id="cta">
+        <div class="cta-card reveal-on-scroll">
+            <h2 class="cta-heading">Ready to launch your fund?</h2>
+            <p class="cta-subtext">Run your fund confidently. Streamline your setup, automate operations, access transparent reporting, and gain full-service support for any fund size or stage.</p>
+            <a href="contact-sales.html" class="cta-button">Talk to an expert</a>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section id="faq">
+        <div class="faq-container">
+            <div class="faq-overline reveal-on-scroll">• FAQ</div>
+            <h2 class="faq-heading reveal-on-scroll">Your questions answered</h2>
+
+            <div class="faq-list">
+                <div class="faq-item reveal-on-scroll">
+                    <div class="faq-question">
+                        <span>What types of fund managers use Nexus for fund administration?</span>
+                        <i data-lucide="plus" class="faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-text">A wide range of investors rely on Nexus, including institutional funds, solo GPs, and established venture capital firms. Our scalable fund administration solutions support investment vehicles like Venture Funds, SPVs, Rolling Funds, and Scout Funds.</div>
+                    </div>
+                </div>
+
+                <div class="faq-item reveal-on-scroll">
+                    <div class="faq-question">
+                        <span>How does Nexus support funds raising institutional capital?</span>
+                        <i data-lucide="plus" class="faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-text">Nexus supports venture capital funds raising institutional capital with a full-stack, white-glove approach. We provide dedicated account management, an institutional investor relations team, audit support, and quarterly financial statements.</div>
+                    </div>
+                </div>
+
+                <div class="faq-item reveal-on-scroll">
+                    <div class="faq-question">
+                        <span>How does Nexus simplify venture capital operations?</span>
+                        <i data-lucide="plus" class="faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-text">Rather than pairing piecemeal spreadsheets and service providers, Nexus centralizes operations across the fund lifecycle — from marketing your fund through a branded data room, to initiating capital calls, managing your portfolio, and downloading accountant-verified financial statements.</div>
+                    </div>
+                </div>
+
+                <div class="faq-item reveal-on-scroll">
+                    <div class="faq-question">
+                        <span>What makes Nexus a top fund administrator for venture capital?</span>
+                        <i data-lucide="plus" class="faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-text">Nexus offers tech-enabled, premium service for funds and syndicates. Our fund administration infrastructure flexibly supports a range of VC firms — from all-in-one fund management for solo GPs to dedicated, white-glove support for institutional firms and their investors.</div>
+                    </div>
+                </div>
+
+                <div class="faq-item reveal-on-scroll">
+                    <div class="faq-question">
+                        <span>How does Nexus help emerging managers with full-stack launch support?</span>
+                        <i data-lucide="plus" class="faq-icon"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <div class="faq-answer-text">For many emerging managers, Nexus can enable funds to launch in as little as 2 weeks with full-stack support. This structure reduces legal costs, speeds time to launch, and eliminates the need to build a back office from scratch.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-top">
+                <div class="footer-brand">Nexus</div>
+                <div class="footer-buttons">
+                    <a href="contact-sales.html" class="footer-btn footer-btn-primary">Contact sales</a>
+                    <a href="/login" class="footer-btn footer-btn-secondary">Sign in</a>
+                </div>
+            </div>
+
+            <div class="footer-links">
+                <div class="footer-column">
+                    <h4>Products</h4>
+                    <ul>
+                        <li><a href="#">Fund Administration</a></li>
+                        <li><a href="#">Venture Funds</a></li>
+                        <li><a href="#">Rolling Funds</a></li>
+                        <li><a href="#">Scout Funds</a></li>
+                        <li><a href="#">SPVs</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Platform</h4>
+                    <ul>
+                        <li><a href="#">Investor Management</a></li>
+                        <li><a href="#">Data Room</a></li>
+                        <li><a href="#">Digital Subscriptions</a></li>
+                        <li><a href="#">Analytics</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">Education Center</a></li>
+                        <li><a href="#">Data Center</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h4>Company</h4>
+                    <ul>
+                        <li><a href="#">About Us</a></li>
+                        <li><a href="#">Careers</a></li>
+                        <li><a href="#">Engineering</a></li>
+                        <li><a href="pricing.html">Pricing</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-legal">
+                    <a href="#">Terms</a>
+                    <a href="#">Privacy</a>
+                    <a href="#">Disclosures</a>
+                </div>
+                <div class="footer-copyright">© 2025 Nexus Inc.</div>
+                <div class="footer-social">
+                    <a href="#"><i data-lucide="twitter" style="width: 18px; height: 18px;"></i></a>
+                    <a href="#"><i data-lucide="linkedin" style="width: 18px; height: 18px;"></i></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // ============================================
+        // MOBILE NAVIGATION TOGGLE
+        // ============================================
+        const hamburger = document.getElementById('navbar-hamburger');
+        const mobileNavOverlay = document.getElementById('mobile-nav-overlay');
+        const mobileNavClose = document.getElementById('mobile-nav-close');
+
+        hamburger.addEventListener('click', () => {
+            if (mobileNavOverlay.classList.contains('open')) {
+                mobileNavOverlay.classList.remove('open');
+                document.body.style.overflow = '';
+            } else {
+                mobileNavOverlay.classList.add('open');
+                document.body.style.overflow = 'hidden';
+            }
+        });
+
+        mobileNavClose.addEventListener('click', () => {
+            mobileNavOverlay.classList.remove('open');
+            document.body.style.overflow = '';
+        });
+
+        // Close mobile nav when clicking outside
+        mobileNavOverlay.addEventListener('click', (e) => {
+            if (e.target === mobileNavOverlay) {
+                mobileNavOverlay.classList.remove('open');
+                document.body.style.overflow = '';
+            }
+        });
+
+        // ============================================
+        // SHOWCASE CARDS ANIMATION
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const showcaseCards = document.querySelectorAll('.navbar-dropdown-showcase-card-g1');
+
+            showcaseCards.forEach(card => {
+                card.addEventListener('mouseenter', () => {
+                    const video = card.querySelector('video');
+                    if (video) {
+                        video.play();
+                    }
+                });
+
+                card.addEventListener('mouseleave', () => {
+                    const video = card.querySelector('video');
+                    if (video) {
+                        video.pause();
+                        video.currentTime = 0;
+                    }
+                });
+            });
+        });
+
+        // ============================================
+        // NAVBAR SCROLL BEHAVIOR
+        // ============================================
+        const navbar = document.getElementById('navbar');
+        let lastScrollY = window.scrollY;
+
+        function updateNavbar() {
+            const scrollY = window.scrollY;
+
+            if (scrollY > 20) {
+                navbar.classList.add('scrolled');
+
+                // Determine if we're on a dark or light section
+                const heroSection = document.getElementById('hero');
+                const heroRect = heroSection.getBoundingClientRect();
+
+                if (heroRect.bottom > 100) {
+                    // Still on hero (dark section)
+                    navbar.classList.add('scrolled-on-dark');
+                    navbar.classList.remove('scrolled-on-light');
+                } else {
+                    // On light section
+                    navbar.classList.add('scrolled-on-light');
+                    navbar.classList.remove('scrolled-on-dark');
+                }
+            } else {
+                navbar.classList.remove('scrolled');
+                navbar.classList.remove('scrolled-on-light');
+                navbar.classList.remove('scrolled-on-dark');
+            }
+
+            lastScrollY = scrollY;
+        }
+
+        window.addEventListener('scroll', updateNavbar);
+        updateNavbar();
+
+        // ============================================
+        // DROPDOWN WINDOW SHOW/HIDE WITH GROUP CONTROL
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const dropdownWindow = document.querySelector('.navbar-dropdown-window');
+            const navbarNav = document.querySelector('.navbar-nav');
+            const navbar = document.querySelector('.navbar');
+            const navLinks = document.querySelectorAll('.navbar-link:not([href*="pricing"])');
+            const groups = {
+                products: document.querySelector('.navbar-dropdown-group-products'),
+                solutions: document.querySelector('.navbar-dropdown-group-solutions'),
+                resources: document.querySelector('.navbar-dropdown-group-resources')
+            };
+
+            let hideTimeout;
+            let currentActiveGroup = null;
+            let activeLink = null; // Track which link is currently active
+
+            function showDropdown(groupName) {
+                clearTimeout(hideTimeout);
+
+                // Hide all groups
+                Object.values(groups).forEach(group => {
+                    if (group) group.classList.remove('active');
+                });
+
+                // Show the requested group
+                if (groups[groupName]) {
+                    groups[groupName].classList.add('active');
+                    currentActiveGroup = groupName;
+                }
+
+                if (dropdownWindow) {
+                    dropdownWindow.style.maxHeight = 'max-content';
+                }
+            }
+
+            function hideDropdown() {
+                // Don't schedule hide if there's an active link
+                if (activeLink) return;
+
+                clearTimeout(hideTimeout);
+                hideTimeout = setTimeout(() => {
+                    // Double-check in case activeLink was set during the delay
+                    if (activeLink) return;
+
+                    // Hide all groups
+                    Object.values(groups).forEach(group => {
+                        if (group) group.classList.remove('active');
+                    });
+
+                    if (dropdownWindow) {
+                        dropdownWindow.style.maxHeight = '0';
+                    }
+                    currentActiveGroup = null;
+                }, 300);
+            }
+
+            // Map each navbar link to its corresponding group
+            const linkGroupMap = {
+                0: 'products',    // First link (Products)
+                1: 'solutions',    // Second link (Solutions)
+                2: 'resources'     // Third link (Resources - Pricing is excluded from selection)
+            };
+
+            navLinks.forEach((link, index) => {
+                if (linkGroupMap[index]) {
+                    // Hover functionality
+                    link.addEventListener('mouseenter', () => {
+                        if (!activeLink) {
+                            showDropdown(linkGroupMap[index]);
+                        }
+                    });
+                    link.addEventListener('mouseleave', () => {
+                        if (!activeLink) {
+                            hideDropdown();
+                        }
+                    });
+
+                    // Click functionality
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+
+                        if (activeLink === link) {
+                            // Clicking the same link again closes it
+                            activeLink = null;
+                            link.classList.remove('active');
+                            hideDropdown();
+                        } else {
+                            // Switching to a different link
+                            if (activeLink) {
+                                activeLink.classList.remove('active');
+                            }
+                            activeLink = link;
+                            link.classList.add('active');
+                            showDropdown(linkGroupMap[index]);
+                        }
+                    });
+                }
+            });
+
+            if (dropdownWindow) {
+                dropdownWindow.addEventListener('mouseenter', () => {
+                    clearTimeout(hideTimeout);
+                });
+                dropdownWindow.addEventListener('mouseleave', () => {
+                    if (!activeLink) {
+                        hideDropdown();
+                    }
+                });
+            }
+
+            // Close dropdown when clicking outside (but not on navbar items)
+            document.addEventListener('click', (e) => {
+                if (activeLink && !navbar.contains(e.target)) {
+                    activeLink.classList.remove('active');
+                    activeLink = null;
+                    hideDropdown();
+                }
+            });
+        });
+
+          // ============================================
+          // NAVBAR SHOWCASE VIDEO HOVER CONTROL
+          // ============================================
+          document.addEventListener('DOMContentLoaded', function() {
+              const showcaseCards = document.querySelectorAll('.navbar-dropdown-showcase-card-g1');
+              const dropdownWindow = document.querySelector('.navbar-dropdown-window');
+              
+              showcaseCards.forEach((card, index) => {
+                  const video = card.querySelector('video');
+                  if (!video) return;
+                  
+                  let animationFrameId = null;
+                  
+                  // Wait for video metadata to load
+                  video.addEventListener('loadedmetadata', function() {
+                      video.load();
+                  });
+                  
+                  // Initialize video to start
+                  video.currentTime = 0;
+                  video.muted = true;
+                  
+                  function playVideoForward() {
+                      playbackDirection = 1;
+                      video.playbackRate = 1;
+                      
+                      // Stop any existing animation
+                      if (animationFrameId) {
+                          cancelAnimationFrame(animationFrameId);
+                          animationFrameId = null;
+                      }
+                      
+                      // Enforce dropdown stays open
+                      if (dropdownWindow) {
+                          dropdownWindow.style.setProperty('max-height', 'max-content', 'important');
+                      }
+                      
+                      // Play the video forward
+                      if (video.paused) {
+                          video.play().catch(function(err) {});
+                      }
+                  }
+                  
+                  function playVideoReverse() {
+                      // Only reverse if video has been played (currentTime > 0)
+                      if (video.currentTime <= 0) {
+                          return;
+                      }
+                      
+                      playbackDirection = -1;
+                      
+                      // Stop any existing animation
+                      if (animationFrameId) {
+                          cancelAnimationFrame(animationFrameId);
+                          animationFrameId = null;
+                      }
+                      
+                      // Pause the video first
+                      video.pause();
+                      
+                      // Play video in reverse by manipulating currentTime
+                      function reverse() {
+                          video.currentTime = Math.max(0, video.currentTime - 0.05);
+                          
+                          if (video.currentTime > 0) {
+                              animationFrameId = requestAnimationFrame(reverse);
+                          } else {
+                              animationFrameId = null;
+                          }
+                      }
+                      
+                      reverse();
+                  }
+                  
+                  // Add hover listeners to the card
+                  card.addEventListener('mouseenter', function(e) {
+                      // Keep dropdown open when hovering over card
+                      if (dropdownWindow) {
+                          dropdownWindow.style.setProperty('max-height', 'max-content', 'important');
+                      }
+                      playVideoForward();
+                  });
+                  card.addEventListener('mouseleave', function(e) {
+                      playVideoReverse();
+                  });
+              });
+          });
+        // ============================================
+        // PAGE LOAD ANIMATIONS — NAVBAR ITEMS
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const navLinks = document.querySelectorAll('.navbar-link, .navbar-signin, .navbar-cta');
+
+            navLinks.forEach((link, index) => {
+                link.style.opacity = '0';
+                link.style.transform = 'translateY(-8px)';
+                link.style.transition = 'opacity 400ms cubic-bezier(0.16, 1, 0.3, 1), transform 400ms cubic-bezier(0.16, 1, 0.3, 1)';
+
+                setTimeout(() => {
+                    link.style.opacity = '1';
+                    link.style.transform = 'translateY(0)';
+                }, 100 + (index * 80));
+            });
+        });
+
+        // ============================================
+        // BG COLOR — Per section, sharp cubic bezier step
+        // Each section triggers its own color on 50% visible
+        // Curve: steep rise/drop (no lerp, no gradual)
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function () {
+
+            const BG_STOPS = [
+                {
+                    id: 'hero',
+                    color: '#0D0E12',
+                    textPrimary: 'var(--text-inverse)',
+                    textSecondary: 'var(--text-secondary)',
+                    textMuted: 'var(--text-muted)',
+                },
+                {
+                    id: 'features',
+                    color: '#EDECE8',
+                    textPrimary: 'var(--text-primary)',
+                    textSecondary: 'var(--text-secondary)',
+                    textMuted: 'var(--text-muted)',
+                },
+                {
+                    id: 'vehicles',
+                    color: '#FFFFFF',
+                    textPrimary: 'var(--text-primary)',
+                    textSecondary: 'var(--text-secondary)',
+                    textMuted: 'var(--text-muted)',
+                },
+            ];
+
+            function setBg(stop) {
+                document.body.style.transition = 'background-color 0.8s cubic-bezier(0.87, 0, 0.13, 1), color 1s cubic-bezier(0.87, 0, 0.13, 1)';
+                document.body.style.backgroundColor = stop.color;
+                document.documentElement.style.setProperty('--text-primary', stop.textPrimary);
+                document.documentElement.style.setProperty('--text-secondary', stop.textSecondary);
+                document.documentElement.style.setProperty('--text-muted', stop.textMuted);
+            }
+
+            document.body.style.transition = 'none';
+            document.body.style.backgroundColor = '#0D0E12';
+            document.documentElement.style.setProperty('--text-primary', 'var(--text-inverse)');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (!entry.isIntersecting) return;
+                    const stop = BG_STOPS.find(s => s.id === entry.target.id);
+                    if (stop) setBg(stop);
+                });
+            }, { threshold: 0.4 });
+
+            BG_STOPS.forEach(s => {
+                const el = document.getElementById(s.id);
+                if (el) observer.observe(el);
+            });
+        });
+
+        // Initialize Lucide icons
+        lucide.createIcons();
+
+        // Initialize Lenis with smooth scrolling configuration
+        const lenis = new Lenis({
+            duration: 1,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            orientation: 'vertical',
+            gestureOrientation: 'vertical',
+            smoothWheel: true,
+            wheelMultiplier: 1.5,
+            touchMultiplier: 2,
+            infinite: false,
+        });
+
+        // Integrate Lenis with requestAnimationFrame
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+
+        requestAnimationFrame(raf);
+
+        // Optional: Add scroll progress indicator update
+        lenis.on('scroll', ({ scroll, limit }) => {
+            const progress = (scroll / limit) * 100;
+            const progressBar = document.getElementById('scroll-progress');
+            if (progressBar) {
+                progressBar.style.width = progress + '%';
+            }
+        });
+
+        // Scroll-driven background color system
+        const sections = ['hero', 'features', 'vehicles', 'stats', 'testimonials', 'cta', 'faq'];
+        const bgColors = {
+            'hero': '#0D0E12',
+            'features': '#EDECE8',
+            'vehicles': '#FFFFFF',
+            'stats': '#0D0E12',
+            'testimonials': '#EDE8F8',
+            'cta': '#EDE8F8',
+            'faq': '#F8F8FA'
+        };
+
+        const bgObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.id;
+                    document.body.style.backgroundColor = bgColors[id];
+                }
+            });
+        }, { threshold: 0.4 });
+
+        sections.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) bgObserver.observe(el);
+        });
+
+        // Reveal animations
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('revealed');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal-on-scroll, .reveal-card').forEach(el => {
+            revealObserver.observe(el);
+        });
+
+        // Feature tabs functionality
+        const accordionItems = document.querySelectorAll('.accordion-item');
+        const orbitImages = document.querySelectorAll('.orbit-image');
+
+        function showTabImages(tabNum) {
+            orbitImages.forEach(img => {
+                img.classList.remove('active');
+            });
+
+            document.querySelector(`.orbit-image[data-image="${tabNum}"]`).classList.add('active');
+        }
+
+        accordionItems.forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.stopPropagation();
+                const tabNum = item.dataset.tab;
+
+                accordionItems.forEach(i => i.classList.remove('active'));
+                item.classList.add('active');
+
+                showTabImages(tabNum);
+            });
+        });
+
+        // Initialize first tab image
+        showTabImages('1');
+
+        // Auto-advance tabs every 10 seconds
+        setInterval(() => {
+            const activeItem = document.querySelector('.accordion-item.active');
+            const currentTab = activeItem ? activeItem.dataset.tab : '1';
+            const nextTab = (parseInt(currentTab) % 4) + 1;
+            document.querySelector(`.accordion-item[data-tab="${nextTab}"]`).click();
+        }, 10000);
+
+        // Testimonial carousel
+        const slides = document.querySelectorAll('.testimonial-slide');
+        const dots = document.querySelectorAll('.dot');
+        let currentSlide = 0;
+        let autoAdvanceInterval;
+
+        function goToSlide(index) {
+            slides.forEach(slide => slide.classList.remove('active'));
+            dots.forEach(dot => dot.classList.remove('active'));
+            
+            slides[index].classList.add('active');
+            dots[index].classList.add('active');
+            currentSlide = index;
+        }
+
+        function nextSlide() {
+            const next = (currentSlide + 1) % slides.length;
+            goToSlide(next);
+        }
+
+        function prevSlide() {
+            const prev = (currentSlide - 1 + slides.length) % slides.length;
+            goToSlide(prev);
+        }
+
+        document.querySelector('[data-direction="next"]').addEventListener('click', () => {
+            nextSlide();
+            resetAutoAdvance();
+        });
+
+        document.querySelector('[data-direction="prev"]').addEventListener('click', () => {
+            prevSlide();
+            resetAutoAdvance();
+        });
+
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => {
+                goToSlide(index);
+                resetAutoAdvance();
+            });
+        });
+
+        function resetAutoAdvance() {
+            clearInterval(autoAdvanceInterval);
+            autoAdvanceInterval = setInterval(nextSlide, 6000);
+        }
+
+        autoAdvanceInterval = setInterval(nextSlide, 6000);
+
+        // FAQ accordion
+        const faqItems = document.querySelectorAll('.faq-item');
+
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question');
+            question.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+                
+                faqItems.forEach(i => i.classList.remove('active'));
+                
+                if (!isActive) {
+                    item.classList.add('active');
+                }
+            });
+        });
+
+        // Navbar scroll effect
+        let lastScroll = 0;
+        window.addEventListener('scroll', () => {
+            const currentScroll = window.pageYOffset;
+            const navbar = document.querySelector('.navbar');
+            
+            if (currentScroll > 20) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+            
+            lastScroll = currentScroll;
+        });
+    </script>
+
+    <footer class="footer" id="footer">
+        <div class="footer-inner">
+            <div class="footer-top">
+                <div class="footer-brand-section">
+                    <a href="#" class="footer-brand"><img src="logo-nexus-inverted.png" alt="Nexus" class="footer-brand-logo"></a>
+                    <div class="footer-brand-actions">
+                        <a href="contact-sales.html" class="footer-cta-small">Contact sales</a>
+                        <a href="/login" class="footer-signin-small">Sign in</a>
+                    </div>
+                </div>
+
+                <div class="footer-links-grid">
+                    <!-- Column 1: Products -->
+                    <div class="footer-column">
+                        <div class="footer-column-title">Products</div>
+                        <div class="footer-links">
+                            <a href="#" class="footer-link">Fund Administration</a>
+                            <a href="#" class="footer-link">Venture Funds</a>
+                            <a href="#" class="footer-link">Rolling Funds</a>
+                            <a href="#" class="footer-link">Scout Funds</a>
+                            <a href="#" class="footer-link">SPVs</a>
+                            <a href="#" class="footer-link">Roll Up Vehicles</a>
+                            <a href="#" class="footer-link">Investor Management</a>
+                            <a href="#" class="footer-link">Digital Subscriptions</a>
+                            <a href="#" class="footer-link">Data Room</a>
+                            <a href="#" class="footer-link">
+                                Intelligence
+                                <span class="footer-beta-pill">BETA</span>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Column 2: Pricing + Returns -->
+                    <div class="footer-column">
+                        <div class="footer-column-title">Pricing + Returns</div>
+                        <div class="footer-links">
+                            <a href="pricing.html" class="footer-link">Pricing</a>
+                            <a href="#" class="footer-link">VC Fund Performance Calculator</a>
+                            <a href="#" class="footer-link">RUV Calculator</a>
+                        </div>
+                    </div>
+
+                    <!-- Column 3: Resources -->
+                    <div class="footer-column">
+                        <div class="footer-column-title">Resources</div>
+                        <div class="footer-links">
+                            <a href="#" class="footer-link">Learn</a>
+                            <a href="#" class="footer-link">Blog</a>
+                            <a href="#" class="footer-link">Help Center</a>
+                            <a href="#" class="footer-link">Education Center</a>
+                            <a href="#" class="footer-link">Data Center</a>
+                            <a href="#" class="footer-link">About Us</a>
+                            <a href="#" class="footer-link">Careers</a>
+                            <a href="#" class="footer-link">Engineering</a>
+                        </div>
+                    </div>
+
+                    <!-- Column 4: By Nexus -->
+                    <div class="footer-column">
+                        <div class="footer-column-title">By Nexus</div>
+                        <div class="footer-links">
+                            <a href="#" class="footer-link">
+                                Rollups
+                                <i data-lucide="external-link"></i>
+                            </a>
+                            <a href="#" class="footer-link">
+                                Meridian
+                                <i data-lucide="external-link"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <div class="footer-legal">
+                    <a href="#" class="footer-link">Terms</a>
+                    <span class="footer-legal-separator">·</span>
+                    <a href="#" class="footer-link">Privacy</a>
+                    <span class="footer-legal-separator">·</span>
+                    <a href="#" class="footer-link">Disclosures</a>
+                    <span class="footer-legal-separator">·</span>
+                    <a href="#" class="footer-link">Cookie Settings</a>
+                    <span class="footer-legal-separator">·</span>
+                    <span>© 2026 AL Advisors Management Inc.</span>
+                </div>
+
+                <div class="footer-social">
+                    <a href="#" class="footer-social-link" aria-label="Twitter">
+                        <i data-lucide="twitter"></i>
+                    </a>
+                    <a href="#" class="footer-social-link" aria-label="LinkedIn">
+                        <i data-lucide="linkedin"></i>
+                    </a>
+                </div>
+
+
+            </div>
+
+            <div class="footer-disclaimer">
+                The information contained herein is provided for informational and discussion purposes only and is not intended to be a recommendation for any investment, service, product, or other advice of any kind. Any investment opportunities and/or products or services shown here will only be completed pursuant to formal offering materials. Quotes included in these materials should not be construed as an endorsement of Nexus's advice, analysis, or other service rendered to its clients.
+            </div>
+
+        </div>
+    </footer>
+</body>
+</html>

@@ -265,7 +265,8 @@ document.addEventListener('DOMContentLoaded', function () {
             /* Easing Curves */
             --ease-out-expo: cubic-bezier(0.93, 0.59, 0.11, 1.3);
             --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
-            --ease-out: cubic-bezier(0, 0, 0.2, 1);
+            --custom-curve:cubic-bezier(1, 2.07, 0.06, 0.66);
+            --ease-out: cubic-bezier(0.85, 0.02, 0.5, 0.97);
         }
 
         /* Custom Font - Mileast */
@@ -562,107 +563,325 @@ height: stretch;
             display: flex;
             align-items: center;
             position: relative;
+            gap: 3px;
         }
+
+        .navbar-dropdown-showcase-card-g2 .navbar-dropdown-showcase-image{
+            width: stretch !important;
+            height: stretch !important;
+            max-width: 400px;
+        }
+        .navbar-dropdown-showcase-card-g3 .navbar-dropdown-showcase-image{
+            width: stretch !important;
+            height: stretch !important;
+            max-width: 200px !important;
+            aspect-ratio: 16/9;
+        }
+        .showcase-wrapper-group-3{
+            align-self: center;
+        }
+        /* ============================================
+           NAVBAR DROPDOWN WINDOW (Main Container)
+           ============================================ */
         .navbar-dropdown-window {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            max-height: 0;
-            overflow: hidden;
-            background: white;
-            transition: max-height 300ms var(--ease-out);
-            z-index: 1000;
+       position: absolute;
+    top: calc(60px + 0.5rem);
+    left: 50%;
+    transform: translateX(-45%);
+    width: 90vw;
+    max-width: 1000px;
+    max-height: 0;
+    overflow: hidden;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.12);
+    transition: max-height 300ms var(--ease-out);
+    z-index: 100;
         }
-        .navbar-dropdown-window.active {
-            max-height: 300px;
-        }
-        .navbar-dropdown-content {
-            display: flex;
-            gap: 32px;
-            padding: 24px;
-            justify-content: center;
-        }
-        .navbar-dropdown-group {
-            min-width: 160px;
-        }
-        .navbar-dropdown-group h4 {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--text-tertiary);
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            margin-bottom: 12px;
-        }
-        .navbar-dropdown-group a {
-            display: block;
-            color: var(--text-primary);
-            font-size: 14px;
-            padding: 6px 0;
-            transition: color var(--transition-fast);
-        }
-        .navbar-dropdown-group a:hover {
-            color: var(--primary-500);
-        }
+
         .navbar-nav:has(.navbar-link:hover) .navbar-dropdown-window {
-            max-height: 300px;
+            max-height:max-content;
         }
+
         .navbar-link[href*="pricing"]:hover ~ .navbar-dropdown-window {
-            max-height: 0;
+            max-height: max-content !important;
         }
-        .navbar-dropdown-window {
-            position: absolute;
-            top: 100%;
-            left: 0;
-            width: 100%;
-            max-height: 0;
-            overflow: hidden;
-            background: white;
-            transition: max-height 0.3s ease;
-            z-index: 100;
-            box-shadow: var(--shadow-lg);
+
+        /* ============================================
+           NAVBAR DROPDOWN GROUPS
+           (Products / Solutions / Resources)
+           ============================================ */
+        .navbar-dropdown-group {
+            display: none;
         }
+
+        .navbar-dropdown-group.active {
+            display: block;
+        }
+.navbar-dropdown-showcase-card.navbar-dropdown-showcase-card-g3{
+    width: 400px;
+}
+        /* ============================================
+           DROPDOWN CONTENT WRAPPER
+           ============================================ */
         .navbar-dropdown-content {
-            display: flex;
-            gap: 48px;
-            justify-content: center;
-            padding: 32px;
-            max-width: 900px;
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            padding: 20px;
+            min-height: 350px;
+            justify-items: center;
+            width: fit-content;
             margin: 0 auto;
         }
-        .navbar-dropdown-group h4 {
+
+        /* ============================================
+           DROPDOWN COLUMNS
+           ============================================ */
+        .navbar-dropdown-column {
+display: flex;
+    flex-direction: column;
+    gap: 16px;
+    width: 182px;
+        }
+
+        .navbar-dropdown-column.navbar-dropdown-showcase {
+    gap: 12px;
+    background: #f1f3ff;
+    padding: 20px;
+    width: max-content;
+    border-radius: 8px;
+}
+
+        /* ============================================
+           SECTION TITLES
+           ============================================ */
+        .navbar-dropdown-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #999999;
+            margin: 0;
+            line-height: 1;
+        }
+
+        /* ============================================
+           DROPDOWN LIST (Container for links)
+           ============================================ */
+        .navbar-dropdown-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        /* ============================================
+           DROPDOWN LINKS
+           ============================================ */
+        .navbar-dropdown-link {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 18px;
+            font-weight: 400;
+            color: #1a1a1a;
+            text-decoration: none;
+            transition: color 200ms var(--ease-out);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 0;
+        }
+
+        .navbar-dropdown-link:hover {
+            color: #405CFF;
+        }
+
+        .navbar-dropdown-link-inline {
+            color: #405CFF;
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 200ms var(--ease-out);
+        }
+
+        .navbar-dropdown-link-inline:hover {
+            color: #2d3fa6;
+        }
+
+        /* ============================================
+           BETA BADGE
+           ============================================ */
+        .badge-beta {
+font-size: 14px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: #999999;
+    background: #d8d8d8;
+    letter-spacing: 0.05em;
+    margin-left: 4px;
+    padding: 0px 4px;
+    border-radius: 3px;
+        }
+
+        /* ============================================
+           FOOTER TEXT (in dropdown)
+           ============================================ */
+.navbar-dropdown-footer-text {
+    font-size: 14px;
+    color: #666666;
+    margin-top: 8px;
+    line-height: 1.4;
+    position: absolute;
+    bottom: 24px;
+    left: 28px;
+    width: max-content;
+        }
+
+        /* ============================================
+           SHOWCASE SECTION (Product Cards)
+           ============================================ */
+        .navbar-dropdown-showcase-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar-dropdown-showcase-card {
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+            cursor: pointer;
+            padding-top:20px ;
+            transition: transform 200ms var(--ease-out);
+        }
+
+        
+        .navbar-dropdown-showcase-card-single {
+            flex-direction: row;
+            gap: 12px;
+            align-items: flex-start;
+        }
+
+        .navbar-dropdown-showcase-card-content {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            width: 100%;
+        }
+
+        .navbar-dropdown-showcase-card-g1 .navbar-dropdown-showcase-image{
+            width: 130px;
+        }
+        /* ============================================
+           SHOWCASE IMAGE PLACEHOLDER
+           ============================================ */
+        .navbar-dropdown-showcase-image {
+            height: -webkit-fill-available;
+            aspect-ratio: 1/1;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+.navbar-dropdown-showcase-card-g2{
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    .navbar-dropdown-showcase-image{
+        width: max-content !important;
+        aspect-ratio: 16/9;
+        border-radius: 6px;
+    }
+}
+        .navbar-dropdown-showcase-card-single .navbar-dropdown-showcase-image {
+            width: stretch !important;
+
+            aspect-ratio: 3 / 2;
+            min-width: 120px;
+            border-radius: 6px;
+        }
+
+        /* ============================================
+           SHOWCASE TITLE
+           ============================================ */
+        .navbar-dropdown-showcase-title {
+font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    color: #1a1a1a;
+    margin: 0;
+    line-height: 1.3;
+}
+
+
+        /* ============================================
+           SHOWCASE DESCRIPTION & TAG
+           ============================================ */
+        .navbar-dropdown-showcase-description {
+            font-family: 'DM Sans', sans-serif;
             font-size: 12px;
+            color: #666666;
+            margin: 0;
+            line-height: 1.4;
+        }
+
+        .navbar-dropdown-showcase-tag {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 10px;
             font-weight: 600;
             text-transform: uppercase;
+            color: #999999;
+            margin: 0;
             letter-spacing: 0.05em;
-            color: var(--text-tertiary);
-            margin-bottom: 12px;
         }
-        .navbar-dropdown-group a {
-            display: block;
-            color: var(--text-primary);
-            font-size: 14px;
-            padding: 6px 0;
-        }
-        .navbar-dropdown-group a:hover {
-            color: var(--primary-500);
-        }
-        .navbar-link:hover{
-            background: #E6E6F2;
-            color: #20243b !important;
-        }
+
+        /* ============================================
+           NAVBAR LINK STYLING
+           ============================================ */
         .navbar-link {
-     font-family: 'DM Sans', sans-serif;
-    font-size: 16px;
-    font-weight: 400;
-    display: flex;
-    align-items: center;
-    transition: color var(--transition-base);
-    white-space: nowrap;
-    padding: 9px 18px;
-    border-radius: 30px;
-    position: relative;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 16px;
+            font-weight: 400;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 200ms var(--custom-curve) !important;
+            white-space: nowrap;
+            padding: 9px 18px;
+            border-radius: 30px;
+            position: relative;
+            color: aliceblue;
         }
+
+        .navbar-link:hover {
+            background: #E6E6F2;
+    color: #20243b !important;
+    transition: all 300ms var(--ease-in-out) !important;
+        }
+.navbar-link.active .navbar-dropdown-content{
+    outline: 1px solid #3e00ff;
+    outline-offset: -4px ;
+}
+        .navbar-link.active {
+    background-color: #405cff;
+    color: #ffffff !important;
+    font-size: 21px;
+    border-radius: 7px;
+    padding: 5px 23px;
+    outline-offset: -4px;
+    outline: 1px solid #3e00ff;
+    background-clip: border-box;
+    transition: all 200ms var(--custom-curve) !important;
+        }
+
+        .navbar-link svg {
+            width: 12px;
+            height: 12px;
+            opacity: 0.6;
+        }
+
+        .navbar-link:hover svg {
+            opacity: 1;
+        }
+
+        /* Old .navbar-dropdown styles - keeping for backwards compatibility if needed */
         .navbar-link:hover > .navbar-dropdown {
             opacity: 1;
             visibility: visible;
@@ -682,6 +901,7 @@ height: stretch;
             visibility: hidden;
             transition: all 200ms var(--ease-out);
             z-index: 100;
+            display: none;
         }
         .navbar-dropdown a {
             display: block;
@@ -694,22 +914,12 @@ height: stretch;
             color: var(--primary-500);
         }
         
-        .navbar-link:hover {
-            color: white;
-        }
-        
         .navbar.scrolled-on-light .navbar-link {
             color: white;
         }
         
         .navbar.scrolled-on-light .navbar-link:hover {
-            color: white;
-        }
-        
-        .navbar-link svg {
-            width: 12px;
-            height: 12px;
-            opacity: 0.5;
+            color: #20243b;
         }
         
         .navbar-actions {
@@ -726,7 +936,7 @@ height: stretch;
         
         .navbar-signin {
             font-family: 'DM Sans', sans-serif;
-            font-size: 14px;
+            font-size: 16px;
             font-weight: 400;
             color: white;
             transition: color var(--transition-fast);
@@ -746,15 +956,16 @@ height: stretch;
         }
         
         .navbar-cta {
-            font-family: 'DM Sans', sans-serif;
-            font-size: 13px;
-            font-weight: 500;
-            color: white;
-            background: #405CFF !important;
-            padding: 8px 16px;
-            border-radius: 6px;
-            transition: all var(--transition-fast);
-            white-space: nowrap;
+font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    color: white;
+    background: #405CFF !important;
+    padding: 6px 12px;
+    border-radius: 6px;
+    transition: all var(--transition-fast);
+    white-space: nowrap;
+
         }
         
         .navbar-cta:hover {
@@ -956,7 +1167,7 @@ height: stretch;
             -webkit-text-fill-color: transparent;
             background-clip: text;
             transform: translateY(100px);
-            transition: opacity 3000ms var(--ease-out), transform 1000ms var(--ease-out-expo) !important;
+            transition: opacity 1000ms var(--ease-out), transform 1000ms var(--ease-out-expo) !important;
         }
         
         .hero-headline-word.revealed {
@@ -2583,27 +2794,163 @@ display: flex;
                 <a href="pricing.html" class="navbar-link">Pricing</a>
                 <a href="#" class="navbar-link">Resources <i data-lucide="chevron-down"></i></a>
                 <div class="navbar-dropdown-window">
-                    <div class="navbar-dropdown-content">
-                        <div class="navbar-dropdown-group">
-                            <h4>Products</h4>
-                            <a href="#">Fund administration</a>
-                            <a href="#">Investor portal</a>
-                            <a href="#">Capital calls</a>
-                            <a href="#">Reporting</a>
-                        </div>
-                        <div class="navbar-dropdown-group">
-                            <h4>Solutions</h4>
-                            <a href="#">For VCs</a>
-                            <a href="#">For LPs</a>
-                            <a href="#">For family offices</a>
-                        </div>
-                        <div class="navbar-dropdown-group">
-                            <h4>Resources</h4>
-                            <a href="#">Documentation</a>
-                            <a href="#">API reference</a>
-                            <a href="#">Guides</a>
+                    
+                    <!-- PRODUCTS DROPDOWN GROUP -->
+                    <div class="navbar-dropdown-group navbar-dropdown-group-products">
+                        <div class="navbar-dropdown-content">
+                            <!-- Left Column: Fund Administration -->
+                            <div class="navbar-dropdown-column">
+                                <h4 class="navbar-dropdown-section-title">FUND ADMINISTRATION</h4>
+                                <div class="navbar-dropdown-list">
+                                    <a href="#" class="navbar-dropdown-link">Venture Funds</a>
+                                    <a href="#" class="navbar-dropdown-link">Rolling Funds</a>
+                                    <a href="#" class="navbar-dropdown-link">Scout Funds</a>
+                                    <a href="#" class="navbar-dropdown-link">SPVs</a>
+                                    <a href="#" class="navbar-dropdown-link">Roll Up Vehicles</a>
+                                    <p class="navbar-dropdown-footer-text">Looking for tools for startups? Explore <a href="#" class="navbar-dropdown-link-inline">Rollups</a></p>
+                                </div>
+                            </div>
+
+                            <!-- Center Column: Investor Management + Intelligence -->
+                            <div class="navbar-dropdown-column">
+                                <h4 class="navbar-dropdown-section-title">INVESTOR MANAGEMENT</h4>
+                                <div class="navbar-dropdown-list">
+                                    <a href="#" class="navbar-dropdown-link">Digital Subscriptions</a>
+                                    <a href="#" class="navbar-dropdown-link">Data Room</a>
+                                </div>
+                                
+                                <h4 class="navbar-dropdown-section-title" style="margin-top: 16px;">INTELLIGENCE</h4>
+                                <div class="navbar-dropdown-list">
+                                    <a href="#" class="navbar-dropdown-link">Fin <span class="badge-beta">BETA</span></a>
+                                </div>
+                                
+                                
+                            </div>
+
+                            <!-- Right Column: Product Suites Showcase -->
+                            <div class="navbar-dropdown-column navbar-dropdown-showcase">
+                                <h4 class="navbar-dropdown-section-title">PRODUCT SUITES</h4>
+                                <div class="navbar-dropdown-showcase-list">
+                                    <div class="navbar-dropdown-showcase-card navbar-dropdown-showcase-card-g1">
+                                        <div class="navbar-dropdown-showcase-image">
+                                            <!-- Image placeholder - leave for user -->
+                                             <video src="videos/Video Project 3.mp4" width="100%" height="100%" muted></video>
+                                        </div>
+                                        <div class="showcase-wrapper-group-1">
+                                        <h5 class="navbar-dropdown-showcase-title">Fund Administration</h5>
+                                        <p class="navbar-dropdown-showcase-description">All-in-one partner to launch an investment vehicle</p>
+                                        </div>
+                                    </div>
+                                    <div class="navbar-dropdown-showcase-card navbar-dropdown-showcase-card-g1">
+                                        <div class="navbar-dropdown-showcase-image">
+                                            <!-- Image placeholder - leave for user -->
+                                             <video src="videos/Video Project (1).mp4" width="100%" height="100%" muted></video>
+                                        </div>
+                                        <div class="showcase-wrapper-group-1">
+                                        <h5 class="navbar-dropdown-showcase-title">Investor Management</h5>
+                                        <p class="navbar-dropdown-showcase-description">Explore all offerings to streamline the investor experience</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
+
+                    <!-- SOLUTIONS DROPDOWN GROUP -->
+                    <div class="navbar-dropdown-group navbar-dropdown-group-solutions">
+                        <div class="navbar-dropdown-content">
+                            <!-- Left Column: By Product Suite -->
+                            <div class="navbar-dropdown-column">
+                                <h4 class="navbar-dropdown-section-title">BY PRODUCT SUITE</h4>
+                                <div class="navbar-dropdown-list">
+                                    <a href="funds-administration.html" class="navbar-dropdown-link">Fund Administration</a>
+                                    <a href="investor-management.html" class="navbar-dropdown-link">Investor Management</a>
+                                </div>
+                            </div>
+
+                            <!-- Center Column: Who We Serve -->
+                            <div class="navbar-dropdown-column">
+                                <h4 class="navbar-dropdown-section-title">WHO WE SERVE</h4>
+                                <div class="navbar-dropdown-list">
+                                    <a href="#" class="navbar-dropdown-link">Emerging Managers</a>
+                                    <a href="#" class="navbar-dropdown-link">Established Venture</a>
+                                    <a href="#" class="navbar-dropdown-link">Institutional Investors</a>
+                                    <a href="#" class="navbar-dropdown-link">Crypto</a>
+                                </div>
+                            </div>
+
+                            <!-- Right Column: Featured Use Case -->
+                            <div class="navbar-dropdown-column navbar-dropdown-showcase">
+                                <h4 class="navbar-dropdown-section-title">FEATURED USE CASE</h4>
+                                <div class="navbar-dropdown-showcase-card navbar-dropdown-showcase-card-single">
+                                    <div class="navbar-dropdown-showcase-card-content navbar-dropdown-showcase-card-g2">
+                                        <div class="navbar-dropdown-showcase-image">
+                                            <img src="https://www.rillion.com/hs-fs/hubfs/website-images/Featured/1_1_Custom%20approval%20workflows_Featured8_1080x1080.png?width=600&height=600&name=1_1_Custom%20approval%20workflows_Featured8_1080x1080.png" width="100%" height="100%" alt="Browder Capital" style="object-fit: cover; border-radius: var(--radius-lg);">
+                                            <!-- Image placeholder - leave for user -->
+                                        </div>
+                                        <div class="showcase-wrapper-group-2">
+                                        
+                                            <h5 class="navbar-dropdown-showcase-title"></h5>
+                                            <p class="navbar-dropdown-showcase-description">Switch your fund admin with confidence</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RESOURCES DROPDOWN GROUP -->
+                    <div class="navbar-dropdown-group navbar-dropdown-group-resources">
+                        <div class="navbar-dropdown-content">
+                            <!-- Left Column: Explore -->
+                            <div class="navbar-dropdown-column">
+                                <h4 class="navbar-dropdown-section-title">EXPLORE</h4>
+                                <div class="navbar-dropdown-list">
+                                    <a href="#" class="navbar-dropdown-link">Blog</a>
+                                    <a href="#" class="navbar-dropdown-link">Help Center</a>
+                                    <a href="#" class="navbar-dropdown-link">Education Center</a>
+                                    <a href="#" class="navbar-dropdown-link">Data Center</a>
+                                </div>
+                            </div>
+
+                            <!-- Center Column: Company -->
+                            <div class="navbar-dropdown-column">
+                                <h4 class="navbar-dropdown-section-title">COMPANY</h4>
+                                <div class="navbar-dropdown-list">
+                                    <a href="#" class="navbar-dropdown-link">About Us</a>
+                                    <a href="#" class="navbar-dropdown-link">Careers</a>
+                                    <a href="#" class="navbar-dropdown-link">Engineering</a>
+                                </div>
+                            </div>
+
+                            <!-- Right Column: Featured Resources -->
+                            <div class="navbar-dropdown-column navbar-dropdown-showcase">
+                                <h4 class="navbar-dropdown-section-title">FEATURED</h4>
+                                <div class="navbar-dropdown-showcase-list">
+                                    <div class="navbar-dropdown-showcase-card navbar-dropdown-showcase-card-g3">
+                                        <div class="navbar-dropdown-showcase-image">
+                                            <image src="navbar 3.png" width="100%" height="100%" alt="Fund Benchmarks Report 2025" style="object-fit: cover; border-radius: var(--radius-lg);">
+                                            <!-- Image placeholder - leave for user -->
+                                        </div>
+                                        <div class="showcase-wrapper-group-3">
+                                        <h5 class="navbar-dropdown-showcase-title">The Fund Benchmarks Report 2025</h5>
+                                        <p class="navbar-dropdown-showcase-tag">DATA CENTER</p>
+                                        </div>
+                                    </div>
+                                    <div class="navbar-dropdown-showcase-card navbar-dropdown-showcase-card-g3">
+                                        <div class="navbar-dropdown-showcase-image">
+                                            <img src="navbar 4.png" width="100%" height="100%" alt="How Browder Capital Launched Institutional Fund IV with Nexus" style="object-fit: cover; border-radius: var(--radius-lg);">
+                                            <!-- Image placeholder - leave for user -->
+                                        </div>
+                                        <div class="showcase-wrapper-group-3">
+                                        <h5 class="navbar-dropdown-showcase-title">How Browder Capital Launched Institutional Fund IV with Nexus</h5>
+                                        <p class="navbar-dropdown-showcase-tag">BLOG</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
             
@@ -3241,38 +3588,179 @@ display: flex;
         });
         
         // ============================================
-        // DROPDOWN WINDOW SHOW/HIDE WITH DELAY
+        // DROPDOWN WINDOW SHOW/HIDE WITH GROUP CONTROL
         // ============================================
         document.addEventListener('DOMContentLoaded', function() {
             const dropdownWindow = document.querySelector('.navbar-dropdown-window');
-            const triggerLinks = document.querySelectorAll('.navbar-link:not([href*="pricing"])');
+            const navbarNav = document.querySelector('.navbar-nav');
+            const navbar = document.querySelector('.navbar');
+            const navLinks = document.querySelectorAll('.navbar-link:not([href*="pricing"])');
+            const groups = {
+                products: document.querySelector('.navbar-dropdown-group-products'),
+                solutions: document.querySelector('.navbar-dropdown-group-solutions'),
+                resources: document.querySelector('.navbar-dropdown-group-resources')
+            };
+            
             let hideTimeout;
+            let currentActiveGroup = null;
+            let activeLink = null; // Track which link is currently active
 
-            function showDropdown() {
+            function showDropdown(groupName) {
                 clearTimeout(hideTimeout);
+                
+                // Hide all groups
+                Object.values(groups).forEach(group => {
+                    if (group) group.classList.remove('active');
+                });
+                
+                // Show the requested group
+                if (groups[groupName]) {
+                    groups[groupName].classList.add('active');
+                    currentActiveGroup = groupName;
+                }
+                
                 if (dropdownWindow) {
-                    dropdownWindow.style.maxHeight = '300px';
+                    dropdownWindow.style.maxHeight = 'max-content';
                 }
             }
 
             function hideDropdown() {
                 clearTimeout(hideTimeout);
                 hideTimeout = setTimeout(() => {
+                    // Hide all groups
+                    Object.values(groups).forEach(group => {
+                        if (group) group.classList.remove('active');
+                    });
+                    
                     if (dropdownWindow) {
                         dropdownWindow.style.maxHeight = '0';
                     }
-                }, 500);
+                    currentActiveGroup = null;
+                }, 300);
             }
 
-            triggerLinks.forEach(link => {
-                link.addEventListener('mouseenter', showDropdown);
-                link.addEventListener('mouseleave', hideDropdown);
+            // Map each navbar link to its corresponding group
+            const linkGroupMap = {
+                0: 'products',    // First link (Products)
+                1: 'solutions',    // Second link (Solutions)
+                2: 'resources'     // Third link (Resources - Pricing is excluded from selection)
+            };
+
+            navLinks.forEach((link, index) => {
+                if (linkGroupMap[index]) {
+                    // Hover functionality
+                    link.addEventListener('mouseenter', () => {
+                        if (!activeLink) {
+                            showDropdown(linkGroupMap[index]);
+                        }
+                    });
+                    link.addEventListener('mouseleave', () => {
+                        if (!activeLink) {
+                            hideDropdown();
+                        }
+                    });
+                    
+                    // Click functionality
+                    link.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        
+                        if (activeLink === link) {
+                            // Clicking the same link again closes it
+                            activeLink = null;
+                            link.classList.remove('active');
+                            hideDropdown();
+                        } else {
+                            // Switching to a different link
+                            if (activeLink) {
+                                activeLink.classList.remove('active');
+                            }
+                            activeLink = link;
+                            link.classList.add('active');
+                            showDropdown(linkGroupMap[index]);
+                        }
+                    });
+                }
             });
 
             if (dropdownWindow) {
-                dropdownWindow.addEventListener('mouseenter', showDropdown);
-                dropdownWindow.addEventListener('mouseleave', hideDropdown);
+                dropdownWindow.addEventListener('mouseenter', () => {
+                    clearTimeout(hideTimeout);
+                });
+                dropdownWindow.addEventListener('mouseleave', () => {
+                    if (!activeLink) {
+                        hideDropdown();
+                    }
+                });
             }
+            
+            // Close dropdown when clicking outside (but not on navbar items)
+            document.addEventListener('click', (e) => {
+                if (activeLink && !navbar.contains(e.target)) {
+                    activeLink.classList.remove('active');
+                    activeLink = null;
+                    hideDropdown();
+                }
+            });
+        });
+
+        // ============================================
+        // NAVBAR SHOWCASE VIDEO HOVER CONTROL
+        // ============================================
+        document.addEventListener('DOMContentLoaded', function() {
+            const showcaseCards = document.querySelectorAll('.navbar-dropdown-showcase-card-g1');
+            
+            showcaseCards.forEach(card => {
+                const video = card.querySelector('video');
+                if (!video) return;
+                
+                let isPlaying = false;
+                let playbackDirection = 1; // 1 for forward, -1 for reverse
+                let animationFrameId = null;
+                
+                // Initialize video to start
+                video.currentTime = 0;
+                
+                function playVideoForward() {
+                    playbackDirection = 1;
+                    video.playbackRate = 1;
+                    
+                    // Stop any existing animation
+                    if (animationFrameId) {
+                        cancelAnimationFrame(animationFrameId);
+                    }
+                    
+                    // Play the video forward
+                    if (video.paused) {
+                        video.play().catch(err => console.log('Play error:', err));
+                    }
+                }
+                
+                function playVideoReverse() {
+                    playbackDirection = -1;
+                    
+                    // Stop any existing animation
+                    if (animationFrameId) {
+                        cancelAnimationFrame(animationFrameId);
+                    }
+                    
+                    // Play video in reverse by manipulating currentTime
+                    function reverse() {
+                        video.pause();
+                        video.currentTime = Math.max(0, video.currentTime - 0.05);
+                        
+                        if (video.currentTime > 0) {
+                            animationFrameId = requestAnimationFrame(reverse);
+                        }
+                    }
+                    
+                    reverse();
+                }
+                
+                // Add hover listeners to the card
+                card.addEventListener('mouseenter', playVideoForward);
+                card.addEventListener('mouseleave', playVideoReverse);
+            });
         });
 
         // ============================================
