@@ -526,6 +526,11 @@
     }
     
 }
+@media(max-width:1024px){
+    .auth-page-background {
+        display: none;
+    }
+}
 /* Mobile auth header - positions at top when panel is open */
 @media (max-width: 480px) {
   .login-page-header {
