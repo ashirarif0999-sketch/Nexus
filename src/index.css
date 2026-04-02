@@ -521,7 +521,8 @@
 }
 @media(max-width:480px){
     .register-page-container, .login-page-container{
-       height: 125vh;
+       height: 112vh;
+       overflow: hidden;
     }
     
 }
@@ -529,6 +530,7 @@
 @media (max-width: 480px) {
   .login-page-header {
     position: relative;
+    top: 70px;
     transition: all 0.5s ease-out;
   }
 
@@ -653,7 +655,7 @@
   }
   .mobile-expand-btn {
     position: absolute;
-    bottom: 4rem;
+    bottom: 0rem;
     width: -webkit-fill-available;
     background:transparent;
     z-index: 1;
