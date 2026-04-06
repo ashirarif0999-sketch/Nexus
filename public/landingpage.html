@@ -320,6 +320,8 @@
         .reveal-on-scroll.revealed {
             opacity: 1;
             transform: translateY(0);
+            position: relative;
+            z-index: 1;
         }
         
         .reveal-label {
@@ -1317,9 +1319,26 @@ font-family: 'DM Sans', sans-serif;
            SECTION 3 — FULL SERVICE CARD
            ============================================ */
         .full-service {
+            position: relative;
             padding: 80px 0;
             transition: background-color 300ms var(--ease-in-out);
+            z-index: 1;
         }
+
+        .squiggle-container {
+            position: absolute;
+            top: 100px;
+            justify-self: center;
+            width: 100%;
+            min-width: 1920px;
+            max-width: 1920px;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            overflow: visible;
+        }
+
+        
         
         .full-service-inner {
             max-width: 1200px;
@@ -1498,6 +1517,7 @@ display: flex;
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 25px;
+            z-index:1;
         }
         
         .stats-number-cell {
@@ -3079,6 +3099,19 @@ display: flex;
                     
                 </div>
             </div>
+            <div class="squiggle-container" data-animation-speed="0.2" style="z-index:-1;">
+                <svg width="1235" height="1515" viewBox="0 0 1235 1515" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto;">
+<path d="M544.719 54.0129C544.719 54.0129 573.78 166.861 512.759 205.013C451.738 243.165 426.392 204.664 351.759 169.013C277.126 133.363 175.759 151.513 127.259 205.013C78.7588 258.513 35.4292 403.011 62.1844 488.072C88.9396 573.132 174.369 651.938 271.533 681.959C368.696 711.981 544.718 681.959 619.82 591.27C694.923 500.58 638.127 142.826 900.047 149.706C1161.97 156.586 1243.64 446.167 1131.46 716.359C1019.27 986.551 836.209 862.713 766.27 850.83C696.331 838.946 632.494 850.83 563.024 887.731C493.554 924.632 424.085 1055.35 420.33 1147.29C416.574 1239.23 420.33 1263.94 438.166 1336.17C456.003 1408.41 483.698 1460.01 483.698 1460.01" stroke="url(#paint0_linear_2013_5)" stroke-width="108" stroke-linecap="round"/>
+<defs>
+<linearGradient id="paint0_linear_2013_5" x1="548.604" y1="54.0132" x2="548.604" y2="1460.01" gradientUnits="userSpaceOnUse">
+<stop stop-color="#CCD3FF"/>
+<stop offset="0.514423" stop-color="#415DFD"/>
+<stop offset="1" stop-color="#8093FE"/>
+</linearGradient>
+</defs>
+</svg>
+
+            </div>
         </div>
     </section>
     
@@ -4563,7 +4596,48 @@ document.addEventListener('DOMContentLoaded', () => {
        
         window.addEventListener('load', function() {
             lucide.createIcons();
+            initSquiggleAnimation();
         });
+
+        // Squiggle SVG Scroll-Driven Animation with GSAP & ScrollTrigger
+        function initSquiggleAnimation() {
+            const squiggleSvg = document.querySelector('.squiggle-container svg');
+            const squigglePath = squiggleSvg ? squiggleSvg.querySelector('path') : null;
+            const squiggleContainer = document.querySelector('.squiggle-container');
+            const fullServiceSection = document.getElementById('full-service');
+            
+            if (!squigglePath || !fullServiceSection) return;
+
+            gsap.registerPlugin(ScrollTrigger);
+
+            // Get the exact length of the SVG path
+            const pathLength = squigglePath.getTotalLength();
+            
+            // Get animation speed from data attribute (default: 1)
+            const animationSpeed = parseFloat(squiggleContainer?.getAttribute('data-animation-speed')) || 1;
+            
+            // 1. Set the initial "hidden" state using GSAP (more reliable than standard CSS)
+            gsap.set(squigglePath, {
+                strokeDasharray: pathLength,
+                strokeDashoffset: pathLength
+            });
+
+            // 2. Create ONE smooth animation tied directly to the scroll depth
+            gsap.to(squigglePath, {
+                strokeDashoffset: 0,
+                ease: "none", // "none" ensures it draws at a consistent speed
+                scrollTrigger: {
+                    trigger: fullServiceSection,
+                    // Start drawing when the top of the section is 80% down the screen
+                    start: "top 80%", 
+                    // End drawing when the bottom of the section hits the middle of the screen.
+                    // If your section is short, use end: "+=1500" (the height of the SVG) instead.
+                    end: "bottom 30%", 
+                    scrub: 5, // Animation speed delay to catch up to Lenis scroll (configurable via data attribute)
+                    markers: false 
+                }
+            });
+        }
     </script>
    
 
@@ -4575,5 +4649,3 @@ document.addEventListener('DOMContentLoaded', () => {
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" onload="this.media='all'">
     </body>
 </html>
-
-
