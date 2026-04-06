@@ -10,12 +10,15 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="icon" type="image/x-icon" href="logo.jpeg">
+    <link rel="icon" type="image/x-icon" href="images/logo.avif">
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
     
     <!-- Lenis Smooth Scroll -->
     <script src="https://unpkg.com/lenis@latest/dist/lenis.min.js"></script>
-    
+
+    <!-- Barba.js for smooth page transitions -->
+    <script src="https://unpkg.com/@barba/core@latest"></script>
+
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
@@ -56,7 +59,7 @@
     font-size: 16px;
     line-height: 1.65;
     mix-blend-mode: unset;
-    background: url(abstract-geometric-wavy-folds-background.jpg);
+    background: url(images/abstract-geometric-wavy-folds-background.avif);
     overflow-x: hidden;
     background-size: cover;
         }
@@ -334,25 +337,25 @@
     box-shadow: 0px 0px 264px 18px white !important;
     transition: all 300ms var(--ease-out-expo);
         }
-        .navbar::before,
+       .navbar::before,
         .navbar::after {
             content: '';
-            position: absolute;
-            top: -2px;
-            width: 24px;
-            height: 18px;
-            background: rgba(255, 255, 255, 0);
+    position: absolute;
+    top: 0px;
+    width: 24px;
+    height: 33px;
+    background: rgba(255, 0, 0, 0);
         }
         
         .navbar::before {
-left: -23px;
-    border-radius: 0px 30px 0px 0px;
+left: -24px;
+    border-radius: 0px 14px 0px 0px;
     box-shadow: 11px -1px 2px #23273d;
         }
         
         .navbar::after {
-    right: -23px;
-    border-radius: 30px 0px 0px 0px;
+    right: -24px;
+    border-radius: 14px 0px 0px 0px;
     box-shadow: -10px -1px 2px #23273d;
 }
         /* Scrolled State - Dark Section */
@@ -414,10 +417,12 @@ left: -23px;
             position: relative;
         }
         .navbar-nav:has(.navbar-link:hover) .navbar-dropdown-window {
-            max-height: max-content;
+            max-height: max-content !important;
+            animation: popin 300ms ease !important;
         }
         .navbar-link[href*="pricing"]:hover ~ .navbar-dropdown-window {
-            max-height: 0;
+            max-height: 0 !important;
+            animation: popin 300ms ease !important;
         }
         .navbar-dropdown-window {
                 position: absolute;
@@ -431,16 +436,17 @@ left: -23px;
     background: white;
     border-radius: 12px;
     box-shadow: 0 20px 48px rgba(0, 0, 0, 0.12);
-    transition: max-height 300ms var(--ease-out);
     z-index: 100;
         }
 
         .navbar-nav:has(.navbar-link:hover) .navbar-dropdown-window {
-            max-height: max-content;
+            max-height: max-content !important;
+            animation: animate 300ms ease !important;
         }
 
         .navbar-link[href*="pricing"]:hover ~ .navbar-dropdown-window {
             max-height: 0 !important;
+            animation: animate 300ms ease !important;
         }
         .navbar-dropdown-content {
             display: grid;
@@ -540,6 +546,140 @@ left: -23px;
            NAVBAR DROPDOWN GROUPS
            (Products / Solutions / Resources)
            ============================================ */
+
+        @keyframes popin {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .navbar-dropdown-group {
+            display: none;
+            animation: popin 300ms ease !important;
+        }
+
+        .navbar-dropdown-group.active {
+            display: block;
+        }
+
+        .navbar-dropdown-content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            padding: 20px;
+            min-height: 350px;
+            justify-items: center;
+            width: fit-content;
+            margin: 0 auto;
+            animation: popin 300ms ease !important;
+        }
+
+        .navbar-dropdown-column {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 182px;
+            animation: popin 300ms ease !important;
+        }
+
+        .navbar-dropdown-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #999999;
+            margin: 0;
+            line-height: 1;
+            animation: popin 300ms ease !important;
+        }
+
+        .navbar-dropdown-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            animation: popin 300ms ease !important;
+        }
+
+        .navbar-dropdown-link {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 18px;
+            font-weight: 400;
+            color: #1a1a1a;
+            text-decoration: none;
+            transition: color 200ms ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 0;
+            animation: popin 300ms ease !important;
+        }
+
+        .navbar-dropdown-link:hover {
+            color: #405CFF;
+        }
+
+        .navbar-dropdown-link-inline {
+            color: #405CFF;
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 200ms ease;
+            animation: popin 300ms ease !important;
+        }
+
+        .navbar-dropdown-link-inline:hover {
+            color: #2d3fa6;
+        }
+
+        .navbar-dropdown-footer-text {
+            font-size: 14px;
+            color: #666666;
+            margin-top: 8px;
+            line-height: 1.4;
+            position: absolute;
+            bottom: 24px;
+            left: 28px;
+            width: max-content;
+        }
+
+        .navbar-dropdown-showcase-list {
+            display: flex;
+            flex-direction: column;
+            animation: popin 300ms ease !important;
+        }
+
+        .navbar-dropdown-showcase-card {
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+            cursor: pointer;
+            padding-top: 20px;
+            transition: transform 200ms ease;
+            animation: popin 300ms ease !important;
+        }
+
+        .navbar-dropdown-showcase-card-single {
+            flex-direction: row;
+            gap: 12px;
+            align-items: flex-start;
+            animation: popin 300ms ease !important;
+        }
+
+        .navbar-dropdown-showcase-card-content {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            width: 100%;
+            animation: popin 300ms ease !important;
+        }
+
+        .navbar-dropdown-showcase-image {
+            height: -webkit-fill-available;
+            aspect-ratio: 1/1;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
+            border-radius: 8px;
+            flex-shrink: 0;
+            animation: popin 300ms ease !important;
+        }
         .navbar-dropdown-group {
             display: none;
         }
@@ -883,7 +1023,7 @@ font-family: 'DM Sans', sans-serif;
            ============================================ */
         
         .hero {
-            background: #0d0e12f7;
+            background: #0d0e12d7;
             min-height: 100vh;
             padding: 128px 24px 80px;
             display: flex;
@@ -1052,14 +1192,17 @@ font-family: 'DM Sans', sans-serif;
            ============================================ */
         
         .hero-form-card {
-            background: var(--neutral-0);
-            border-radius: var(--radius-2xl);
-            padding: 24px;
-            box-shadow: var(--shadow-form);
-            border: 1px solid transparent;
-            opacity: 0;
-            transform: translateX(20px);
-            animation: slideInRight 600ms var(--ease-out-expo) 300ms forwards;
+           background: var(--neutral-0);
+    border-radius: 8px;
+    padding: 30px;
+    max-width: max-content;
+    width: 100vh;
+    min-width: stretch;
+    box-shadow: var(--shadow-form);
+    border: 1px solid transparent;
+    opacity: 0;
+    transform: translateX(20px);
+    animation: slideInRight 600ms var(--ease-out-expo) 300ms forwards;
         }
 
         .form-row {
@@ -1070,36 +1213,53 @@ font-family: 'DM Sans', sans-serif;
         }
 
         .form-group {
+            position: relative;
             margin-bottom: 16px;
         }
 
         .form-label {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
             font-family: 'DM Sans', sans-serif;
-            font-size: 11px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: var(--text-tertiary);
-            margin-bottom: 6px;
-            display: block;
+            font-size: 15px;
+            font-weight: 400;
+            color: var(--neutral-400);
+            pointer-events: none;
+            transition: all 200ms var(--ease-out-expo);
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            gap: 4px;
         }
 
         .form-label-optional {
             color: var(--neutral-400);
         }
 
+        .form-group.focused .form-label,
+        .form-group.has-value .form-label {
+            top: 12px;
+            transform: translateY(0);
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: var(--text-tertiary);
+        }
+
         .form-input {
-            width: 100%;
-            height: 48px;
-            border: 1.5px solid var(--border-medium);
-            border-radius: var(--radius-lg);
-            padding: 0 16px;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 15px;
-            font-weight: 400;
-            color: var(--text-primary);
-            background: var(--neutral-50);
-            transition: border-color var(--transition-base), box-shadow var(--transition-base), background var(--transition-base);
+           width: 100%;
+    height: 50px;
+    border: 1.5px solid rgb(26 26 30 / 7%);
+    border-radius: 4px;
+    padding: 40px 16px 22px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--text-primary);
+    transition: border-color var(--transition-base), box-shadow var(--transition-base), background var(--transition-base);
         }
 
         .form-input:focus {
@@ -1133,33 +1293,40 @@ font-family: 'DM Sans', sans-serif;
         }
 
         .form-radio-options {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
+           display: flex;
+    flex-direction: column;
+    border: 1px solid lightgrey;
+    border-radius: 8px;
+    overflow: hidden;
+    padding: 4px;
         }
 
         .form-radio-option {
             display: flex;
-            align-items: flex-start;
-            gap: 14px;
-            padding: 14px 16px;
-            border-radius: var(--radius-lg);
-            border: 1.5px solid var(--border-light);
-            cursor: pointer;
-            transition: border-color var(--transition-base), background var(--transition-base), transform var(--transition-fast);
-            user-select: none;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 14px 16px;
+    border-bottom: 1.5px solid var(--border-light);
+    cursor: pointer;
+    transition: border-color var(--transition-base), background var(--transition-base), transform var(--transition-fast);
+    user-select: none;
+
         }
 
         .form-radio-option:hover {
             border-color: var(--border-primary);
             background: var(--primary-50);
+            border-radius: 8px;
         }
 
         .form-radio-option.selected {
-            border-color: var(--primary-500);
-            background: var(--primary-50);
-            box-shadow: 0 0 0 1px var(--primary-500);
-        }
+    border-color: var(--primary-500);
+    background: var(--primary-50);
+    box-shadow: 0 0 0 1px var(--primary-500);
+    border-bottom: 3px solid #405cff;
+    border-radius: 6px;
+}
+        
 
         .form-radio-circle {
             width: 20px;
@@ -1841,7 +2008,7 @@ font-family: 'DM Sans', sans-serif;
             }
 
             .hero-form-card {
-                max-width: 600px;
+                max-width: fit-content;
                 margin: 0 auto;
             }
 
@@ -2063,7 +2230,7 @@ font-family: 'DM Sans', sans-serif;
         }
     </style>
 </head>
-<body>
+<body data-barba="wrapper">
     
 
 
@@ -2076,7 +2243,7 @@ font-family: 'DM Sans', sans-serif;
           ============================================ -->
     <nav class="navbar" id="navbar">
         <div class="navbar-inner">
-            <a href="landingpage.html" class="navbar-brand"><img src="logo-nexus-inverted.png" alt="Nexus" class="navbar-logo"></a>
+            <a href="landingpage.html" class="navbar-brand"><img src="images/logo-nexus-inverted.avif" alt="Nexus" class="navbar-logo"></a>
             
             <div class="navbar-nav">
                 <a href="#" class="navbar-link">Products <i data-lucide="chevron-down"></i></a>
@@ -2214,7 +2381,7 @@ font-family: 'DM Sans', sans-serif;
                                 <div class="navbar-dropdown-showcase-list">
                                     <div class="navbar-dropdown-showcase-card navbar-dropdown-showcase-card-g3">
                                         <div class="navbar-dropdown-showcase-image">
-                                            <img src="navbar 3.png" width="100%" height="100%" alt="Fund Benchmarks Report 2025" style="object-fit: cover; border-radius: var(--radius-lg);">
+                                            <img src="images/navbar 3.avif" width="100%" height="100%" alt="Fund Benchmarks Report 2025" style="object-fit: cover; border-radius: var(--radius-lg);">
                                         </div>
                                         <div class="showcase-wrapper-group-3">
                                             <h5 class="navbar-dropdown-showcase-title">The Fund Benchmarks Report 2025</h5>
@@ -2223,7 +2390,7 @@ font-family: 'DM Sans', sans-serif;
                                     </div>
                                     <div class="navbar-dropdown-showcase-card navbar-dropdown-showcase-card-g3">
                                         <div class="navbar-dropdown-showcase-image">
-                                            <img src="navbar 4.png" width="100%" height="100%" alt="How Browder Capital Launched Institutional Fund IV with Nexus" style="object-fit: cover; border-radius: var(--radius-lg);">
+                                            <img src="images/navbar 4.avif" width="100%" height="100%" alt="How Browder Capital Launched Institutional Fund IV with Nexus" style="object-fit: cover; border-radius: var(--radius-lg);">
                                         </div>
                                         <div class="showcase-wrapper-group-3">
                                             <h5 class="navbar-dropdown-showcase-title">How Browder Capital Launched Institutional Fund IV with Nexus</h5>
@@ -2355,23 +2522,23 @@ font-family: 'DM Sans', sans-serif;
                     <form id="contact-form" novalidate>
                         <div class="form-row">
                             <div class="form-group">
+                                <input type="text" id="first-name" class="form-input" required>
                                 <label class="form-label" for="first-name">First name</label>
-                                <input type="text" id="first-name" class="form-input" placeholder="John" required>
                             </div>
                             <div class="form-group">
+                                <input type="text" id="last-name" class="form-input" required>
                                 <label class="form-label" for="last-name">Last name</label>
-                                <input type="text" id="last-name" class="form-input" placeholder="Doe" required>
                             </div>
                         </div>
 
                         <div class="form-group">
+                            <input type="email" id="email" class="form-input" required>
                             <label class="form-label" for="email">Work email address</label>
-                            <input type="email" id="email" class="form-input" placeholder="john@company.com" required>
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label" for="company">Company name <span class="form-label-optional">(optional)</span></label>
-                            <input type="text" id="company" class="form-input" placeholder="Your Company">
+                            <input type="text" id="company" class="form-input">
+                            <label class="form-label" for="company">Company name</label>
                         </div>
 
                         <div class="form-divider"></div>
@@ -2580,7 +2747,7 @@ font-family: 'DM Sans', sans-serif;
         <div class="footer-inner">
             <div class="footer-top">
                 <div class="footer-brand-section">
-                    <a href="landingpage.html" class="footer-brand"><img src="logo-nexus-inverted.png" alt="Nexus" class="footer-brand-logo"></a>
+                    <a href="landingpage.html" class="footer-brand"><img src="images/logo-nexus-inverted.avif" alt="Nexus" class="footer-brand-logo"></a>
                     <div class="footer-brand-actions">
                         <a href="contact-sales.html" class="footer-cta-small">Contact sales</a>
                         <a href="/login" class="footer-signin-small">Sign in</a>
@@ -3170,9 +3337,20 @@ font-family: 'DM Sans', sans-serif;
         });
 
         // ============================================
-        // FORM INPUT FOCUS EFFECTS
+        // FORM INPUT FOCUS EFFECTS & FLOATING LABELS
         // ============================================
         const formInputs = document.querySelectorAll('.form-input');
+
+        function updateLabelState(input) {
+            const group = input.parentElement;
+            const hasValue = input.value.trim() !== '';
+            group.classList.toggle('has-value', hasValue);
+        }
+
+        // Initialize state for all inputs
+        formInputs.forEach(input => {
+            updateLabelState(input);
+        });
 
         formInputs.forEach(input => {
             input.addEventListener('focus', () => {
@@ -3181,6 +3359,11 @@ font-family: 'DM Sans', sans-serif;
 
             input.addEventListener('blur', () => {
                 input.parentElement.classList.remove('focused');
+                updateLabelState(input);
+            });
+
+            input.addEventListener('input', () => {
+                updateLabelState(input);
             });
         });
 
@@ -3327,21 +3510,6 @@ font-family: 'DM Sans', sans-serif;
 
             link.addEventListener('mouseleave', () => {
                 link.style.textDecoration = 'none';
-            });
-        });
-
-        // ============================================
-        // FOOTER LINK HOVER EFFECTS
-        // ============================================
-        const footerLinks = document.querySelectorAll('.footer-link');
-
-        footerLinks.forEach(link => {
-            link.addEventListener('mouseenter', () => {
-                link.style.transform = 'translateX(4px)';
-            });
-
-            link.addEventListener('mouseleave', () => {
-                link.style.transform = 'translateX(0)';
             });
         });
 
@@ -3603,52 +3771,5 @@ font-family: 'DM Sans', sans-serif;
     <!-- Barba.js for smooth page transitions -->
     <script src="https://unpkg.com/@barba/core@latest"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-    <script>
-        // Initialize Barba.js for smooth page transitions
-        // This ensures continuity when navigating between HTML pages
-        barba.init({
-            sync: true,
-            transitions: [{
-                name: 'page-transition',
-                leave: function(data) {
-                    return new Promise(function(resolve) {
-                        gsap.to(data.current.container, {
-                            opacity: 0,
-                            y: -20,
-                            duration: 0.4,
-                            ease: 'power2.out',
-                            onComplete: resolve
-                        });
-                    });
-                },
-                enter: function(data) {
-                    return new Promise(function(resolve) {
-                        window.scrollTo(0, 0);
-                        gsap.fromTo(data.next.container, 
-                            { opacity: 0, y: 20 },
-                            { 
-                                opacity: 1, 
-                                y: 0, 
-                                duration: 0.4, 
-                                ease: 'power2.out',
-                                onComplete: resolve
-                            }
-                        );
-                    });
-                },
-                after: function(data) {
-                    // Reinitialize Lucide icons after transition
-                    if (typeof lucide !== 'undefined') {
-                        lucide.createIcons();
-                    }
-                }
-            }]
-        });
-
-        // Handle scroll position on page enter
-        barba.hooks.enter(function() {
-            window.scrollTo(0, 0);
-        });
-    </script>
 </body>
 </html>

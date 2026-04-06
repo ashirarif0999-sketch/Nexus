@@ -15,8 +15,12 @@
     <!-- CDN Libraries -->
     <script src="https://unpkg.com/lenis@latest/dist/lenis.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/dist/boxicons.js" integrity="sha512-Dm5UxqUSgNd93XG7eseoOrScyM1BVs65GrwmavP0D0DujOA8mjiBfyj71wmI2VQZKnnZQsSWWsxDKNiQIqk8sQ==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+
+    <!-- Barba.js for smooth page transitions -->
+    <script src="https://unpkg.com/@barba/core@latest"></script>
     
     <style>
 @font-face {
@@ -52,7 +56,7 @@ a {
     text-decoration: none;}
 
         :root {
-
+            --fade-amount: 0.4;
             /* Primary Colors */
             --primary-500: #405CFF;
             --primary-600: #364EDF;
@@ -167,9 +171,8 @@ a {
     font-size: 16px;
     line-height: 1.65;
     color: var(--text-primary);
-    background-color: #0D0E12;
+    background-color: #0D0E12 !important;
     overflow-x: hidden;
-    padding-top:100px !important;
 }
 
         /* ============================================
@@ -291,7 +294,146 @@ a {
             transform: translateY(0);
         }
 
+        @keyframes popin {
+            0% {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
 
+        .navbar-dropdown-group {
+            display: none;
+            animation: popin 300ms var(--ease-out) !important;
+        }
+
+        .navbar-dropdown-group.active {
+            display: block;
+        }
+
+        .navbar-dropdown-content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            padding: 20px;
+            min-height: 350px;
+            justify-items: center;
+            width: fit-content;
+            margin: 0 auto;
+            animation: popin 300ms var(--ease-out) !important;
+        }
+
+        .navbar-dropdown-column {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 182px;
+            animation: popin 300ms var(--ease-out) !important;
+        }
+
+        .navbar-dropdown-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #999999;
+            margin: 0;
+            line-height: 1;
+            animation: popin 300ms var(--ease-out) !important;
+        }
+
+        .navbar-dropdown-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            animation: popin 300ms var(--ease-out) !important;
+        }
+
+        .navbar-dropdown-link {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 18px;
+            font-weight: 400;
+            color: #1a1a1a;
+            text-decoration: none;
+            transition: color 200ms var(--ease-out);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 0;
+            animation: popin 300ms var(--ease-out) !important;
+        }
+
+        .navbar-dropdown-link:hover {
+            color: #405CFF;
+        }
+
+        .navbar-dropdown-link-inline {
+            color: #405CFF;
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 200ms var(--ease-out);
+            animation: popin 300ms var(--ease-out) !important;
+        }
+
+        .navbar-dropdown-link-inline:hover {
+            color: #2d3fa6;
+        }
+
+        .navbar-dropdown-footer-text {
+            font-size: 14px;
+            color: #666666;
+            margin-top: 8px;
+            line-height: 1.4;
+            position: absolute;
+            bottom: 24px;
+            left: 28px;
+            width: max-content;
+            animation: popin 300ms var(--ease-out) !important;
+        }
+
+        .navbar-dropdown-showcase-list {
+            display: flex;
+            flex-direction: column;
+            animation: popin 300ms var(--ease-out) !important;
+        }
+
+        .navbar-dropdown-showcase-card {
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+            cursor: pointer;
+            padding-top: 20px;
+            transition: transform 200ms var(--ease-out);
+            animation: popin 300ms var(--ease-out) !important;
+        }
+
+        .navbar-dropdown-showcase-card-single {
+            flex-direction: row;
+            gap: 12px;
+            align-items: flex-start;
+            animation: popin 300ms var(--ease-out) !important;
+        }
+
+        .navbar-dropdown-showcase-card-content {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            width: 100%;
+            animation: popin 300ms var(--ease-out) !important;
+        }
+
+        .navbar-dropdown-showcase-image {
+            height: -webkit-fill-available;
+            aspect-ratio: 1/1;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
+            border-radius: 8px;
+            flex-shrink: 0;
+            animation: popin 300ms var(--ease-out) !important;
+        }
 
         /* ============================================
             SECTION 1 — NAVBAR (PILL-SHAPED)
@@ -314,27 +456,27 @@ a {
         transition: all 300ms var(--ease-out-expo);
         }
 
-        .navbar::before,
+    .navbar::before,
         .navbar::after {
             content: '';
-            position: absolute;
-            top: -2px;
-            width: 24px;
-            height: 18px;
-            background: rgba(255, 255, 255, 0);
+    position: absolute;
+    top: 0px;
+    width: 24px;
+    height: 33px;
+    background: rgba(255, 0, 0, 0);
         }
-
+        
         .navbar::before {
-    left: -23px;
-        border-radius: 0px 30px 0px 0px;
-        box-shadow: 11px -1px 2px #23273d;
+left: -24px;
+    border-radius: 0px 14px 0px 0px;
+    box-shadow: 11px -1px 2px #23273d;
         }
-
+        
         .navbar::after {
-        right: -23px;
-        border-radius: 30px 0px 0px 0px;
+    right: -24px;
+    border-radius: 14px 0px 0px 0px;
     box-shadow: -10px -1px 2px #23273d;
-    }
+}
 
         /* Scrolled State - Dark Section */
         .navbar.scrolled-on-dark {
@@ -455,19 +597,10 @@ a {
         background: white;
         border-radius: 12px;
         box-shadow: 0 20px 48px rgba(0, 0, 0, 0.12);
-        transition: max-height 300ms var(--ease-out);
-        z-index: 100;
+    transition: animate 300ms var(--ease-out);
+    animation: animate 300ms var(--ease-out) !important;
         }
 
-        /* Dropdown visibility controlled by JavaScript */
-        .navbar-dropdown-window {
-            max-height: 0;
-        }
-
-        /* ============================================
-            NAVBAR DROPDOWN GROUPS
-            (Products / Solutions / Resources)
-            ============================================ */
         .navbar-dropdown-group {
             display: none;
         }
@@ -1015,6 +1148,7 @@ font-family: 'DM Sans', sans-serif;
 
         .footer-links-grid {
             display: grid;
+            padding-top: 12px;
             grid-template-columns: repeat(4, 1fr);
             gap: 32px;
         }
@@ -1123,7 +1257,6 @@ font-family: 'DM Sans', sans-serif;
 
         /* Hero Section */
         #hero {
-            background-color: var(--bg-dark);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
@@ -1268,7 +1401,7 @@ font-family: 'DM Sans', sans-serif;
         /* Features Section */
         #features {
             background-color: #EDECE8;
-            padding: 120px 20px;
+            padding: 80px 20px;
         }
 
         .features-container {
@@ -1481,16 +1614,16 @@ font-family: 'DM Sans', sans-serif;
         }
 
         .vehicle-blob {
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, rgba(120, 100, 220, 0.35) 0%, transparent 70%);
-            border-radius: 50%;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.8);
-            opacity: 0;
-            transition: opacity 300ms ease, transform 400ms ease;
+    position: absolute;
+    width: 400px;
+    height: 400px;
+    background: radial-gradient(circle, rgb(135 152 255) 0%, transparent 70%);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    z-index:-1;
+    transform: translate(-50%, -50%) scale(0.8);
+    opacity: 0;
         }
 
         .vehicle-bottom {
@@ -1527,7 +1660,7 @@ font-family: 'DM Sans', sans-serif;
 
         .vehicle-card:hover .vehicle-blob {
             opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
+            /* Transform handled by JavaScript for cursor tracking */
         }
 
         .vehicle-card:hover .vehicle-desc {
@@ -1586,68 +1719,120 @@ font-family: 'DM Sans', sans-serif;
         /* Testimonials Section */
         #testimonials {
             background-color: #EDE8F8;
-            padding: 100px 20px;
+            padding: 100px 0;
+            overflow: visible;
         }
 
         .testimonials-container {
-            max-width: 1000px;
+            max-width: max-content;
             margin: 0 auto;
             position: relative;
+            overflow: visible;
         }
 
-        .testimonial-carousel {
+        .testimonials-label {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--primary-500);
+            text-align: center;
+            margin-bottom: 16px;
+        }
+
+        .testimonials-heading {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(28px, 3.5vw, 44px);
+            color: var(--neutral-900);
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .carousel-wrapper {
             position: relative;
-            overflow: hidden;
+            overflow: visible;
         }
 
-        .testimonial-slide {
+        .carousel-track {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            overflow-y: visible;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding: 0 calc(50vw - 300px);
+        }
+
+        .carousel-track::-webkit-scrollbar {
             display: none;
-            animation: fadeIn 500ms var(--ease-out);
-        }
-
-        .testimonial-slide.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateX(20px); }
-            to { opacity: 1; transform: translateX(0); }
         }
 
         .testimonial-card {
+            min-width: 460px;
+            max-width: 584px;
+            min-height: 400px;
             border-radius: var(--radius-2xl);
-            overflow: hidden;
-            min-height: 260px;
-            display: grid;
-            grid-template-columns: 65% 35%;
-        }
-
-        .testimonial-slide:nth-child(1) .testimonial-card {
-            background: var(--primary-500);
-        }
-
-        .testimonial-slide:nth-child(2) .testimonial-card {
-            background: #1A2744;
-        }
-
-        .testimonial-content {
-            padding: 48px;
+            padding: 40px;
+            flex-shrink: 0;
+            scroll-snap-align: center;
+            position: relative;
+            overflow: visible;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
         }
 
+        .testimonial-card-1 {
+            background: var(--primary-500);
+        }
+
+        .testimonial-card-2 {
+            background: #1A2744;
+        }
+
+        .testimonial-card-3 {
+            background: var(--secondary-500);
+        }
+
+        .testimonial-badge {
+            display: inline-block;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 11px;
+            font-weight: 500;
+            border-radius: var(--radius-full);
+            padding: 4px 12px;
+            margin-bottom: 16px;
+        }
+
+        .testimonial-badge-1 {
+            background: rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .testimonial-badge-2 {
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .testimonial-badge-3 {
+            background: rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.8);
+        }
+
         .testimonial-quote {
             font-family: 'Instrument Serif', serif;
             font-style: italic;
-            font-size: 20px;
+            font-size: 18px;
             color: white;
-            line-height: 1.5;
-            max-width: 520px;
+            line-height: 1.6;
+            margin-bottom: 24px;
         }
 
         .testimonial-attribution {
-            margin-top: 32px;
+            margin-top: auto;
         }
 
         .testimonial-name {
@@ -1671,6 +1856,117 @@ font-family: 'DM Sans', sans-serif;
             font-size: 18px;
             color: rgba(255,255,255,0.5);
             letter-spacing: 0.05em;
+        }
+
+        .testimonial-portrait {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            object-fit: cover;
+            margin-bottom: 24px;
+        }
+
+        .testimonial-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .testimonial-stat {
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .testimonial-stat-label {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 10px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: rgba(255, 255, 255, 0.35);
+            margin-bottom: 4px;
+        }
+
+        .testimonial-stat-value {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Carousel Controls */
+        .carousel-controls {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 16px;
+            padding-right: 48px;
+            margin-top: 40px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .carousel-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .carousel-dot {
+            height: 8px;
+            border-radius: var(--radius-full);
+            background: rgba(0, 0, 0, 0.15);
+            transition: width var(--transition-slow), background var(--transition-slow);
+        }
+
+        .carousel-dot.active {
+            width: 24px;
+            background: var(--primary-500);
+        }
+
+        .carousel-nav-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background: rgba(0, 0, 0, 0.04);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: background var(--transition-base), border-color var(--transition-base);
+        }
+
+        .carousel-nav-btn:hover {
+            background: rgba(0, 0, 0, 0.08);
+            border-color: rgba(0, 0, 0, 0.2);
+        }
+
+        .carousel-nav-btn svg {
+            width: 18px;
+            height: 18px;
+            color: rgba(0, 0, 0, 0.7);
+        }
+
+        .carousel-nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* Old testimonial styles (kept for backward compatibility) */
+        .testimonial-slide {
+            flex: 1 1 calc(50% - 16px);
+            max-width: 584px;
+        }
+
+        .testimonial-content {
+            padding: 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
         }
 
         .testimonial-photo {
@@ -1710,54 +2006,281 @@ font-family: 'DM Sans', sans-serif;
             transform: translateX(-50%);
         }
 
-        .testimonial-nav {
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
-            display: flex;
-            gap: 12px;
+
+        .testimonials-label {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 11px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.12em;
+            color: var(--primary-500);
+            text-align: center;
+            margin-bottom: 16px;
         }
 
-        .nav-arrow {
-            width: 40px;
-            height: 40px;
-            border: 1px solid rgba(26,26,30,0.2);
-            background: white;
+        .testimonials-heading {
+            font-family: 'DM Serif Display', serif;
+            font-size: clamp(28px, 3.5vw, 44px);
+            color: var(--neutral-900);
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .carousel-wrapper {
+            position: relative;
+            overflow: visible;
+        }
+
+        .carousel-track {
+            display: flex;
+            gap: 12px;
+            overflow-x: auto;
+            overflow-y: visible;
+            scroll-snap-type: x mandatory;
+            scroll-behavior: smooth;
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            padding: 0 calc(50vw - 300px);
+        }
+
+        .carousel-track::-webkit-scrollbar {
+            display: none;
+        }
+
+        .testimonial-card {
+            min-width: 460px;
+            max-width: 584px;
+            min-height: 400px;
+            border-radius: var(--radius-2xl);
+            padding: 40px;
+            flex-shrink: 0;
+            scroll-snap-align: center;
+            position: relative;
+            overflow: visible;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .testimonial-card-1 {
+            background: var(--primary-500);
+        }
+
+        .testimonial-card-2 {
+            background: #1A2744;
+        }
+
+        .testimonial-card-3 {
+            background: var(--secondary-500);
+        }
+
+        .testimonial-badge {
+            display: inline-block;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 11px;
+            font-weight: 500;
+            border-radius: var(--radius-full);
+            padding: 4px 12px;
+            margin-bottom: 16px;
+        }
+
+        .testimonial-badge-1 {
+            background: rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .testimonial-badge-2 {
+            background: rgba(255, 255, 255, 0.06);
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .testimonial-badge-3 {
+            background: rgba(255, 255, 255, 0.15);
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .testimonial-quote {
+            font-family: 'Instrument Serif', serif;
+            font-style: italic;
+            font-size: 18px;
+            color: white;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .testimonial-attribution {
+            margin-top: auto;
+        }
+
+        .testimonial-name {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 14px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 4px;
+        }
+
+        .testimonial-role {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            color: rgba(255,255,255,0.65);
+            margin-bottom: 12px;
+        }
+
+        .testimonial-logo {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            font-size: 18px;
+            color: rgba(255,255,255,0.5);
+            letter-spacing: 0.05em;
+        }
+
+        .testimonial-portrait {
+            width: 80px;
+            height: 80px;
             border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.15);
+            object-fit: cover;
+            margin-bottom: 24px;
+        }
+
+        .testimonial-stats {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .testimonial-stat {
+            flex: 1;
+            min-width: 100px;
+        }
+
+        .testimonial-stat-label {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 10px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: rgba(255, 255, 255, 0.35);
+            margin-bottom: 4px;
+        }
+
+        .testimonial-stat-value {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 13px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        /* Carousel Controls */
+        .carousel-controls {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 16px;
+            padding-right: 48px;
+            margin-top: 40px;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .carousel-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .carousel-dot {
+            height: 8px;
+            border-radius: var(--radius-full);
+            background: rgba(0, 0, 0, 0.15);
+            transition: width var(--transition-slow), background var(--transition-slow);
+        }
+
+        .carousel-dot.active {
+            width: 24px;
+            background: var(--primary-500);
+        }
+
+        .carousel-nav-btn {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            background: rgba(0, 0, 0, 0.04);
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            transition: all var(--transition-fast);
+            transition: background var(--transition-base), border-color var(--transition-base);
         }
 
-        .nav-arrow:hover {
-            background: var(--primary-500);
-            border-color: var(--primary-500);
-            color: white;
+        .carousel-nav-btn:hover {
+            background: rgba(0, 0, 0, 0.08);
+            border-color: rgba(0, 0, 0, 0.2);
         }
 
-        .testimonial-dots {
+        .carousel-nav-btn svg {
+            width: 18px;
+            height: 18px;
+            color: rgba(0, 0, 0, 0.7);
+        }
+
+        .carousel-nav-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* Old testimonial styles (kept for backward compatibility) */
+        .testimonial-slide {
+            flex: 1 1 calc(50% - 16px);
+            max-width: 584px;
+        }
+
+        .testimonial-content {
+            padding: 48px;
             display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .testimonial-photo {
+            background: rgba(0,0,0,0.2);
+            display: flex;
+            align-items: center;
             justify-content: center;
-            gap: 8px;
-            margin-top: 24px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .dot {
-            width: 8px;
-            height: 8px;
+        .person-silhouette {
+            width: 120px;
+            height: 160px;
+            position: relative;
+        }
+
+        .person-head {
+            width: 60px;
+            height: 60px;
+            background: rgba(255,255,255,0.1);
             border-radius: 50%;
-            background: rgba(26,26,30,0.2);
-            cursor: pointer;
-            transition: all var(--transition-fast);
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
-        .dot.active {
-            background: var(--primary-500);
-            width: 24px;
-            border-radius: 4px;
+        .person-body {
+            width: 80px;
+            height: 100px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 40px 40px 0 0;
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
         }
 
         /* CTA Section */
@@ -1883,151 +2406,211 @@ font-family: 'DM Sans', sans-serif;
             font-size: 14px;
             color: var(--text-secondary);
             line-height: 1.75;
+            background: #000;
             padding-bottom: 20px;
         }
-
-        /* Footer */
-        footer {
+  
+        /* ============================================
+           SECTION 11 — FOOTER
+           ============================================ */
+        .footer {
             background: var(--bg-dark);
-            padding: 80px 20px 40px;
+            padding: 80px 0 48px;
+            z-index: 1;
+            width: 102%;
+    position: relative;
         }
-
-        .footer-container {
+        
+        .footer-inner {
             max-width: 1200px;
             margin: 0 auto;
+            padding: 0 48px;
         }
-
+        
         .footer-top {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 60px;
-            flex-wrap: wrap;
-            gap: 24px;
+            display: block;
+            grid-template-columns: 1fr 2fr;
+            gap: 64px;
+            margin-bottom: 48px;
         }
-
+        
+        .footer-brand-section {
+            max-width: 280px;
+        }
+        
         .footer-brand {
             font-family: 'DM Serif Display', serif;
-            font-size: 32px;
-            color: white;
-        }
-
-        .footer-buttons {
+            font-size: 28px;
+            font-weight: 400;
+            color: var(--text-inverse);
+            margin-bottom: var(--spacing-lg);
             display: flex;
-            gap: 16px;
+            align-items: center;
+            gap: 10px;
         }
-
-        .footer-btn {
-            padding: 10px 20px;
-            border-radius: var(--radius-full);
-            text-decoration: none;
+        
+        .footer-brand-logo {
+            height: 32px;
+            width: auto;
+        }
+        
+        .footer-brand-logo-bottom {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            margin-top: 16px;
+        }
+        
+        .footer-brand-logo-full {
+            max-width: 200px;
+            width: 100%;
+            height: auto;
+        }
+        
+        .footer-brand-actions {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+        }
+        
+        .footer-cta-small {
+           font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--text-primary);
+    background: #405cff;
+    padding: 8px 16px;
+    border-radius: var(--radius-full);
+    transition: all var(--transition-fast);
+        }
+        
+        .footer-cta-small:hover {
+            background: var(--neutral-100);
+        }
+        
+        .footer-signin-small {
             font-family: 'DM Sans', sans-serif;
-            font-size: 14px;
+            font-size: 13px;
             font-weight: 500;
+            color: var(--text-inverse);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 8px 16px;
+            border-radius: var(--radius-full);
             transition: all var(--transition-fast);
         }
-
-        .footer-btn-primary {
-            background: var(--primary-500);
-            color: white;
+        
+        .footer-signin-small:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.4);
         }
-
-        .footer-btn-primary:hover {
-            background: var(--primary-600);
-        }
-
-        .footer-btn-secondary {
-            background: transparent;
-            color: white;
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .footer-btn-secondary:hover {
-            background: rgba(255,255,255,0.1);
-        }
-
-        .footer-links {
+        
+        .footer-links-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-            gap: 40px;
-            margin-bottom: 60px;
+            gap: 32px;
         }
-
-        .footer-column h4 {
+        
+        .footer-column-title {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 500;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-tertiary);
+            margin-bottom: var(--spacing-lg);
+        }
+        
+        .footer-links {
+            display: flex;
+            flex-direction: column;
+            gap: var(--spacing-sm);
+        }
+        
+        .footer-link {
             font-family: 'DM Sans', sans-serif;
             font-size: 13px;
-            font-weight: 600;
-            color: white;
-            margin-bottom: 20px;
+            font-weight: 400;
+            color: aliceblue;
+            transition: color 150ms ease;
+            display: flex;
+            align-items: center;
+            gap: var(--spacing-xs);
         }
-
-        .footer-column ul {
-            list-style: none;
+        
+        .footer-link:hover {
+            color: var(--text-inverse);
         }
-
-        .footer-column li {
-            margin-bottom: 12px;
+        
+        .footer-link svg {
+            width: 10px;
+            height: 10px;
         }
-
-        .footer-column a {
+        
+        .footer-beta-pill {
             font-family: 'DM Sans', sans-serif;
-            font-size: 13px;
-            color: rgba(255,255,255,0.45);
-            text-decoration: none;
-            transition: color var(--transition-fast);
+            font-size: 9px;
+            font-weight: 500;
+            background: rgba(64, 92, 255, 0.2);
+            color: var(--primary-400);
+            padding: 2px 6px;
+            border-radius: 4px;
+            margin-left: 4px;
         }
-
-        .footer-column a:hover {
-            color: white;
-        }
-
+        
         .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.08);
+            padding-top: 24px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding-top: 40px;
-            border-top: 1px solid rgba(255,255,255,0.1);
             flex-wrap: wrap;
-            gap: 16px;
+            gap: var(--spacing-lg);
         }
-
+        
         .footer-legal {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 12px;
+            font-weight: 400;
+            color: var(--text-tertiary);
             display: flex;
-            gap: 24px;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
         }
-
-        .footer-legal a {
-            font-family: 'DM Sans', sans-serif;
-            font-size: 13px;
-            color: rgba(255,255,255,0.3);
-            text-decoration: none;
-            transition: color var(--transition-fast);
+        
+        .footer-legal-separator {
+            color: var(--text-tertiary);
+            opacity: 0.5;
         }
-
-        .footer-legal a:hover {
-            color: white;
-        }
-
-        .footer-copyright {
-            font-family: 'DM Sans', sans-serif;
-            font-size: 13px;
-            color: rgba(255,255,255,0.3);
-        }
-
+        
         .footer-social {
             display: flex;
-            gap: 16px;
+            gap: 20px;
         }
-
-        .footer-social a {
-            color: rgba(255,255,255,0.3);
+        
+        .footer-social-link {
+            color: var(--text-tertiary);
             transition: color var(--transition-fast);
         }
-
-        .footer-social a:hover {
-            color: white;
+        
+        .footer-social-link:hover {
+            color: var(--text-inverse);
         }
-
+        
+        .footer-social-link svg {
+            width: 18px;
+            height: 18px;
+        }
+        
+        .footer-disclaimer {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 11px;
+            font-weight: 400;
+            line-height: 1.6;
+            color: var(--text-tertiary);
+            opacity: 0.4;
+            max-width: 900px;
+            margin-top: 24px;
+        }
         /* Responsive */
         @media (max-width: 968px) {
             .features-container {
@@ -2041,6 +2624,16 @@ font-family: 'DM Sans', sans-serif;
 
             .vehicles-grid {
                 grid-template-columns: repeat(2, 1fr);
+            }
+
+            .testimonial-carousel {
+                flex-direction: column;
+                gap: 24px;
+            }
+
+            .testimonial-slide {
+                flex: 0 0 100%;
+                max-width: 100%;
             }
 
             .testimonial-card {
@@ -2079,11 +2672,18 @@ font-family: 'DM Sans', sans-serif;
                 padding: 48px 24px;
             }
 
-            .footer-links {
+            .footer-links-grid {
                 grid-template-columns: 1fr;
             }
+            
+            .footer-bottom {
+                flex-direction: column;
+                text-align: center;
+            }
         }
-
+#shader-bg {
+  mask-image: linear-gradient(#000, #000, #000, #000,#000,#000,#000, #00000000);
+}
         /* Base styling for context */
 body { margin: 0; padding: 0; }
 
@@ -2094,7 +2694,7 @@ body { margin: 0; padding: 0; }
 
 /* The Magic Effect */
 .striped-transition {
-  height: 120px; /* Adjust height based on how many stripes you want */
+  height: 300px; /* Initial height before animation */
   width: 100%;
   
   /* 
@@ -2113,6 +2713,7 @@ body { margin: 0; padding: 0; }
       A smooth horizontal gradient from muted slate to lavender.
     */
     linear-gradient(to right, #2a3c48 0%, #b9b4f0 100%);
+    
 }
     </style>
 </head>
@@ -2122,7 +2723,7 @@ body { margin: 0; padding: 0; }
           ============================================ -->
     <nav class="navbar" id="navbar">
         <div class="navbar-inner">
-            <a href="landingpage.html" class="navbar-brand"><img src="logo-nexus-inverted.png" alt="Nexus" class="navbar-logo"></a>
+            <a href="landingpage.html" class="navbar-brand"><img src="images/logo-nexus-inverted.avif" alt="Nexus" class="navbar-logo"></a>
 
             <div class="navbar-nav">
                 <a href="#" class="navbar-link">Products <i data-lucide="chevron-down"></i></a>
@@ -2265,7 +2866,7 @@ body { margin: 0; padding: 0; }
                                 <div class="navbar-dropdown-showcase-list">
                                     <div class="navbar-dropdown-showcase-card navbar-dropdown-showcase-card-g3">
                                         <div class="navbar-dropdown-showcase-image">
-                                            <image src="navbar 3.png" width="100%" height="100%" alt="Fund Benchmarks Report 2025" style="object-fit: cover; border-radius: var(--radius-lg);">
+                                            <image src="images/navbar 3.avif" dth="100%" height="100%" alt="Fund Benchmarks Report 2025" style="object-fit: cover; border-radius: var(--radius-lg);">
                                             <!-- Image placeholder - leave for user -->
                                         </div>
                                         <div class="showcase-wrapper-group-3">
@@ -2275,7 +2876,7 @@ body { margin: 0; padding: 0; }
                                     </div>
                                     <div class="navbar-dropdown-showcase-card navbar-dropdown-showcase-card-g3">
                                         <div class="navbar-dropdown-showcase-image">
-                                            <img src="navbar 4.png" width="100%" height="100%" alt="How Browder Capital Launched Institutional Fund IV with Nexus" style="object-fit: cover; border-radius: var(--radius-lg);">
+                                            <img src="images/navbar 4.avif" width="100%" height="100%" alt="How Browder Capital Launched Institutional Fund IV with Nexus" style="object-fit: cover; border-radius: var(--radius-lg);">
                                             <!-- Image placeholder - leave for user -->
                                         </div>
                                         <div class="showcase-wrapper-group-3">
@@ -2317,6 +2918,8 @@ body { margin: 0; padding: 0; }
 
     <!-- Hero Section -->
     <section id="hero">
+        <div id="shader-bg" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;"></div>
+        
         <div class="hero-label">Fund Administration</div>
         <h1 class="hero-title reveal-on-scroll">
             <span>Launch and scale</span> your fund<br>without the complexity
@@ -2411,10 +3014,10 @@ body { margin: 0; padding: 0; }
             </div>
 
            <div class="orbit-panel reveal-on-scroll revealed">
-               <img src="funds-admin-1.png" data-image="1" class="orbit-image active" alt="Fund Administration Feature 1">
-               <img src="funds-admin-2.png" data-image="2" class="orbit-image" alt="Fund Administration Feature 2">
-               <img src="funds-admin-3.png" data-image="3" class="orbit-image" alt="Fund Administration Feature 3">
-               <img src="funds-admin-4.png" data-image="4" class="orbit-image" alt="Fund Administration Feature 4">
+               <img src="images/funds-admin-1.avif" data-image="1" class="orbit-image active" alt="Fund Administration Feature 1">
+               <img src="images/funds-admin-2.avif" data-image="2" class="orbit-image" alt="Fund Administration Feature 2">
+               <img src="images/funds-admin-3.avif" data-image="3" class="orbit-image" alt="Fund Administration Feature 3">
+               <img src="images/funds-admin-4.avif" data-image="4" class="orbit-image" alt="Fund Administration Feature 4">
            </div>
                 
                 
@@ -2429,7 +3032,9 @@ body { margin: 0; padding: 0; }
             
             <div class="vehicles-grid">
                 <div class="vehicle-card reveal-card">
-                    <i data-lucide="box" class="vehicle-icon"></i>
+                    <svg width="30" height="30" viewBox="0 0 25 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M12.7803 0.640869L22.7256 5.61353V18.386L12.7803 23.3586L12.5 23.4983L2.27539 18.386V5.61353L12.2207 0.640869L12.5 0.500244L12.7803 0.640869ZM4.29785 5.99927L6.78027 7.24048L6.5 7.79907L6.2207 8.35864L3.52539 7.01099V17.6125L11.875 21.7874V17.9749H13.125V21.7883L21.4756 17.6125V7.01099L18.7803 8.35864L18.2207 8.63794L17.6621 7.51978L18.2207 7.24048L20.7021 5.99927L12.5 1.89771L4.29785 5.99927ZM12.5 8.39966C14.4882 8.39966 16.0996 10.012 16.0996 12.0002C16.0994 13.9883 14.4881 15.5999 12.5 15.5999C10.5119 15.5999 8.90057 13.9883 8.90039 12.0002C8.90039 10.012 10.5118 8.39966 12.5 8.39966ZM7.33887 7.51978L6.78027 8.63794L6.2207 8.35864L6.78027 7.24048L7.33887 7.51978Z" fill="currentColor"></path>
+</svg>
                     <div class="vehicle-blob"></div>
                     <div class="vehicle-desc">Raise capital, close deals, and manage your portfolio, while we handle your overhead and back-office.</div>
                     <div class="vehicle-bottom">
@@ -2441,7 +3046,7 @@ body { margin: 0; padding: 0; }
                 </div>
 
                 <div class="vehicle-card reveal-card">
-                    <i data-lucide="crosshair" class="vehicle-icon"></i>
+                    <svg fill="none" height="30" viewBox="0 0 32 32" width="30" xmlns="http://www.w3.org/2000/svg"><path clip-rule="evenodd" d="m27.8831 18.6587c.1902-.8554.2905-1.7449.2905-2.6581 0-1.464-.2578-2.8666-.7304-4.1651l.5869-.2139.5879-.2138c.5218 1.4335.8056 2.9808.8056 4.5928 0 1.075-.1263 2.1209-.3651 3.1235 1.782 1.0727 2.3831 3.3802 1.3388 5.1891-1.0563 1.8295-3.3959 2.4564-5.2253 1.4001s-2.4564-3.3959-1.4001-5.2253c.8504-1.473 2.5329-2.1663 4.1112-1.8293zm-14.5416 9.2261c.3373-1.5785-.356-3.2613-1.8292-4.1118-1.8294-1.0563-4.16901-.4293-5.22531 1.4001-1.05624 1.8294-.42935 4.169 1.40012 5.2253 1.80866 1.0442 4.11589.4434 5.18879-1.3382 1.0023.2388 2.0481.3651 3.1229.3652 1.6124 0 3.1599-.2846 4.5938-.8067l-.4278-1.1738c-1.2987.4729-2.7016.7305-4.166.7305-.9129-.0001-1.8021-.1004-2.6573-.2906zm12.3707-21.05645c1.0563-1.82947.4294-4.16907-1.4001-5.22531-1.8088-1.0443-4.1162-.44332-5.189 1.33851-1.0027-.23916-2.0489-.3658-3.1243-.3658-1.6116.00002-3.1584.28397-4.5918.80566l.2139.58789.2139.58691c1.2982-.47251 2.7003-.73044 4.164-.73046.9136 0 1.8033.1006 2.6589.29125-.3372 1.57835.3561 3.26099 1.8292 4.11147 1.8294 1.05621 4.169.42922 5.2253-1.40012zm-17.48483 4.68505c1.05621-1.82941.42922-4.16902-1.40012-5.22531-1.82946-1.05624-4.16906-.42935-5.22531 1.40012-1.044158 1.80854-.44348 4.11559 1.33779 5.18859-.23909 1.0026-.36569 2.0486-.36571 3.1238 0 1.6122.28462 3.1599.80664 4.5937l.58692-.2139.58789-.2138c-.47285-1.2987-.73145-2.7018-.73145-4.166.00002-.9133.10042-1.8028.29078-2.6582 1.57867.3377 3.26189-.3556 4.11257-1.829z" fill="currentColor" fill-rule="evenodd"></path></svg>
                     <div class="vehicle-blob"></div>
                     <div class="vehicle-desc">Fundraise continuously. LPs subscribe quarterly, so you can regularly accept capital.</div>
                     <div class="vehicle-bottom">
@@ -2453,7 +3058,7 @@ body { margin: 0; padding: 0; }
                 </div>
 
                 <div class="vehicle-card reveal-card">
-                    <i data-lucide="asterisk" class="vehicle-icon"></i>
+                    <svg fill="none" height="30" viewBox="0 0 32 32" width="30" xmlns="http://www.w3.org/2000/svg"><path clip-rule="evenodd" d="m24.7428 4.83984c0-.99308-.8053-1.79882-1.7989-1.79882-.9934.00019-1.7988.80586-1.7988 1.79882.0001.99289.8055 1.79766 1.7988 1.79786.9936 0 1.7988-.80485 1.7989-1.79786zm1.042 0c-.0001 1.56853-1.2722 2.83985-2.8409 2.83985-.3963-.00005-.7737-.08128-1.1164-.22797l-1.6852 3.38148 2.5412 5.0817h3.6535c.2445-1.3198 1.4015-2.3191 2.7922-2.3192 1.5687 0 2.8408 1.2712 2.8408 2.8398-.0001 1.5685-1.2722 2.8399-2.8408 2.8399-1.3907-.0002-2.5478-.9997-2.7922-2.3195h-3.6537l-2.5409 5.081 1.6883 3.3813c.3419-.1457.7181-.2264 1.1132-.2265 1.5687 0 2.8409 1.2712 2.8409 2.8398-.0001 1.5686-1.2722 2.8399-2.8409 2.8399-1.5684-.0002-2.8397-1.2714-2.8398-2.8399 0-.7953.3269-1.5143.8538-2.0298l-1.6882-3.3819h-6.5621l-1.674 3.4034c.5142.5139.8323 1.224.8323 2.0083-.0001 1.5686-1.2722 2.8399-2.8408 2.8399-1.56845-.0002-2.83975-1.2714-2.83984-2.8399 0-1.5684 1.27134-2.8396 2.83984-2.8398.40514 0 .79051.0848 1.1393.2376l1.6654-3.3867-2.54368-5.0867h-3.65308c-.24461 1.32-1.40235 2.3195-2.7932 2.3195-1.56845-.0002-2.83975133-1.2715-2.83984-2.8399 0-1.5685 1.27134-2.8396 2.83984-2.8398 1.39084 0 2.54857.9993 2.79319 2.3192h3.65291l2.54276-5.0847-1.6776-3.38237c-.34527.14919-.72599.23186-1.126.23186-1.56845-.0002-2.83975-1.27144-2.83984-2.83985 0-1.56848 1.27134-2.83964 2.83984-2.83984 1.5687 0 2.8408 1.27124 2.8408 2.83984 0 .79003-.3228 1.50465-.8435 2.01941l1.682 3.39145h6.5649l1.6861-3.38348c-.5253-.51534-.8513-1.23327-.8513-2.02738 0-1.56848 1.2713-2.83964 2.8398-2.83984 1.5687 0 2.8409 1.27124 2.8409 2.83984zm3.3444 9.79686c.9936 0 1.7988.8057 1.7988 1.7988-.0001.993-.8053 1.7979-1.7988 1.7979-.9934-.0002-1.7987-.805-1.7988-1.7979 0-.993.8054-1.7986 1.7988-1.7988zm-6.1853 11.596c.9936 0 1.7989.8058 1.7989 1.7988-.0001.9931-.8053 1.7979-1.7989 1.7979-.9933-.0002-1.7987-.805-1.7988-1.7979 0-.9929.8054-1.7986 1.7988-1.7988zm-12.12-21.39286c0-.99308-.8052-1.79882-1.7988-1.79882-.99343.00019-1.79883.80586-1.79883 1.79882.00009.99289.80545 1.79766 1.79883 1.79786.9935 0 1.7987-.80485 1.7988-1.79786zm-1.7988 21.39286c.9936 0 1.7988.8058 1.7988 1.7988-.0001.9931-.8053 1.7979-1.7988 1.7979-.99338-.0002-1.79874-.805-1.79883-1.7979 0-.9929.8054-1.7986 1.79883-1.7988zm-4.38643-9.7972c0-.9931-.80523-1.7988-1.79883-1.7988-.99343.0002-1.79882.8058-1.79882 1.7988.00008.9929.80545 1.7977 1.79882 1.7979.99355 0 1.79874-.8049 1.79883-1.7979z" fill="currentColor" fill-rule="evenodd"></path></svg>
                     <div class="vehicle-blob"></div>
                     <div class="vehicle-desc">Grow your scout program, expand your network, and increase deal flow — with no extra back-office burden.</div>
                     <div class="vehicle-bottom">
@@ -2465,7 +3070,7 @@ body { margin: 0; padding: 0; }
                 </div>
 
                 <div class="vehicle-card reveal-card">
-                    <i data-lucide="circle-dot" class="vehicle-icon"></i>
+                    <svg fill="none" height="32" viewBox="0 0 32 32" width="32" xmlns="http://www.w3.org/2000/svg"><path clip-rule="evenodd" d="m15.9998 6.40073c1.7674 0 3.2-1.43269 3.2-3.2s-1.4326-3.19999758-3.2-3.19999758c-1.7673 0-3.2 1.43268758-3.2 3.19999758s1.4327 3.2 3.2 3.2zm0 25.59997c1.7674 0 3.2-1.4327 3.2-3.2s-1.4326-3.2-3.2-3.2c-1.7673 0-3.2 1.4327-3.2 3.2s1.4327 3.2 3.2 3.2zm-9.4854-25.17125c1.53054.88365 2.05494 2.84074 1.17128 4.37125-.88365 1.5306-2.84074 2.055-4.37128 1.1713-1.53053-.8836-2.05494-2.84074-1.17128-4.37127.88366-1.53054 2.84075-2.05494 4.37128-1.17128zm23.3415 17.17125c.8837-1.5305.3593-3.4876-1.1712-4.3713-1.5306-.8836-3.4877-.3592-4.3713 1.1713-.8837 1.5306-.3593 3.4877 1.1713 4.3713 1.5305.8837 3.4876.3593 4.3712-1.1713zm-1.1708-11.6287c-1.5305.8837-3.4876.3593-4.3713-1.1713-.8836-1.5305-.3592-3.48759 1.1713-4.37124 1.5306-.88366 3.4876-.35926 4.3713 1.17128s.3593 3.48766-1.1713 4.37126zm-26.54151 11.6287c.88365 1.5306 2.84074 2.055 4.37128 1.1713 1.53053-.8836 2.05493-2.8407 1.17128-4.3713-.88366-1.5305-2.84075-2.0549-4.37128-1.1712-1.53054.8836-2.05494 2.8407-1.17128 4.3712zm13.85601-12.175c2.3057 0 4.1747 1.8691 4.1748 4.1748 0 2.3058-1.869 4.1748-4.1748 4.1748-2.3057-.0001-4.1748-1.869-4.1748-4.1748.0001-2.3056 1.8692-4.1747 4.1748-4.1748zm0 9.5996c2.9962 0 5.4248-2.4286 5.4248-5.4248-.0001-2.996-2.4287-5.4248-5.4248-5.4248-2.996.0001-5.4247 2.4288-5.4248 5.4248 0 2.9961 2.4288 5.4247 5.4248 5.4248z" fill="currentColor" fill-rule="evenodd"></path></svg>
                     <div class="vehicle-blob"></div>
                     <div class="vehicle-desc">Raise privately on a deal-by-deal basis with proven SPV infrastructure.</div>
                     <div class="vehicle-bottom">
@@ -2501,58 +3106,60 @@ body { margin: 0; padding: 0; }
     <!-- Testimonials Section -->
     <section id="testimonials">
         <div class="testimonials-container">
-            <div class="testimonial-carousel">
-                <div class="testimonial-slide active">
-                    <div class="testimonial-card">
-                        <div class="testimonial-content">
+            <div class="testimonials-label reveal-on-scroll">• TESTIMONIALS</div>
+            <h2 class="testimonials-heading reveal-on-scroll">Trusted by the world's best fund managers</h2>
+            <div class="carousel-wrapper">
+                <div class="carousel-track" id="testimonialCarousel">
+                    <div class="testimonial-card testimonial-card-1">
+                        <div>
+                            <span class="testimonial-badge testimonial-badge-1">Venture-backed</span>
                             <div class="testimonial-quote">"One of the most valuable aspects of Nexus's service is their responsive team of experts, who are always available to address our questions promptly. This proactive support has saved us significant costs and enabled us to build stronger LP relationships."</div>
-                            <div class="testimonial-attribution">
-                                <div class="testimonial-name">Layla Hassan</div>
-                                <div class="testimonial-role">General Partner, Meridian Ventures</div>
-                                <div class="testimonial-logo">MERIDIAN</div>
-                            </div>
                         </div>
-                        <div class="testimonial-photo">
-                            <div class="person-silhouette">
-                                <div class="person-head"></div>
-                                <div class="person-body"></div>
-                            </div>
+                        <div class="testimonial-attribution">
+                            <div class="testimonial-name">Layla Hassan</div>
+                            <div class="testimonial-role">General Partner, Meridian Ventures</div>
+                            <div class="testimonial-logo">MERIDIAN</div>
                         </div>
                     </div>
-                </div>
 
-                <div class="testimonial-slide">
-                    <div class="testimonial-card">
-                        <div class="testimonial-content">
+                    <div class="testimonial-card testimonial-card-2">
+                        <div>
+                            <span class="testimonial-badge testimonial-badge-2">Growth stage</span>
                             <div class="testimonial-quote">"For Fund II, we transitioned to a traditional closed-end structure with institutional support. We worked closely with Nexus throughout, and their team was incredible in supporting that transition."</div>
-                            <div class="testimonial-attribution">
-                                <div class="testimonial-name">Omar Siddiqui</div>
-                                <div class="testimonial-role">Partner & Platform Director, GTMfund</div>
-                                <div class="testimonial-logo">GTMfund</div>
-                            </div>
                         </div>
-                        <div class="testimonial-photo">
-                            <div class="person-silhouette">
-                                <div class="person-head"></div>
-                                <div class="person-body"></div>
-                            </div>
+                        <div class="testimonial-attribution">
+                            <div class="testimonial-name">Omar Siddiqui</div>
+                            <div class="testimonial-role">Partner & Platform Director, GTMfund</div>
+                            <div class="testimonial-logo">GTMfund</div>
+                        </div>
+                    </div>
+
+                    <div class="testimonial-card testimonial-card-3">
+                        <div>
+                            <span class="testimonial-badge testimonial-badge-3">Early stage</span>
+                            <div class="testimonial-quote">"Nexus helped us launch our first fund in record time. Their platform handles everything from investor onboarding to capital calls, so we can focus on finding great deals."</div>
+                        </div>
+                        <div class="testimonial-attribution">
+                            <div class="testimonial-name">Sarah Chen</div>
+                            <div class="testimonial-role">Managing Partner, Horizon Capital</div>
+                            <div class="testimonial-logo">HORIZON</div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="testimonial-nav">
-                <div class="nav-arrow" data-direction="prev">
-                    <i data-lucide="chevron-left" style="width: 18px; height: 18px;"></i>
+            <div class="carousel-controls">
+                <div class="carousel-dots">
+                    <div class="carousel-dot active" data-index="0"></div>
+                    <div class="carousel-dot" data-index="1"></div>
+                    <div class="carousel-dot" data-index="2"></div>
                 </div>
-                <div class="nav-arrow" data-direction="next">
-                    <i data-lucide="chevron-right" style="width: 18px; height: 18px;"></i>
-                </div>
-            </div>
-
-            <div class="testimonial-dots">
-                <div class="dot active" data-slide="0"></div>
-                <div class="dot" data-slide="1"></div>
+                <button class="carousel-nav-btn" id="carouselPrev" aria-label="Previous testimonial">
+                    <i data-lucide="chevron-left"></i>
+                </button>
+                <button class="carousel-nav-btn" id="carouselNext" aria-label="Next testimonial">
+                    <i data-lucide="chevron-right"></i>
+                </button>
             </div>
         </div>
     </section>
@@ -2626,73 +3233,203 @@ body { margin: 0; padding: 0; }
         </div>
     </section>
 
-    <!-- Footer -->
-    <footer>
-        <div class="footer-container">
+     <!-- ============================================
+          SECTION 11 — FOOTER
+         ============================================ -->
+    <footer class="footer" id="footer">
+        <div class="footer-inner">
             <div class="footer-top">
-                <div class="footer-brand">Nexus</div>
-                <div class="footer-buttons">
-                    <a href="contact-sales.html" class="footer-btn footer-btn-primary">Contact sales</a>
-                    <a href="/login" class="footer-btn footer-btn-secondary">Sign in</a>
+                <div class="footer-brand-section">
+                    <a href="#" class="footer-brand"><img src="images/logo-nexus-inverted.avif" alt="Nexus" class="footer-brand-logo"></a>
+                    <div class="footer-brand-actions">
+                        <a href="contact-sales.html" class="footer-cta-small">Contact sales</a>
+                        <a href="/login" class="footer-signin-small">Sign in</a>
+                    </div>
+                </div>
+                
+                <div class="footer-links-grid">
+                    <!-- Column 1: Products -->
+                    <div class="footer-column">
+                        <div class="footer-column-title">Products</div>
+                        <div class="footer-links">
+                            <a href="#" class="footer-link">Fund Administration</a>
+                            <a href="#" class="footer-link">Venture Funds</a>
+                            <a href="#" class="footer-link">Rolling Funds</a>
+                            <a href="#" class="footer-link">Scout Funds</a>
+                            <a href="#" class="footer-link">SPVs</a>
+                            <a href="#" class="footer-link">Roll Up Vehicles</a>
+                            <a href="#" class="footer-link">Investor Management</a>
+                            <a href="#" class="footer-link">Digital Subscriptions</a>
+                            <a href="#" class="footer-link">Data Room</a>
+                            <a href="#" class="footer-link">
+                                Intelligence
+                                <span class="footer-beta-pill">BETA</span>
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Column 2: Pricing + Returns -->
+                    <div class="footer-column">
+                        <div class="footer-column-title">Pricing + Returns</div>
+                        <div class="footer-links">
+                            <a href="pricing.html" class="footer-link">Pricing</a>
+                            <a href="#" class="footer-link">VC Fund Performance Calculator</a>
+                            <a href="#" class="footer-link">RUV Calculator</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Column 3: Resources -->
+                    <div class="footer-column">
+                        <div class="footer-column-title">Resources</div>
+                        <div class="footer-links">
+                            <a href="#" class="footer-link">Learn</a>
+                            <a href="#" class="footer-link">Blog</a>
+                            <a href="#" class="footer-link">Help Center</a>
+                            <a href="#" class="footer-link">Education Center</a>
+                            <a href="#" class="footer-link">Data Center</a>
+                            <a href="#" class="footer-link">About Us</a>
+                            <a href="#" class="footer-link">Careers</a>
+                            <a href="#" class="footer-link">Engineering</a>
+                        </div>
+                    </div>
+                    
+                    <!-- Column 4: By Nexus -->
+                    <div class="footer-column">
+                        <div class="footer-column-title">By Nexus</div>
+                        <div class="footer-links">
+                            <a href="#" class="footer-link">
+                                Rollups
+                                <i data-lucide="external-link"></i>
+                            </a>
+                            <a href="#" class="footer-link">
+                                Meridian
+                                <i data-lucide="external-link"></i>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <div class="footer-links">
-                <div class="footer-column">
-                    <h4>Products</h4>
-                    <ul>
-                        <li><a href="#">Fund Administration</a></li>
-                        <li><a href="#">Venture Funds</a></li>
-                        <li><a href="#">Rolling Funds</a></li>
-                        <li><a href="#">Scout Funds</a></li>
-                        <li><a href="#">SPVs</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h4>Platform</h4>
-                    <ul>
-                        <li><a href="#">Investor Management</a></li>
-                        <li><a href="#">Data Room</a></li>
-                        <li><a href="#">Digital Subscriptions</a></li>
-                        <li><a href="#">Analytics</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h4>Resources</h4>
-                    <ul>
-                        <li><a href="#">Blog</a></li>
-                        <li><a href="#">Help Center</a></li>
-                        <li><a href="#">Education Center</a></li>
-                        <li><a href="#">Data Center</a></li>
-                    </ul>
-                </div>
-                <div class="footer-column">
-                    <h4>Company</h4>
-                    <ul>
-                        <li><a href="#">About Us</a></li>
-                        <li><a href="#">Careers</a></li>
-                        <li><a href="#">Engineering</a></li>
-                        <li><a href="pricing.html">Pricing</a></li>
-                    </ul>
-                </div>
-            </div>
-
+            
             <div class="footer-bottom">
                 <div class="footer-legal">
-                    <a href="#">Terms</a>
-                    <a href="#">Privacy</a>
-                    <a href="#">Disclosures</a>
+                    <a href="#" class="footer-link">Terms</a>
+                    <span class="footer-legal-separator">·</span>
+                    <a href="#" class="footer-link">Privacy</a>
+                    <span class="footer-legal-separator">·</span>
+                    <a href="#" class="footer-link">Disclosures</a>
+                    <span class="footer-legal-separator">·</span>
+                    <a href="#" class="footer-link">Cookie Settings</a>
+                    <span class="footer-legal-separator">·</span>
+                    <span>© 2026 AL Advisors Management Inc.</span>
                 </div>
-                <div class="footer-copyright">© 2025 Nexus Inc.</div>
+                
                 <div class="footer-social">
-                    <a href="#"><i data-lucide="twitter" style="width: 18px; height: 18px;"></i></a>
-                    <a href="#"><i data-lucide="linkedin" style="width: 18px; height: 18px;"></i></a>
+                    <a href="#" class="footer-social-link" aria-label="Twitter">
+                        <i data-lucide="twitter"></i>
+                    </a>
+                    <a href="#" class="footer-social-link" aria-label="LinkedIn">
+                        <i data-lucide="linkedin"></i>
+                    </a>
                 </div>
+                
+                
             </div>
+            
+            <div class="footer-disclaimer">
+                The information contained herein is provided for informational and discussion purposes only and is not intended to be a recommendation for any investment, service, product, or other advice of any kind. Any investment opportunities and/or products or services shown here will only be completed pursuant to formal offering materials. Quotes included in these materials should not be construed as an endorsement of Nexus's advice, analysis, or other service rendered to its clients.
+            </div>
+            
         </div>
     </footer>
 
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
+        // ============================================
+        // SHADER ANIMATION - HERO BACKGROUND (OPTIMIZED)
+        // ============================================
+        const container = document.getElementById('shader-bg');
+        const heroSection = document.getElementById('hero');
+        if (container && heroSection) {
+            const vertexShader = `void main() { gl_Position = vec4( position, 1.0 ); }`;
+            const fragmentShader = `
+               #define TWO_PI 6.2831853072
+                #define PI 3.14159265359
+                precision highp float;
+                uniform vec2 resolution;
+                uniform float time;
+                void main(void) {
+                    vec2 uv = (gl_FragCoord.xy * 2.0 - resolution.xy) / min(resolution.x, resolution.y);
+                    float t = time*0.05;
+                    float lineWidth = 0.005;
+                    vec3 color = vec3(0.0);
+                    for(int j = 0; j < 3; j++){
+                        for(int i=0; i < 4; i++){
+                            color[j] += lineWidth*float(i*i) / abs(fract(t - 0.01*float(j)+float(i)*0.01)*5.0 - length(uv) + mod(uv.x+uv.y, 0.2));
+                        }
+                    }
+                    float fade = smoothstep(0.0, 1.0, gl_FragCoord.y / resolution.y);
+                    float alpha = mix(1.0, 0.4, fade);
+                    gl_FragColor = vec4(color[0],color[1],color[2], alpha);
+                }
+            `;
+
+            const camera = new THREE.Camera();
+            camera.position.z = 1;
+            const scene = new THREE.Scene();
+            const geometry = new THREE.PlaneGeometry(2, 2);
+            const uniforms = {
+                time: { type: "f", value: 1.0 },
+                resolution: { type: "v2", value: new THREE.Vector2() },
+            };
+            const material = new THREE.ShaderMaterial({
+                uniforms: uniforms,
+                vertexShader: vertexShader,
+                fragmentShader: fragmentShader,
+                extensions: { derivatives: true }
+            });
+            const mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+            mesh.rotation.z = Math.PI / 2; // this one was i created, dont know why. but this line wont catching the geometry and applying the rotation, so I added it here.
+            const renderer = new THREE.WebGLRenderer({ antialias: false, alpha: true, precision: "lowp" });
+            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5));
+            renderer.setClearColor(0x000000, 0);
+            container.appendChild(renderer.domElement);
+
+            let frameCount = 0;
+            let isVisible = true;
+
+            const onWindowResize = () => {
+                const width = container.clientWidth;
+                const height = container.clientHeight;
+                renderer.setSize(width, height);
+                uniforms.resolution.value.x = renderer.domElement.width;
+                uniforms.resolution.value.y = renderer.domElement.height;
+            };
+            onWindowResize();
+            window.addEventListener("resize", onWindowResize, false);
+
+            const animate = () => {
+                requestAnimationFrame(animate);
+                if (isVisible) {
+                    frameCount++;
+                    if (frameCount % 2 === 0) {
+                        uniforms.time.value += 0.05;
+                        renderer.render(scene, camera);
+                    }
+                }
+            };
+
+            // Intersection Observer - Enable/Disable based on viewport
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    isVisible = entry.isIntersecting;
+                });
+            }, { threshold: 0.1 });
+            observer.observe(heroSection);
+
+            animate();
+        }
+
         // ============================================
         // MOBILE NAVIGATION TOGGLE
         // ============================================
@@ -2733,7 +3470,7 @@ body { margin: 0; padding: 0; }
                 card.addEventListener('mouseenter', () => {
                     const video = card.querySelector('video');
                     if (video) {
-                        video.play();
+                        video.play().catch(function(err) {});
                     }
                 });
 
@@ -2920,10 +3657,10 @@ body { margin: 0; padding: 0; }
                   
                   let animationFrameId = null;
                   
-                  // Wait for video metadata to load
-                  video.addEventListener('loadedmetadata', function() {
-                      video.load();
-                  });
+                   // Wait for video metadata to load
+                   video.addEventListener('loadedmetadata', function() {
+                       // Metadata loaded, no need to call load() again
+                   });
                   
                   // Initialize video to start
                   video.currentTime = 0;
@@ -3175,54 +3912,6 @@ body { margin: 0; padding: 0; }
             document.querySelector(`.accordion-item[data-tab="${nextTab}"]`).click();
         }, 10000);
 
-        // Testimonial carousel
-        const slides = document.querySelectorAll('.testimonial-slide');
-        const dots = document.querySelectorAll('.dot');
-        let currentSlide = 0;
-        let autoAdvanceInterval;
-
-        function goToSlide(index) {
-            slides.forEach(slide => slide.classList.remove('active'));
-            dots.forEach(dot => dot.classList.remove('active'));
-            
-            slides[index].classList.add('active');
-            dots[index].classList.add('active');
-            currentSlide = index;
-        }
-
-        function nextSlide() {
-            const next = (currentSlide + 1) % slides.length;
-            goToSlide(next);
-        }
-
-        function prevSlide() {
-            const prev = (currentSlide - 1 + slides.length) % slides.length;
-            goToSlide(prev);
-        }
-
-        document.querySelector('[data-direction="next"]').addEventListener('click', () => {
-            nextSlide();
-            resetAutoAdvance();
-        });
-
-        document.querySelector('[data-direction="prev"]').addEventListener('click', () => {
-            prevSlide();
-            resetAutoAdvance();
-        });
-
-        dots.forEach((dot, index) => {
-            dot.addEventListener('click', () => {
-                goToSlide(index);
-                resetAutoAdvance();
-            });
-        });
-
-        function resetAutoAdvance() {
-            clearInterval(autoAdvanceInterval);
-            autoAdvanceInterval = setInterval(nextSlide, 6000);
-        }
-
-        autoAdvanceInterval = setInterval(nextSlide, 6000);
 
         // FAQ accordion
         const faqItems = document.querySelectorAll('.faq-item');
@@ -3245,121 +3934,117 @@ body { margin: 0; padding: 0; }
         window.addEventListener('scroll', () => {
             const currentScroll = window.pageYOffset;
             const navbar = document.querySelector('.navbar');
-            
+
             if (currentScroll > 20) {
                 navbar.classList.add('scrolled');
             } else {
                 navbar.classList.remove('scrolled');
             }
-            
+
             lastScroll = currentScroll;
         });
+
+        // Striped transition scroll animation
+        gsap.to(".striped-transition", {
+            height: 0,
+            ease: "power2.inOut",
+            scrollTrigger: {
+                trigger: ".striped-transition",
+                start: "top bottom",
+                end: "bottom 30%",
+                scrub: 5
+            }
+        });
+
+        // Vehicle blob cursor tracking
+        document.addEventListener('DOMContentLoaded', function() {
+            const vehicleCards = document.querySelectorAll('.vehicle-card');
+
+            vehicleCards.forEach(card => {
+                const blob = card.querySelector('.vehicle-blob');
+                if (!blob) return;
+
+                card.addEventListener('mouseenter', function() {
+                    blob.style.opacity = '1';
+                });
+
+                card.addEventListener('mousemove', function(e) {
+                    const rect = card.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    // Calculate offset from center
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    const offsetX = (x - centerX) * 1;
+                    const offsetY = (y - centerY) * 1;
+
+                    blob.style.transform = `translate(calc(-50% + ${offsetX}px), calc(-50% + ${offsetY}px)) scale(1)`;
+                });
+
+                card.addEventListener('mouseleave', function() {
+                    // Reset blob to center on mouse leave
+                    blob.style.transform = `translate(-50%, -50%) scale(0.8)`;
+                    blob.style.opacity = '0';
+                });
+            });
+        });
+
+        // Testimonial Carousel
+        const carouselTrack = document.getElementById('testimonialCarousel');
+        const carouselDots = document.querySelectorAll('.carousel-dot');
+        const prevBtn = document.getElementById('carouselPrev');
+        const nextBtn = document.getElementById('carouselNext');
+
+        if (carouselTrack) {
+            const cards = carouselTrack.querySelectorAll('.testimonial-card');
+            let currentIndex = 0;
+
+            function updateCarousel() {
+                const cardWidth = cards[0].offsetWidth + 12; // card width + gap
+                carouselTrack.scrollTo({
+                    left: currentIndex * cardWidth,
+                    behavior: 'smooth'
+                });
+
+                carouselDots.forEach((dot, i) => {
+                    dot.classList.toggle('active', i === currentIndex);
+                });
+            }
+
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    currentIndex = Math.max(0, currentIndex - 1);
+                    updateCarousel();
+                });
+            }
+
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    currentIndex = Math.min(cards.length - 1, currentIndex + 1);
+                    updateCarousel();
+                });
+            }
+
+            carouselDots.forEach((dot) => {
+                dot.addEventListener('click', () => {
+                    currentIndex = parseInt(dot.dataset.index);
+                    updateCarousel();
+                });
+            });
+
+            // Update dots on scroll
+            carouselTrack.addEventListener('scroll', () => {
+                const cardWidth = cards[0].offsetWidth + 12;
+                const newIndex = Math.round(carouselTrack.scrollLeft / cardWidth);
+                if (newIndex !== currentIndex && newIndex >= 0 && newIndex < cards.length) {
+                    currentIndex = newIndex;
+                    carouselDots.forEach((dot, i) => {
+                        dot.classList.toggle('active', i === currentIndex);
+                    });
+                }
+            });
+        }
     </script>
-
-    <footer class="footer" id="footer">
-        <div class="footer-inner">
-            <div class="footer-top">
-                <div class="footer-brand-section">
-                    <a href="#" class="footer-brand"><img src="logo-nexus-inverted.png" alt="Nexus" class="footer-brand-logo"></a>
-                    <div class="footer-brand-actions">
-                        <a href="contact-sales.html" class="footer-cta-small">Contact sales</a>
-                        <a href="/login" class="footer-signin-small">Sign in</a>
-                    </div>
-                </div>
-
-                <div class="footer-links-grid">
-                    <!-- Column 1: Products -->
-                    <div class="footer-column">
-                        <div class="footer-column-title">Products</div>
-                        <div class="footer-links">
-                            <a href="#" class="footer-link">Fund Administration</a>
-                            <a href="#" class="footer-link">Venture Funds</a>
-                            <a href="#" class="footer-link">Rolling Funds</a>
-                            <a href="#" class="footer-link">Scout Funds</a>
-                            <a href="#" class="footer-link">SPVs</a>
-                            <a href="#" class="footer-link">Roll Up Vehicles</a>
-                            <a href="#" class="footer-link">Investor Management</a>
-                            <a href="#" class="footer-link">Digital Subscriptions</a>
-                            <a href="#" class="footer-link">Data Room</a>
-                            <a href="#" class="footer-link">
-                                Intelligence
-                                <span class="footer-beta-pill">BETA</span>
-                            </a>
-                        </div>
-                    </div>
-
-                    <!-- Column 2: Pricing + Returns -->
-                    <div class="footer-column">
-                        <div class="footer-column-title">Pricing + Returns</div>
-                        <div class="footer-links">
-                            <a href="pricing.html" class="footer-link">Pricing</a>
-                            <a href="#" class="footer-link">VC Fund Performance Calculator</a>
-                            <a href="#" class="footer-link">RUV Calculator</a>
-                        </div>
-                    </div>
-
-                    <!-- Column 3: Resources -->
-                    <div class="footer-column">
-                        <div class="footer-column-title">Resources</div>
-                        <div class="footer-links">
-                            <a href="#" class="footer-link">Learn</a>
-                            <a href="#" class="footer-link">Blog</a>
-                            <a href="#" class="footer-link">Help Center</a>
-                            <a href="#" class="footer-link">Education Center</a>
-                            <a href="#" class="footer-link">Data Center</a>
-                            <a href="#" class="footer-link">About Us</a>
-                            <a href="#" class="footer-link">Careers</a>
-                            <a href="#" class="footer-link">Engineering</a>
-                        </div>
-                    </div>
-
-                    <!-- Column 4: By Nexus -->
-                    <div class="footer-column">
-                        <div class="footer-column-title">By Nexus</div>
-                        <div class="footer-links">
-                            <a href="#" class="footer-link">
-                                Rollups
-                                <i data-lucide="external-link"></i>
-                            </a>
-                            <a href="#" class="footer-link">
-                                Meridian
-                                <i data-lucide="external-link"></i>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="footer-bottom">
-                <div class="footer-legal">
-                    <a href="#" class="footer-link">Terms</a>
-                    <span class="footer-legal-separator">·</span>
-                    <a href="#" class="footer-link">Privacy</a>
-                    <span class="footer-legal-separator">·</span>
-                    <a href="#" class="footer-link">Disclosures</a>
-                    <span class="footer-legal-separator">·</span>
-                    <a href="#" class="footer-link">Cookie Settings</a>
-                    <span class="footer-legal-separator">·</span>
-                    <span>© 2026 AL Advisors Management Inc.</span>
-                </div>
-
-                <div class="footer-social">
-                    <a href="#" class="footer-social-link" aria-label="Twitter">
-                        <i data-lucide="twitter"></i>
-                    </a>
-                    <a href="#" class="footer-social-link" aria-label="LinkedIn">
-                        <i data-lucide="linkedin"></i>
-                    </a>
-                </div>
-
-
-            </div>
-
-            <div class="footer-disclaimer">
-                The information contained herein is provided for informational and discussion purposes only and is not intended to be a recommendation for any investment, service, product, or other advice of any kind. Any investment opportunities and/or products or services shown here will only be completed pursuant to formal offering materials. Quotes included in these materials should not be construed as an endorsement of Nexus's advice, analysis, or other service rendered to its clients.
-            </div>
-
-        </div>
-    </footer>
 </body>
 </html>

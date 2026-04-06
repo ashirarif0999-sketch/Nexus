@@ -14,6 +14,9 @@
     
     <!-- Lenis Smooth Scroll -->
     <script src="https://unpkg.com/lenis@latest/dist/lenis.min.js"></script>
+
+    <!-- Barba.js for smooth page transitions -->
+    <script src="https://unpkg.com/@barba/core@latest"></script>
     
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
@@ -362,22 +365,22 @@
        .navbar::before,
         .navbar::after {
             content: '';
-            position: absolute;
-            top: -2px;
-            width: 24px;
-            height: 18px;
-            background: rgba(255, 255, 255, 0);
+    position: absolute;
+    top: 0px;
+    width: 24px;
+    height: 33px;
+    background: rgba(255, 0, 0, 0);
         }
         
         .navbar::before {
-left: -23px;
-    border-radius: 0px 30px 0px 0px;
+left: -24px;
+    border-radius: 0px 14px 0px 0px;
     box-shadow: 11px -1px 2px #23273d;
         }
         
         .navbar::after {
-    right: -23px;
-    border-radius: 30px 0px 0px 0px;
+    right: -24px;
+    border-radius: 14px 0px 0px 0px;
     box-shadow: -10px -1px 2px #23273d;
 }
         /* Scrolled State - Dark Section */
@@ -437,10 +440,12 @@ height: stretch;
             position: relative;
         }
         .navbar-nav:has(.navbar-link:hover) .navbar-dropdown-window {
-            max-height: max-content;
+            max-height: max-content !important;
+            animation: animate 300ms var(--ease-out) !important;
         }
         .navbar-link[href*="pricing"]:hover ~ .navbar-dropdown-window {
-            max-height: 0;
+            max-height: 0 !important;
+            animation: animate 300ms var(--ease-out) !important;
         }
         .navbar-dropdown-window {
                 position: absolute;
@@ -454,16 +459,19 @@ height: stretch;
     background: white;
     border-radius: 12px;
     box-shadow: 0 20px 48px rgba(0, 0, 0, 0.12);
-    transition: max-height 300ms var(--ease-out);
+    transition: animate 300ms var(--ease-out);
+    animation: animate 300ms var(--ease-out) !important;
     z-index: 100;
         }
 
         .navbar-nav:has(.navbar-link:hover) .navbar-dropdown-window {
-            max-height: max-content;
+            max-height: max-content !important;
+            animation: animate 300ms var(--ease-out) !important;
         }
 
         .navbar-link[href*="pricing"]:hover ~ .navbar-dropdown-window {
             max-height: 0 !important;
+            animation: animate 300ms var(--ease-out) !important;
         }
         .navbar-dropdown-content {
             display: grid;
@@ -560,6 +568,141 @@ height: stretch;
            NAVBAR DROPDOWN GROUPS
            (Products / Solutions / Resources)
            ============================================ */
+
+        @keyframes popin {
+            0% { opacity: 0; transform: scale(0.8); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        .navbar-dropdown-group {
+            display: none;
+            animation: popin 300ms var(--ease-out) !important;
+        }
+
+        .navbar-dropdown-group.active {
+            display: block;
+        }
+
+        .navbar-dropdown-content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            padding: 20px;
+            min-height: 350px;
+            justify-items: center;
+            width: fit-content;
+            margin: 0 auto;
+            animation: popin 300ms var(--ease-out) !important;
+        }
+
+        .navbar-dropdown-column {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            width: 182px;
+            animation: popin 300ms var(--ease-out) !important;
+        }
+
+        .navbar-dropdown-section-title {
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.08em;
+            color: #999999;
+            margin: 0;
+            line-height: 1;
+            animation: popin 300ms var(--ease-out) !important;
+        }
+
+        .navbar-dropdown-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            animation: popin 300ms var(--ease-out) !important;
+        }
+
+        .navbar-dropdown-link {
+            font-family: 'DM Sans', sans-serif;
+            font-size: 18px;
+            font-weight: 400;
+            color: #1a1a1a;
+            text-decoration: none;
+            transition: color 200ms var(--ease-out);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 0;
+            animation: popin 300ms var(--ease-out) !important;
+        }
+
+        .navbar-dropdown-link:hover {
+            color: #405CFF;
+        }
+
+        .navbar-dropdown-link-inline {
+            color: #405CFF;
+            font-weight: 500;
+            text-decoration: none;
+            transition: color 200ms var(--ease-out);
+            animation: popin 300ms var(--ease-out) !important;
+        }
+
+        .navbar-dropdown-link-inline:hover {
+            color: #2d3fa6;
+        }
+
+        .navbar-dropdown-footer-text {
+            font-size: 14px;
+            color: #666666;
+            margin-top: 8px;
+            line-height: 1.4;
+            position: absolute;
+            bottom: 24px;
+            left: 28px;
+            width: max-content;
+            animation: popin 300ms var(--ease-out) !important;
+        }
+
+        .navbar-dropdown-showcase-list {
+            display: flex;
+            flex-direction: column;
+            animation: popin 300ms var(--ease-out) !important;
+        }
+
+        .navbar-dropdown-showcase-card {
+            display: flex;
+            flex-direction: row;
+            gap: 8px;
+            cursor: pointer;
+            padding-top: 20px;
+            transition: transform 200ms var(--ease-out);
+            animation: popin 300ms var(--ease-out) !important;
+        }
+
+        .navbar-dropdown-showcase-card-single {
+            flex-direction: row;
+            gap: 12px;
+            align-items: flex-start;
+            animation: popin 300ms var(--ease-out) !important;
+        }
+
+        .navbar-dropdown-showcase-card-content {
+            display: flex;
+            gap: 12px;
+            align-items: flex-start;
+            width: 100%;
+            animation: popin 300ms var(--ease-out) !important;
+        }
+
+        .navbar-dropdown-showcase-image {
+            height: -webkit-fill-available;
+            aspect-ratio: 1/1;
+            overflow: hidden;
+            background: linear-gradient(135deg, #f0f0f0 0%, #e8e8e8 100%);
+            border-radius: 8px;
+            flex-shrink: 0;
+            animation: popin 300ms var(--ease-out) !important;
+        }
         .navbar-dropdown-group {
             display: none;
         }
@@ -904,13 +1047,14 @@ font-family: 'DM Sans', sans-serif;
         
         .hero {
             background: var(--neutral-50);
-            padding: 128px 24px 0;
+            padding: 128px 24px 70px;
         }
 
         .hero-container {
             max-width: 900px;
             margin: 0 auto;
             text-align: center;
+            position: relative;
         }
 
         .hero-label {
@@ -2129,23 +2273,144 @@ font-family: 'DM Sans', sans-serif;
         }
 
         .content-fade {
-            opacity: 0;
-            transition: opacity 250ms var(--ease-out-expo);
+            opacity: 1;
+            transition: opacity 400ms var(--ease-out-expo);
         }
 
-        .content-fade.active {
-            opacity: 1;
+        .content-fade.fading-out {
+            opacity: 0;
+        }
+
+        .content-fade.hidden {
+            display: none;
+        }
+
+        .content-fade.fading-in {
+            opacity: 0;
+        }
+
+        /* SPV Chart Styles */
+        .spv-chart-container {
+            width: -webkit-fill-available;
+    height: 311px;
+    margin: 48px 2px;
+    position: relative;
+    overflow: visible;
+    border-radius: var(--radius-xl);
+    opacity: 0;
+    animation: fadeIn 400ms var(--ease-out-expo) 400ms forwards;
+        }
+
+        .spv-chart-container .bars {
+            position: absolute;
+            inset: 0 0 56px 0;
+            display: flex;
+            align-items: flex-end;
+            gap: 4px;
+            padding: 0;
+            overflow: hidden;
+        }
+
+        .spv-chart-container .bar {
+            flex: 1 1 0;
+            height: var(--h);
+            transform-origin: bottom center;
+            transform: scaleY(0);
+            opacity: 0;
+            background: linear-gradient(90deg, rgb(255 183 109 / 65%) 0%, rgb(244 242 239 / 95%) 100%);
+            box-shadow: inset 0 0 0 1px rgba(255,255,255,.15);
+            animation: barGrow 0.75s cubic-bezier(.22, 1, .36, 1) forwards;
+            animation-delay: calc(var(--i) * 0.1s);
+        }
+
+        @keyframes barGrow {
+            0% { transform: scaleY(0); opacity: 0; }
+            10% { opacity: 1; }
+            100% { transform: scaleY(1); opacity: 1; }
+        }
+
+        .spv-chart-container .baseline {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 39px;
+            height: 54px;
+            pointer-events: none;
+            opacity: 0;
+            transform-origin: left center;
+            transform: scaleX(0);
+            animation: revealLine 2s ease forwards;
+            animation-delay: 2s;
+        }
+
+        .spv-chart-container .baseline::before {
+            content: "";
+            position: absolute;
+            inset: 0 0 auto 0;
+            top: 26px;
+            height: 1px;
+            background: linear-gradient(90deg, var(--primary-500), var(--primary-400) 60%, var(--primary-500) 100%);
+            border-radius: 999px;
+            box-shadow: 0 0 0 1px rgba(64, 92, 255, 0.18), 0 0 18px rgba(64, 92, 255, 0.35);
+        }
+
+        .spv-chart-container .baseline::after {
+            content: "";
+            position: absolute;
+            inset: 26px 0 auto 0;
+            height: 54px;
+            background: linear-gradient(180deg, rgba(64, 92, 255, 0.22) 0%, rgba(64, 92, 255, 0.12) 38%, rgba(255, 135, 105, 0.06) 100%);
+            filter: blur(8px);
+            opacity: 0.95;
+        }
+
+        .spv-chart-container .baseline-dot {
+            position: absolute;
+            right: -2px;
+            top: 22px;
+            width: 8px;
+            height: 8px;
+            border-radius: 999px;
+            background: var(--primary-500);
+            box-shadow: 0 0 0 2px rgba(64, 92, 255, 0.16);
+        }
+
+        @keyframes revealLine {
+            0% { transform: scaleX(0); opacity: 1; }
+            100% { transform: scaleX(1); opacity: 1; }
+        }
+
+        .spv-chart-container .tag {
+            position: absolute;
+            right: 0;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 16px;
+            line-height: 1;
+            color: #fff;
+            white-space: nowrap;
+        }
+
+        .spv-chart-container .tag.top {
+            top: 10px;
+            background: var(--tertiary-500);
+        }
+
+        .spv-chart-container .tag.bottom {
+            bottom: 35px;
+            background: var(--primary-500);
         }
     </style>
 </head>
 <body>
-   
+      <!-- BARBA.JS WRAPPER - Everything inside transitions -->
+    <div data-barba="wrapper">
     <!-- ============================================
          SECTION 1 — NAVBAR
          ============================================ -->
     <nav class="navbar" id="navbar">
         <div class="navbar-inner">
-            <a href="landingpage.html" class="navbar-brand"><img src="logo-nexus-inverted.png" alt="Nexus" class="navbar-logo"></a>
+            <a href="landingpage.html" class="navbar-brand"><img src="images/logo-nexus-inverted.avif" alt="Nexus" class="navbar-logo"></a>
             
             <div class="navbar-nav">
                 <a href="#" class="navbar-link">Products <i data-lucide="chevron-down"></i></a>
@@ -2283,7 +2548,7 @@ font-family: 'DM Sans', sans-serif;
                                 <div class="navbar-dropdown-showcase-list">
                                     <div class="navbar-dropdown-showcase-card navbar-dropdown-showcase-card-g3">
                                         <div class="navbar-dropdown-showcase-image">
-                                            <img src="navbar 3.png" width="100%" height="100%" alt="Fund Benchmarks Report 2025" style="object-fit: cover; border-radius: var(--radius-lg);">
+                                            <img src="images/navbar 3.avif" width="100%" height="100%" alt="Fund Benchmarks Report 2025" style="object-fit: cover; border-radius: var(--radius-lg);">
                                         </div>
                                         <div class="showcase-wrapper-group-3">
                                             <h5 class="navbar-dropdown-showcase-title">The Fund Benchmarks Report 2025</h5>
@@ -2292,7 +2557,7 @@ font-family: 'DM Sans', sans-serif;
                                     </div>
                                     <div class="navbar-dropdown-showcase-card navbar-dropdown-showcase-card-g3">
                                         <div class="navbar-dropdown-showcase-image">
-                                            <img src="navbar 4.png" width="100%" height="100%" alt="How Browder Capital Launched Institutional Fund IV with Nexus" style="object-fit: cover; border-radius: var(--radius-lg);">
+                                            <img src="images/navbar 4.avif" width="100%" height="100%" alt="How Browder Capital Launched Institutional Fund IV with Nexus" style="object-fit: cover; border-radius: var(--radius-lg);">
                                         </div>
                                         <div class="showcase-wrapper-group-3">
                                             <h5 class="navbar-dropdown-showcase-title">How Browder Capital Launched Institutional Fund IV with Nexus</h5>
@@ -2315,7 +2580,8 @@ font-family: 'DM Sans', sans-serif;
             </div>
         </div>
     </nav>
-    
+     <!-- BARBA.JS CONTAINER - Only content inside transitions -->
+    <div data-barba="container">
     <!-- Mobile Navigation Overlay -->
     <div class="mobile-nav-overlay" id="mobile-nav-overlay">
         <button class="mobile-nav-close" id="mobile-nav-close" aria-label="Close menu">
@@ -2343,7 +2609,7 @@ font-family: 'DM Sans', sans-serif;
                 <button class="hero-tab-btn" data-tab="spvs">SPVs</button>
             </div>
 
-            <h1 class="hero-headline">
+            <h1 class="hero-headline content-fade active" id="hero-headline-venture" data-tab-content="venture-funds">
                 <span class="hero-headline-word">10-year</span>
                 <span class="hero-headline-word">pricing.</span>
                 <br>
@@ -2351,11 +2617,24 @@ font-family: 'DM Sans', sans-serif;
                 <span class="hero-headline-word">in.</span>
             </h1>
 
-            <p class="hero-subtext">
+            <p class="hero-subtext content-fade active" id="hero-subtext-venture" data-tab-content="venture-funds">
                 Predictable, annual pricing for the lifetime of your fund.
             </p>
 
-            <div class="hero-chart" id="hero-chart">
+            <h1 class="hero-headline content-fade hidden" id="hero-headline-spv" data-tab-content="spvs">
+                <span class="hero-headline-word">Flat pricing</span>
+                <span class="hero-headline-word">for</span>
+                <br>
+                <span class="hero-headline-word">every</span>
+                <span class="hero-headline-word">deal</span>
+                <span class="hero-headline-word">size.</span>
+            </h1>
+
+            <p class="hero-subtext content-fade hidden" id="hero-subtext-spv" data-tab-content="spvs">
+                One flat fee for SPVs. We keep it simple with no hidden costs.
+            </p>
+
+            <div class="hero-chart content-fade active" id="hero-chart-venture" data-tab-content="venture-funds">
                 <svg viewBox="0 0 1200 200" preserveAspectRatio="none">
                     <defs>
                         <linearGradient id="nexusGrad" x1="0" y1="0" x2="0" y2="1">
@@ -2384,13 +2663,46 @@ font-family: 'DM Sans', sans-serif;
                 <div class="chart-label-others">Others</div>
                 <div class="chart-label-nexus">Nexus</div>
             </div>
+
+            <div class="spv-chart-container content-fade hidden" id="hero-chart-spv" data-tab-content="spvs">
+                <div class="bars" aria-hidden="true">
+                    <div class="bar" style="--i:0; --h:60px"></div>
+                    <div class="bar" style="--i:1; --h:100px"></div>
+                    <div class="bar" style="--i:2; --h:72px"></div>
+                    <div class="bar" style="--i:3; --h:114px"></div>
+                    <div class="bar" style="--i:4; --h:38px"></div>
+                    <div class="bar" style="--i:5; --h:72px"></div>
+                    <div class="bar" style="--i:6; --h:54px"></div>
+                    <div class="bar" style="--i:7; --h:40px"></div>
+                    <div class="bar" style="--i:8; --h:58px"></div>
+                    <div class="bar" style="--i:9; --h:72px"></div>
+                    <div class="bar" style="--i:10; --h:114px"></div>
+                    <div class="bar" style="--i:11; --h:100px"></div>
+                    <div class="bar" style="--i:12; --h:126px"></div>
+                    <div class="bar" style="--i:13; --h:150px"></div>
+                    <div class="bar" style="--i:14; --h:126px"></div>
+                    <div class="bar" style="--i:15; --h:108px"></div>
+                    <div class="bar" style="--i:16; --h:138px"></div>
+                    <div class="bar" style="--i:17; --h:182px"></div>
+                    <div class="bar" style="--i:18; --h:200px"></div>
+                    <div class="bar" style="--i:19; --h:220px"></div>
+                    <div class="bar" style="--i:20; --h:170px"></div>
+                    <div class="bar" style="--i:21; --h:150px"></div>
+                    <div class="bar" style="--i:22; --h:170px"></div>
+                </div>
+                <div class="baseline">
+                    <span class="baseline-dot"></span>
+                </div>
+                <div class="tag top">Deal size</div>
+                <div class="tag bottom">SPV cost</div>
+            </div>
         </div>
     </section>
 
     <!-- ============================================
          SECTION 3 - PRICING CARDS
          ============================================ -->
-    <section class="pricing-section" id="pricing-section">
+    <section class="pricing-section" id="pricing-section" data-tab-content="venture-funds">
         <div class="pricing-container">
             <div class="section-layout">
                 <div class="section-sidebar">
@@ -2447,50 +2759,88 @@ font-family: 'DM Sans', sans-serif;
                         </div>
                     </div>
 
-                    <div class="pricing-cards content-fade hidden" id="pricing-cards-spv">
-                        <!-- Card 1 - Single Deal SPV -->
-                        <div class="pricing-card reveal-element">
-                            <h3 class="pricing-card-name">Single Deal</h3>
-                            <p class="pricing-card-tag">Ideal for one-time capital raises</p>
-                            <p class="pricing-card-body">Simple SPV structure for single investment opportunities with streamlined administration and investor management.</p>
-                            
-                            <div class="pricing-row">
-                                <div class="pricing-row-label">Per Deal</div>
-                                <div class="pricing-row-display">
-                                    <span class="pricing-number">0.15%</span>
-                                    <span class="pricing-modifier">of raise size</span>
-                                    <span class="pricing-plus">+</span>
-                                    <span class="pricing-number">$5k</span>
-                                    <span class="pricing-period">/ deal</span>
-                                </div>
-                            </div>
-                            
-                            <button class="pricing-cta">Talk to an expert</button>
-                        </div>
+                    <p class="pricing-footer-note reveal-element">Both plans subject to minimum fund size, plus one-time implementation fee based on fund complexity.</p>
+                </div>
+            </div>
+        </div>
+    </section>
 
-                        <!-- Card 2 - Series SPV -->
-                        <div class="pricing-card featured reveal-element">
-                            <span class="pricing-card-badge">Best value</span>
-                            <h3 class="pricing-card-name">Series SPV</h3>
-                            <p class="pricing-card-tag">Ideal for repeat investors</p>
-                            <p class="pricing-card-body">Multiple SPVs under one structure with discounted pricing. Perfect for investors making 5+ deals per year.</p>
+    <!-- SPV PRICING SECTION -->
+    <section class="pricing-section content-fade hidden" id="pricing-section-spv" data-tab-content="spvs">
+        <div class="pricing-container">
+            <div class="section-layout">
+                <div class="section-sidebar">
+                    <div class="section-label reveal-element reveal-left">
+                        <span class="section-label-dot"></span>
+                        Offering
+                    </div>
+                </div>
+                
+                <div class="section-content">
+                    <h2 class="section-heading reveal-element">Flat pricing for every deal size.</h2>
+                    <p class="section-sub reveal-element">One flat fee for SPVs. We keep it simple with no hidden costs.</p>
+
+                    <div class="pricing-cards">
+                        <!-- SPV Pricing Card -->
+                        <div class="pricing-card featured reveal-element" style="max-width: 600px;">
+                            <h3 class="pricing-card-name">SPVs</h3>
+                            <p class="pricing-card-tag">Transparent pricing, so you know your SPV costs upfront.</p>
                             
                             <div class="pricing-row">
-                                <div class="pricing-row-label">Per Deal</div>
                                 <div class="pricing-row-display">
-                                    <span class="pricing-number">0.15%</span>
-                                    <span class="pricing-modifier">of raise size</span>
-                                    <span class="pricing-plus">+</span>
-                                    <span class="pricing-number">$3k</span>
-                                    <span class="pricing-period">/ deal (5+ deals)</span>
+                                    <span class="pricing-number">$8k</span>
+                                </div>
+                            </div>
+
+                            <div style="margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-light);">
+                                <div style="font-size: 12px; font-weight: 500; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-tertiary); margin-bottom: 12px;">Features</div>
+                                <div style="display: flex; flex-direction: column; gap: 8px;">
+                                    <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-secondary);">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-500); flex-shrink: 0;"><polyline points="20 6 9 17 4 12"/></svg>
+                                        SPV administration
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-secondary);">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-500); flex-shrink: 0;"><polyline points="20 6 9 17 4 12"/></svg>
+                                        Investor closings
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-secondary);">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-500); flex-shrink: 0;"><polyline points="20 6 9 17 4 12"/></svg>
+                                        Distributions included
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-secondary);">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-500); flex-shrink: 0;"><polyline points="20 6 9 17 4 12"/></svg>
+                                        Transaction review & execution
+                                    </div>
+                                    <div style="display: flex; align-items: center; gap: 8px; font-size: 14px; color: var(--text-secondary);">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color: var(--primary-500); flex-shrink: 0;"><polyline points="20 6 9 17 4 12"/></svg>
+                                        Optional add-on services
+                                    </div>
                                 </div>
                             </div>
                             
-                            <button class="pricing-cta primary">Talk to an expert</button>
+                            <button class="pricing-cta primary">Launch now</button>
+                            <p class="pricing-footer-note" style="margin-top: 12px;"><a href="#" style="color: var(--primary-500); text-decoration: underline;">Calculate your costs</a></p>
                         </div>
                     </div>
 
-                    <p class="pricing-footer-note reveal-element">Both plans subject to minimum fund size, plus one-time implementation fee based on fund complexity.</p>
+                    <!-- Details Row -->
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; margin-top: 48px;">
+                        <div class="reveal-element" style="padding: 24px; border: 1px solid var(--border-light); border-radius: var(--radius-xl);">
+                            <div style="font-size: 20px; margin-bottom: 8px;">🏛️</div>
+                            <h4 style="font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">Blue sky fees</h4>
+                            <p style="font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text-tertiary); line-height: 1.5;">Flat passthrough rate of $2k for state regulatory costs, also known as blue sky fees.</p>
+                        </div>
+                        <div class="reveal-element" style="padding: 24px; border: 1px solid var(--border-light); border-radius: var(--radius-xl);">
+                            <div style="font-size: 20px; margin-bottom: 8px;">💰</div>
+                            <h4 style="font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">Fees are capped</h4>
+                            <p style="font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text-tertiary); line-height: 1.5;">Total SPV fees are capped at 10% of the raised amount, excluding add-on service fees.</p>
+                        </div>
+                        <div class="reveal-element" style="padding: 24px; border: 1px solid var(--border-light); border-radius: var(--radius-xl);">
+                            <div style="font-size: 20px; margin-bottom: 8px;">👥</div>
+                            <h4 style="font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px;">72k investors</h4>
+                            <p style="font-family: 'DM Sans', sans-serif; font-size: 13px; color: var(--text-tertiary); line-height: 1.5;">Elect to grow your LP base by submitting your SPV to Meridian, our wealth platform.</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2499,7 +2849,7 @@ font-family: 'DM Sans', sans-serif;
     <!-- ============================================
          SECTION 4 - WHAT'S INCLUDED
          ============================================ -->
-    <section class="features-section" id="features-section">
+    <section class="features-section" id="features-section" data-tab-content="venture-funds">
         <div class="features-container">
             <div class="section-layout">
                 <div class="section-sidebar">
@@ -2712,10 +3062,123 @@ font-family: 'DM Sans', sans-serif;
         </div>
     </section>
 
+    <!-- SPV FEATURES SECTION -->
+    <section class="features-section content-fade hidden" id="features-section-spv" data-tab-content="spvs">
+        <div class="features-container">
+            <div class="section-layout">
+                <div class="section-sidebar">
+                    <div class="section-label reveal-element reveal-left">
+                        <span class="section-label-dot"></span>
+                        What's included
+                    </div>
+                </div>
+                
+                <div class="section-content">
+                    <h2 class="section-heading reveal-element">Seamlessly launch and run SPVs</h2>
+                    <p class="section-sub reveal-element">Everything from deal execution services to modern software for you and your investors.</p>
+
+                    <div class="features-grid">
+                        <!-- SPV Operations Column -->
+                        <div class="features-column reveal-element">
+                            <div class="features-column-header">
+                                <h3 class="features-column-name">SPV operations</h3>
+                            </div>
+                            
+                            <div class="features-category">
+                                <div class="features-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                    GP Portfolio & Investment Dashboard
+                                </div>
+                                <div class="features-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                    Digital deal term review
+                                </div>
+                                <div class="features-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                    Legal SPV formation
+                                </div>
+                                <div class="features-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                    SPV filings
+                                </div>
+                                <div class="features-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                    Bank account setup & management
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Accounting and Tax Column -->
+                        <div class="features-column featured reveal-element">
+                            <div class="features-column-header">
+                                <h3 class="features-column-name">Accounting and tax</h3>
+                            </div>
+                            
+                            <div class="features-category">
+                                <div class="features-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                    SPV accounting
+                                </div>
+                                <div class="features-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                    SPV taxes
+                                </div>
+                                <div class="features-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                    Investor K-1 preparation
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="features-grid" style="margin-top: 24px;">
+                        <!-- Investor Services Column -->
+                        <div class="features-column reveal-element">
+                            <div class="features-column-header">
+                                <h3 class="features-column-name">Investor services</h3>
+                            </div>
+                            
+                            <div class="features-category">
+                                <div class="features-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                    Digital investor closings
+                                </div>
+                                <div class="features-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                    LP portal and data room
+                                </div>
+                                <div class="features-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                    Investor K-1 distribution
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Additional Support Column -->
+                        <div class="features-column reveal-element">
+                            <div class="features-column-header">
+                                <h3 class="features-column-name">Additional support</h3>
+                            </div>
+                            
+                            <div class="features-category">
+                                <div class="features-item">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                                    Investor support
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="features-cta reveal-element">Launch now</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- ============================================
          SECTION 5 - ADDITIONAL SERVICES
          ============================================ -->
-    <section class="services-section" id="services-section">
+    <section class="services-section" id="services-section" data-tab-content="venture-funds">
         <div class="services-container">
             <div class="section-layout">
                 <div class="section-sidebar">
@@ -2756,10 +3219,49 @@ font-family: 'DM Sans', sans-serif;
         </div>
     </section>
 
+    <!-- SPV SERVICES SECTION - ADD-ONS -->
+    <section class="services-section content-fade hidden" id="services-section-spv" data-tab-content="spvs">
+        <div class="services-container">
+            <div class="section-layout">
+                <div class="section-sidebar">
+                    <div class="section-label reveal-element reveal-left">
+                        <span class="section-label-dot"></span>
+                        Additional services
+                    </div>
+                </div>
+                
+                <div class="section-content">
+                    <h2 class="section-heading reveal-element">Add-ons</h2>
+                    
+                    <div style="max-width: 600px; margin-top: 24px;">
+                        <div class="reveal-element" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border-light);">
+                            <span style="font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text-secondary);">International investments</span>
+                            <span style="font-family: 'Instrument Serif', serif; font-style: italic; font-size: 18px; color: var(--text-primary);">$1k</span>
+                        </div>
+                        <div class="reveal-element" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border-light);">
+                            <span style="font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text-secondary);">Self-advised SPV</span>
+                            <span style="font-family: 'Instrument Serif', serif; font-style: italic; font-size: 18px; color: var(--text-primary);">$1k</span>
+                        </div>
+                        <div class="reveal-element" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border-light);">
+                            <span style="font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text-secondary);">Non-standard investments</span>
+                            <span style="font-family: 'Instrument Serif', serif; font-style: italic; font-size: 18px; color: var(--text-primary);">$2k</span>
+                        </div>
+                        <div class="reveal-element" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 0; border-bottom: 1px solid var(--border-light);">
+                            <span style="font-family: 'DM Sans', sans-serif; font-size: 14px; color: var(--text-secondary);">Crypto investments</span>
+                            <span style="font-family: 'Instrument Serif', serif; font-style: italic; font-size: 18px; color: var(--text-primary);">$2k</span>
+                        </div>
+                    </div>
+
+                    <p class="pricing-footer-note reveal-element" style="margin-top: 16px;"><a href="#" style="color: var(--primary-500); text-decoration: underline;">Calculate your costs</a></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- ============================================
          SECTION 6 - SOCIAL PROOF + TESTIMONIAL
          ============================================ -->
-    <section class="testimonials-section" id="testimonials-section">
+    <section class="testimonials-section" id="testimonials-section" data-tab-content="venture-funds">
         <div class="testimonials-container">
             <h2 class="testimonials-heading reveal-element">Trusted by 500+ startups and 2,000+ investors</h2>
             
@@ -2818,10 +3320,68 @@ font-family: 'DM Sans', sans-serif;
         </div>
     </section>
 
+    <!-- SPV TESTIMONIALS SECTION -->
+    <section class="testimonials-section content-fade hidden" id="testimonials-section-spv" data-tab-content="spvs">
+        <div class="testimonials-container">
+            <h2 class="testimonials-heading reveal-element">Join the 25,000 syndicates & funds on AngelList</h2>
+            
+            <div class="testimonials-logos reveal-element">
+                <span class="testimonials-logo">SHRUG</span>
+                <span class="testimonials-separator">·</span>
+                <span class="testimonials-logo">ACCOMPLISH</span>
+                <span class="testimonials-separator">·</span>
+                <span class="testimonials-logo">HUSTLE FUND</span>
+                <span class="testimonials-separator">·</span>
+                <span class="testimonials-logo">KEARNY JACKSON</span>
+                <span class="testimonials-separator">·</span>
+                <span class="testimonials-logo">NOT BORING CAPITAL</span>
+            </div>
+
+            <div class="testimonial-carousel reveal-element" id="testimonial-carousel-spv">
+                <div class="testimonial-card active" data-slide="0">
+                    <span class="testimonial-quote-mark">"</span>
+                    <p class="testimonial-text">AngelList takes the complexity and hassle out of launching a new investment vehicle so we can focus on picking the companies we want to invest in and supporting the founders.</p>
+                    <div class="testimonial-attribution">
+                        <img src="https://picsum.photos/seed/brian/48/48" alt="Brian Nichols" class="testimonial-portrait">
+                        <div class="testimonial-info">
+                            <p class="testimonial-name">Brian Nichols</p>
+                            <p class="testimonial-title">Angel Squad Co-founder, Hustle Fund</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card" data-slide="1">
+                    <span class="testimonial-quote-mark">"</span>
+                    <p class="testimonial-text">When it comes to SPVs, there's no other platform. AngelList is the gold standard for syndicate management and investor relations.</p>
+                    <div class="testimonial-attribution">
+                        <img src="https://picsum.photos/seed/niv/48/48" alt="Niv Dror" class="testimonial-portrait">
+                        <div class="testimonial-info">
+                            <p class="testimonial-name">Niv Dror</p>
+                            <p class="testimonial-title">General Partner, Shrug</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-controls">
+                    <button class="testimonial-nav-btn" id="testimonial-prev-spv" aria-label="Previous testimonial">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                    </button>
+                    <div class="testimonial-dots" id="testimonial-dots-spv">
+                        <div class="testimonial-dot active"></div>
+                        <div class="testimonial-dot"></div>
+                    </div>
+                    <button class="testimonial-nav-btn" id="testimonial-next-spv" aria-label="Next testimonial">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- ============================================
          SECTION 7 - FAQ
          ============================================ -->
-    <section class="faq-section" id="faq-section">
+    <section class="faq-section" id="faq-section" data-tab-content="venture-funds">
         <div class="faq-container">
             <div class="section-layout">
                 <div class="section-sidebar">
@@ -2890,10 +3450,80 @@ font-family: 'DM Sans', sans-serif;
         </div>
     </section>
 
+    <!-- SPV FAQ SECTION -->
+    <section class="faq-section content-fade hidden" id="faq-section-spv" data-tab-content="spvs">
+        <div class="faq-container">
+            <div class="section-layout">
+                <div class="section-sidebar">
+                    <div class="section-label reveal-element reveal-left">
+                        <span class="section-label-dot"></span>
+                        FAQs
+                    </div>
+                </div>
+                
+                <div class="section-content">
+                    <h2 class="section-heading reveal-element">Common pricing questions</h2>
+
+                    <div class="faq-list">
+                        <div class="faq-item reveal-element" data-faq="spv-0">
+                            <div class="faq-question">
+                                <span class="faq-question-text">Does Nexus differ from other SPV administrators?</span>
+                                <svg class="faq-question-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                            </div>
+                            <div class="faq-answer">
+                                <p class="faq-answer-text">Nexus combines modern software with expert service, offering a flat $8k fee that includes SPV administration, investor closings, distributions, and transaction review — all in one transparent price.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item reveal-element" data-faq="spv-1">
+                            <div class="faq-question">
+                                <span class="faq-question-text">How much does it cost to run an SPV?</span>
+                                <svg class="faq-question-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                            </div>
+                            <div class="faq-answer">
+                                <p class="faq-answer-text">Our flat fee is $8k per SPV, which includes administration, investor closings, distributions, and transaction review & execution. Total SPV fees are capped at 10% of the raised amount, excluding add-on service fees.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item reveal-element" data-faq="spv-2">
+                            <div class="faq-question">
+                                <span class="faq-question-text">Are follow-on SPVs the same price?</span>
+                                <svg class="faq-question-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                            </div>
+                            <div class="faq-answer">
+                                <p class="faq-answer-text">Yes — each SPV is priced at the same flat $8k rate. There are no volume discounts, but the simplicity means you always know your costs upfront.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item reveal-element" data-faq="spv-3">
+                            <div class="faq-question">
+                                <span class="faq-question-text">What is the minimum raise for SPVs on Nexus?</span>
+                                <svg class="faq-question-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                            </div>
+                            <div class="faq-answer">
+                                <p class="faq-answer-text">Since total SPV fees are capped at 10% of the raised amount and our base fee is $8k, the practical minimum raise is around $80k. We recommend SPVs of $250k+ for optimal cost efficiency.</p>
+                            </div>
+                        </div>
+
+                        <div class="faq-item reveal-element" data-faq="spv-4">
+                            <div class="faq-question">
+                                <span class="faq-question-text">What is the minimum I personally have to invest in each deal?</span>
+                                <svg class="faq-question-icon" xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                            </div>
+                            <div class="faq-answer">
+                                <p class="faq-answer-text">There is no minimum personal investment requirement. You can invest any amount you're comfortable with, subject to the deal's minimum investment threshold set by the company.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <!-- ============================================
          SECTION 8 - CTA BLOCK
          ============================================ -->
-    <section class="cta-section" id="cta-section">
+    <section class="cta-section" id="cta-section" data-tab-content="venture-funds">
         <div class="cta-container">
             <div class="cta-card reveal-element">
                 <h2 class="cta-heading">Lock in fund admin costs for 10 years.</h2>
@@ -2904,6 +3534,19 @@ font-family: 'DM Sans', sans-serif;
                         View contact sales
                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                     </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- SPV CTA SECTION -->
+    <section class="cta-section content-fade hidden" id="cta-section-spv" data-tab-content="spvs">
+        <div class="cta-container">
+            <div class="cta-card reveal-element" style="background: linear-gradient(135deg, #E8EBFF 0%, #F0F1FA 100%);">
+                <h2 class="cta-heading">Start deploying capital when you're ready</h2>
+                <p class="cta-sub">Set up your free Syndicate profile and launch your SPV to start investing in opportunities, on your time.</p>
+                <div class="cta-buttons">
+                    <button class="cta-btn cta-btn-primary">Launch now</button>
                 </div>
             </div>
         </div>
@@ -2999,16 +3642,66 @@ font-family: 'DM Sans', sans-serif;
             </div>
         </div>
     </footer>
-
+    </div>
     <!-- ============================================
          JAVASCRIPT
          ============================================ -->
     <script>
         // ============================================
-        // INITIALIZE LUCIDE ICONS
+        // TAB TOGGLE FUNCTIONALITY (SYNCHRONOUS)
         // ============================================
-        document.addEventListener('DOMContentLoaded', function() {
-            lucide.createIcons();
+        const tabBtns = document.querySelectorAll('.hero-tab-btn');
+        const allTabSections = document.querySelectorAll('[data-tab-content]');
+
+        let currentTab = 'venture-funds';
+
+        function switchTab(newTab) {
+            if (newTab === currentTab) return;
+
+            // Update tab buttons
+            tabBtns.forEach(b => {
+                if (b.dataset.tab === newTab) {
+                    b.classList.add('active');
+                } else {
+                    b.classList.remove('active');
+                }
+            });
+
+            // Find sections for current and new tab
+            const currentSections = document.querySelectorAll(`[data-tab-content="${currentTab}"]`);
+            const newSections = document.querySelectorAll(`[data-tab-content="${newTab}"]`);
+
+            // Fade out current sections
+            currentSections.forEach(section => {
+                section.classList.add('fading-out');
+            });
+
+            // After fade out, hide current and fade in new
+            setTimeout(() => {
+                currentSections.forEach(section => {
+                    section.classList.remove('fading-out');
+                    section.classList.add('hidden');
+                });
+
+                // Show new sections starting invisible, then fade in
+                newSections.forEach(section => {
+                    section.classList.remove('hidden');
+                    section.classList.add('fading-in');
+                    
+                    // Force reflow
+                    void section.offsetHeight;
+                    
+                    section.classList.remove('fading-in');
+                });
+            }, 400);
+
+            currentTab = newTab;
+        }
+
+        tabBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                switchTab(btn.dataset.tab);
+            });
         });
 
         // ============================================
@@ -3224,50 +3917,6 @@ font-family: 'DM Sans', sans-serif;
                 setTimeout(() => {
                     word.classList.add('animate');
                 }, 600 + (index * 60));
-            });
-        });
-
-        // ============================================
-        // TAB TOGGLE FUNCTIONALITY
-        // ============================================
-        const tabBtns = document.querySelectorAll('.hero-tab-btn');
-        const pricingCardsVenture = document.getElementById('pricing-cards-venture');
-        const pricingCardsSpv = document.getElementById('pricing-cards-spv');
-
-        let currentTab = 'venture-funds';
-
-        tabBtns.forEach(btn => {
-            btn.addEventListener('click', () => {
-                const tab = btn.dataset.tab;
-                
-                if (tab === currentTab) return;
-
-                // Update tab buttons
-                tabBtns.forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-
-                // Fade out current content
-                if (currentTab === 'venture-funds') {
-                    pricingCardsVenture.classList.remove('active');
-                    setTimeout(() => {
-                        pricingCardsVenture.classList.add('hidden');
-                        pricingCardsSpv.classList.remove('hidden');
-                        setTimeout(() => {
-                            pricingCardsSpv.classList.add('active');
-                        }, 50);
-                    }, 250);
-                } else {
-                    pricingCardsSpv.classList.remove('active');
-                    setTimeout(() => {
-                        pricingCardsSpv.classList.add('hidden');
-                        pricingCardsVenture.classList.remove('hidden');
-                        setTimeout(() => {
-                            pricingCardsVenture.classList.add('active');
-                        }, 50);
-                    }, 250);
-                }
-
-                currentTab = tab;
             });
         });
 
@@ -3594,6 +4243,11 @@ font-family: 'DM Sans', sans-serif;
             cursor.style.display = 'none';
             cursorRing.style.display = 'none';
         }
+
+        // ============================================
+        // LUCIDE ICONS INITIALIZATION
+        // ============================================
+        lucide.createIcons();
 
         // ============================================
         // CLEANUP ON PAGE UNLOAD

@@ -246,7 +246,7 @@ export const Sidebar: React.FC<SidebarProps> = memo(({ onExpandChange, isExpande
             <Menu size={20} />
           </button>
           <img
-                src="/logo-nexus-inverted.png"
+                src="/images/logo-nexus-inverted.avif"
                 alt="Nexus Logo"
                 className="dock-logo-image h-[20px] w-auto"
               />

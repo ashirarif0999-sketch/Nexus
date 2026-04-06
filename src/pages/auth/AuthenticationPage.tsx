@@ -690,7 +690,7 @@ export const AuthenticationPage: React.FC = () => {
               <button
                 type="button"
                 onClick={() => setShowAccountsDropdown(!showAccountsDropdown)}
-                className="saved-accounts-toggle w-full flex items-center justify-center text-sm text-gray-500 hover:text-gray-400 transition-colors py-2 border border-gray-700 rounded-md hover:border-gray-600"
+                className="saved-accounts-toggle w-full flex items-center justify-center text-sm text-gray-500 hover:text-[black] transition-colors py-2 border border-gray-400 hover:border-[black] rounded-md hover:border-gray-600"
                 disabled={isNavigating}
               >
                 {isNavigating ? (
@@ -1222,7 +1222,7 @@ export const AuthenticationPage: React.FC = () => {
         {/* Top left logo */}
         <a href="/" className="fixed top-4 left-4 z-50">
           <img 
-            src="/logo.jpeg" 
+            src="/images/logo.avif" 
             alt="Business Nexus" className="vector-brand-logo h-12 w-auto"
             style={{ transform: `rotate(${logoRotation}deg)` }} onMouseEnter={handleLogoHover}/>
         </a>
@@ -1245,7 +1245,7 @@ export const AuthenticationPage: React.FC = () => {
            
             <div className={`${currentView === 'login' ? 'login-welcome-content' : 'register-welcome-content'} text-center relative z-10`}>
               <img 
-                src="/logo-nexus-inverted.png" 
+                src="/images/logo-nexus-inverted.avif" 
                 alt="Business Nexus" 
                 className={`${currentView === 'login' ? 'login-welcome-logo' : 'register-welcome-logo'} w-[10rem] h-auto mx-auto`}
                 style={{ transform: `rotate(${logoRotation}deg)` }}
@@ -1297,7 +1297,7 @@ export const AuthenticationPage: React.FC = () => {
             <div className={`${currentView === 'login' ? 'login-page-header' : 'register-page-header'} sm:mx-auto sm:w-full sm:max-w-md relative z-10 transition-all duration-500 ease-out`}>
               <div className="flex justify-center lg:hidden">
                 <img 
-                  src="/logo-nexus-inverted.png" 
+                  src="/images/logo-nexus-inverted.avif" 
                   alt="Business Nexus" 
                   className={`${currentView === 'login' ? 'login-logo-mobile' : 'register-logo-mobile'} w-[10rem] h-auto`}
                   style={{ transform: `rotate(${logoRotation}deg)` }}
@@ -1367,7 +1367,7 @@ export const AuthenticationPage: React.FC = () => {
       {/* Top left logo */}
       <a href="/" className="fixed top-4 left-4 z-50">
         <img 
-          src="/logo.jpeg" 
+          src="/images/logo.avif" 
           alt="Business Nexus" 
           className="vector-brand-logo h-12 w-auto"
           style={{ transform: `rotate(${logoRotation}deg)` }}
@@ -1379,7 +1379,7 @@ export const AuthenticationPage: React.FC = () => {
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <div className="flex justify-center">
             <img 
-              src="/logo-nexus-inverted.png" 
+              src="/images/logo-nexus-inverted.avif" 
               alt="Business Nexus" 
               className="vector-brand-logo w-[10rem] h-auto"
               style={{ transform: `rotate(${logoRotation}deg)` }}
