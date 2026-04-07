@@ -1,3 +1,5 @@
+import { ReactNode } from 'react';
+
 export type UserRole = 'entrepreneur' | 'investor';
 
 export interface User {
@@ -32,6 +34,15 @@ export interface StartupDocument {
   lastUpdated?: string;
 }
 
+export interface EntrepreneurMetrics {
+  monthlyRevenue?: string;
+  totalUsers?: string;
+  growthRate?: string;
+  customerRetention?: string;
+  churnRate?: string;
+  cacPayback?: string;
+}
+
 export interface Entrepreneur extends User {
   role: 'entrepreneur';
   startupName: string;
@@ -46,10 +57,12 @@ export interface Entrepreneur extends User {
   solution?: string;
   marketOpportunity?: string;
   competitiveAdvantage?: string;
+  traction?: string;
   valuation?: string;
   teamMembers?: TeamMember[];
   fundingTimeline?: FundingRound[];
   documents?: StartupDocument[];
+  metrics?: EntrepreneurMetrics;
 }
 
 export interface Investor extends User {
@@ -85,6 +98,8 @@ export interface Message {
   reactions?: MessageReaction[];
   isStarred?: boolean;
   isDeleted?: boolean;
+  replyTo?: string; // ID of the message being replied to
+  replyContent?: string; // Content of the replied message for display
 }
 
 export interface ChatConversation {

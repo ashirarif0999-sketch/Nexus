@@ -455,7 +455,7 @@ export const ChatPage: React.FC = () => {
 
   return (
     <main className={clsx(
-      "flex bg-[#F0F2F5] font-sans overflow-hidden transition-all duration-300",
+      "chatpage-container flex bg-[#F0F2F5] font-sans overflow-hidden transition-all duration-300",
       isFullscreen ? "fixed inset-0 z-[200] h-screen w-screen rounded-none" : "relative h-[calc(100vh-160px)] w-full rounded-2xl border border-[#E9EDEF]"
     )}>
       

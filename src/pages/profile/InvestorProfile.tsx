@@ -1,6 +1,6 @@
 import React from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { MessageCircle, Building2, MapPin, UserCircle, BarChart3, Briefcase, Plus } from 'lucide-react';
+import { MessageCircle, Building2, MapPin, UserCircle, BarChart3, Briefcase, Plus, ArrowLeft } from 'lucide-react';
 import { Avatar } from '../../components/ui/Avatar';
 import { Button } from '../../components/ui/Button';
 import { Card, CardBody, CardHeader } from '../../components/ui/Card';
@@ -49,6 +49,18 @@ export const InvestorProfile: React.FC = () => {
   
   return (
     <div className="investor-profile-page space-y-6 animate-fade-in">
+      {/* Back button */}
+      <div className="mb-4">
+        <Button
+          variant="ghost"
+          size="sm"
+          leftIcon={<ArrowLeft size={16}/>}
+          onClick={() => navigate(-1)}
+          className="profile-page-navigation bg-[#f0f0f0] text-gray-600 hover:text-white"
+        >
+        </Button>
+      </div>
+
       {/* Profile header */}
       <Card className="investor-profile-header">
         <CardBody className="sm:flex sm:items-start sm:justify-between p-6">

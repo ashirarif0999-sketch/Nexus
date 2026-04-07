@@ -272,9 +272,7 @@ const EntrepreneurDashboardComponent: React.FC = () => {
           <CardHeader className="entrepreneur-recommended-investors-header flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
             <div className="entrepreneur-recommended-investors-title-section flex items-center gap-3">
               <h2 className="entrepreneur-recommended-investors-title text-lg font-medium text-gray-900">Recommended Investors</h2>
-              <Link to={ROUTES.INVESTORS} className="entrepreneur-view-all-link text-sm font-medium text-primary-600 hover:text-primary-500">
-                View all
-              </Link>
+              
             </div>
             <div className="entrepreneur-investors-filters flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
               <div className="entrepreneur-search-input-wrapper w-full sm:w-64">
@@ -307,6 +305,9 @@ const EntrepreneurDashboardComponent: React.FC = () => {
               />
             </div>
           </CardHeader>
+          <Link to={ROUTES.INVESTORS} className="entrepreneur-view-all-link text-sm font-medium text-primary-600 hover:text-primary-500 w-[max-content] mt-2 sm:mt-0">
+                View all
+              </Link>
           <CardBody className="entrepreneur-investors-list-body space-y-4">
           {isLoading ? (
             <div className="entrepreneur-investors-skeleton">

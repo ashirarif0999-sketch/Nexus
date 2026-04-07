@@ -132,7 +132,7 @@
     left: -20px;
     right: -20px;
     bottom: -20px;
-    background: url(/auth-bg-image.png);
+    background: url(images/auth-bg-image.avif);
     background-size: cover;
     background-position: center;
     filter: blur(3px);
@@ -526,6 +526,15 @@
     }
     
 }
+
+.nexus-entrepreneur-title{
+    font-family: 'oldschool-grotesk-regular', sans-serif;
+    font-size: calc(1.5rem + 1vw);
+}
+.nexus-investor-title{
+    font-family: 'oldschool-grotesk-regular', sans-serif;
+    font-size: calc(1.5rem + 1vw);
+}
 @media(max-width:1024px){
     .auth-page-background {
         display: none;
@@ -550,9 +559,12 @@
   }
 }
 .input-field{
-    border-radius: 27px;
+    border-radius: 20px;
     height: 45px;
     corner-shape: squircle;
+    background: #ffffff;
+        color: rgb(0, 0, 0);
+        border: 1px solid #c1c1c1;
 }
 .filter-modal-option{
     width: min-content;
@@ -1016,7 +1028,7 @@ display: flex;
 @media (max-width:950px){
     .dashboard-main{
         padding-top: calc(65px + 1rem);
-        padding-left: 0.5rem;
+        padding-left: 1rem;
         
     }
     .dock-account__menu{
@@ -1236,10 +1248,62 @@ justify-content: flex-start;
 }
 
 /* ─── If your topnav is 64px, offset the dock ─────────────── */
-/* Uncomment below if you have a fixed top navbar:
 
-.dock {
-  top: 64px;
+
+
+
+@media(max-width:950px){
+    
+    .profile-page-navigation{
+        top: 65px !important;
+        z-index: 1;
+        left: 3%;
+    }
+}
+.profile-page-navigation{
+    border-radius: 50%;
+    position: fixed;
+    top: 25px;
+    background: #f9fafb;
+    i{
+        font-size: 40px;
+    }
+}
+.profile-page-navigation .button-left-icon{
+margin:0px !important;
+}
+.profile-page-navigation:hover{
+    background: #5f76fa !important;
+}
+span{
+    font-family: 'oldschool-grotesk-regular',sans-serif;
+    font-size: 1rem;
 }
 
-*/
+.entrepreneur-view-all-link{
+    padding: 16px;
+    margin: 12px;
+}
+.investors-content .input-field{
+
+    width: 100%;
+    max-width: 500px;
+}
+.chatpage-container{
+    height: -webkit-fill-available;
+    position: absolute;
+    width: -webkit-fill-available;
+    top: 0;
+    margin-left: calc(-15px + 1rem);
+    justify-self: center;
+    margin-right: 0rem;
+.avatar-container-right-panel img{
+    width: 200px;
+    height: 200px;
+
+}
+.right-panel-profile-status{
+width: 23px;
+height: 23px;
+}
+}

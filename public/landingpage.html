@@ -358,6 +358,75 @@
         }
         
         /* ============================================
+           POWER SAVING MODE BUTTON
+           ============================================ */
+        .power-saving-btn {
+            position: fixed;
+            bottom: 32px;
+            right: 32px;
+            z-index: 999;
+            width: 56px;
+            height: 56px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #405CFF 0%, #364EDF 100%);
+            border: 2px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 300ms var(--ease-out-expo);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 8px 32px rgba(64, 92, 255, 0.3);
+        }
+        
+        .power-saving-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 12px 48px rgba(64, 92, 255, 0.5);
+        }
+        
+        .power-saving-btn:active {
+            transform: scale(0.95);
+        }
+        
+        .power-saving-btn.active {
+            background: linear-gradient(135deg, #6a6a6a 0%, #4a4a4a 100%);
+            box-shadow: 0 8px 32px rgba(106, 106, 106, 0.3);
+        }
+        
+        .power-saving-btn.active:hover {
+            box-shadow: 0 12px 48px rgba(106, 106, 106, 0.5);
+        }
+        
+        .power-saving-icon {
+            width: 28px;
+            height: 28px;
+            filter: brightness(0) invert(1);
+        }
+        
+        .power-saving-tooltip {
+            position: absolute;
+            bottom: calc(100% + 12px);
+            right: 0;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 500;
+            white-space: nowrap;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 200ms ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .power-saving-btn:hover .power-saving-tooltip {
+            opacity: 1;
+        }
+        
+        /* ============================================
            SECTION 1 — NAVBAR (PILL-SHAPED)
            ============================================ */
         .navbar {
@@ -1336,6 +1405,14 @@ font-family: 'DM Sans', sans-serif;
             z-index: -1;
             pointer-events: none;
             overflow: visible;
+            will-change: transform;
+        }
+
+        .squiggle-container svg {
+            overflow: visible;
+            display: block;
+            height: auto;
+            -webkit-font-smoothing: antialiased;
         }
 
         
@@ -2283,7 +2360,7 @@ display: flex;
         
         .faq-item {
             border-bottom: 1px solid var(--border-light);
-            padding: 24px 0;
+            padding: 24px 10px;
             border-left: 2px solid transparent;
             transition: border-left-color 250ms ease, padding-left 250ms ease;
         }
@@ -2293,10 +2370,13 @@ display: flex;
                 cursor: pointer;
             }
         }
-        
+        .faq-icon{
+
+        }
         .faq-item.open {
-            border-left: 2px solid var(--primary-500);
-            padding-left: 16px;
+border-left: 2px solid var(--primary-500);
+    padding-left: 16px;
+    background: azure;
         }
         
         .faq-question {
@@ -2319,11 +2399,14 @@ display: flex;
         }
         
         .faq-icon {
-            width: 18px;
-            height: 18px;
-            color: var(--text-secondary);
-            transition: transform 300ms ease;
-            flex-shrink: 0;
+            width: 28px;
+    height: auto;
+    color: var(--text-secondary);
+    transition: transform 300ms ease;
+     flex-shrink: 0;
+    padding: 5px;
+    border-radius: 50%;
+    background-color: #ffffff47;
         }
         
         .faq-item.open .faq-icon {
@@ -2766,6 +2849,12 @@ display: flex;
 </head>
 <body>
 
+        <!-- Power Saving Mode Button -->
+        <button class="power-saving-btn" id="powerSavingBtn" title="Toggle Power Saving Mode">
+            <img src="images/battery-saver.svg" alt="Battery Saver" class="power-saving-icon">
+            <span class="power-saving-tooltip" id="powerSavingTooltip">Power Saving Mode</span>
+        </button>
+
         <!-- Pathways Animated Background -->
     <div id="pathways-bg"></div>
     
@@ -3100,16 +3189,33 @@ display: flex;
                 </div>
             </div>
             <div class="squiggle-container" data-animation-speed="0.2" style="z-index:-1;">
-                <svg width="1235" height="1515" viewBox="0 0 1235 1515" fill="none" xmlns="http://www.w3.org/2000/svg" style="width: 100%; height: auto;">
-<path d="M544.719 54.0129C544.719 54.0129 573.78 166.861 512.759 205.013C451.738 243.165 426.392 204.664 351.759 169.013C277.126 133.363 175.759 151.513 127.259 205.013C78.7588 258.513 35.4292 403.011 62.1844 488.072C88.9396 573.132 174.369 651.938 271.533 681.959C368.696 711.981 544.718 681.959 619.82 591.27C694.923 500.58 638.127 142.826 900.047 149.706C1161.97 156.586 1243.64 446.167 1131.46 716.359C1019.27 986.551 836.209 862.713 766.27 850.83C696.331 838.946 632.494 850.83 563.024 887.731C493.554 924.632 424.085 1055.35 420.33 1147.29C416.574 1239.23 420.33 1263.94 438.166 1336.17C456.003 1408.41 483.698 1460.01 483.698 1460.01" stroke="url(#paint0_linear_2013_5)" stroke-width="108" stroke-linecap="round"/>
+                <svg width="2198" height="4060" viewBox="0 0 2198 4060" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M1225.16 58.0042C1225.16 58.0042 1251.98 329.839 1051.11 481.514C850.242 633.19 738.473 601.583 625.997 628.338C513.52 655.093 375.457 710.425 375.457 877.859C375.457 1045.29 598.35 1076.68 814.871 1160.4C1031.39 1244.12 1225.16 1323 1301.39 1463.75C1377.62 1604.5 1308.64 1728.23 1225.16 1808C1141.68 1887.78 1006.02 1931.74 923.097 1953C840.171 1974.27 418.096 2014.5 290.597 1907C163.097 1799.5 274.097 1638 501.597 1613C729.097 1588 1175.6 1564 1462.1 2032.5C1748.6 2501 1279.1 2567 1083.1 2567C887.097 2567 733.097 2502.5 511.097 2521C289.097 2539.5 57.9999 2723 58 2866.5C58.0001 3010 196.5 3086 426.5 3053.5C656.5 3021 999.194 2866.5 1173.6 2866.5C1348 2866.5 1452 2946 1452 3092.5C1452 3239 1278.9 3320.5 1101 3342C923.097 3363.5 776.903 3349.3 650 3404.5C523.097 3459.71 411.5 3582.5 411.5 3712.5C411.5 3842.5 485.903 3968 784.5 3996.5C1083.1 4025 1827.5 3925 1827.5 3925C1966.5 3900.06 2139.5 3864.5 2139.5 3864.5" stroke="url(#paint0_linear_2022_4)" stroke-width="116" stroke-linecap="round" stroke-linejoin="round"/>
 <defs>
-<linearGradient id="paint0_linear_2013_5" x1="548.604" y1="54.0132" x2="548.604" y2="1460.01" gradientUnits="userSpaceOnUse">
-<stop stop-color="#CCD3FF"/>
-<stop offset="0.514423" stop-color="#415DFD"/>
-<stop offset="1" stop-color="#8093FE"/>
+<linearGradient id="paint0_linear_2022_4" x1="840.698" y1="58.0042" x2="840.698" y2="3618" gradientUnits="userSpaceOnUse">
+<stop stop-color="#7751FF"/>
+<stop offset="0.225962" stop-color="#8D50FF"/>
+<stop offset="0.451923" stop-color="#FFA179"/>
+<stop offset="0.663462" stop-color="#5441FF"/>
+<stop offset="1" stop-color="#479DFF"/>
 </linearGradient>
 </defs>
 </svg>
+
+            </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             </div>
         </div>
@@ -3345,9 +3451,9 @@ display: flex;
           ============================================ -->
 
 <!-- This div creates the striped transition effect -->
-<div class="striped-transition"></div>
+<div class="striped-transition" style="margin-top: 200px;"></div>
 
-    <footer class="footer" id="footer">
+    <footer class="footer" id="footer" >
         <div class="footer-inner">
             <div class="footer-top">
                 <div class="footer-brand-section">
@@ -4599,44 +4705,149 @@ document.addEventListener('DOMContentLoaded', () => {
             initSquiggleAnimation();
         });
 
-        // Squiggle SVG Scroll-Driven Animation with GSAP & ScrollTrigger
         function initSquiggleAnimation() {
-            const squiggleSvg = document.querySelector('.squiggle-container svg');
-            const squigglePath = squiggleSvg ? squiggleSvg.querySelector('path') : null;
-            const squiggleContainer = document.querySelector('.squiggle-container');
-            const fullServiceSection = document.getElementById('full-service');
-            
-            if (!squigglePath || !fullServiceSection) return;
+          const svg = document.querySelector('.squiggle-container svg');
+          const path = svg?.querySelector('path');
+          if (!svg || !path) return;
 
-            gsap.registerPlugin(ScrollTrigger);
+          const length = path.getTotalLength();
 
-            // Get the exact length of the SVG path
-            const pathLength = squigglePath.getTotalLength();
-            
-            // Get animation speed from data attribute (default: 1)
-            const animationSpeed = parseFloat(squiggleContainer?.getAttribute('data-animation-speed')) || 1;
-            
-            // 1. Set the initial "hidden" state using GSAP (more reliable than standard CSS)
-            gsap.set(squigglePath, {
-                strokeDasharray: pathLength,
-                strokeDashoffset: pathLength
-            });
+          path.style.strokeDasharray = length;
+          path.style.strokeDashoffset = length;
 
-            // 2. Create ONE smooth animation tied directly to the scroll depth
-            gsap.to(squigglePath, {
-                strokeDashoffset: 0,
-                ease: "none", // "none" ensures it draws at a consistent speed
-                scrollTrigger: {
-                    trigger: fullServiceSection,
-                    // Start drawing when the top of the section is 80% down the screen
-                    start: "top 80%", 
-                    // End drawing when the bottom of the section hits the middle of the screen.
-                    // If your section is short, use end: "+=1500" (the height of the SVG) instead.
-                    end: "bottom 30%", 
-                    scrub: 5, // Animation speed delay to catch up to Lenis scroll (configurable via data attribute)
-                    markers: false 
+          let currentProgress = 0;
+          let targetProgress = 0;
+
+          const clamp = (v, min = 0, max = 1) => Math.max(min, Math.min(max, v));
+
+          function update() {
+            const rect = svg.getBoundingClientRect();
+            const viewportCenter = window.innerHeight / 2;
+
+            targetProgress = clamp(
+              (viewportCenter - rect.top) / rect.height
+            );
+          }
+
+          function animate() {
+            // scrub strength (0.1 = smooth lag, 1 = instant)
+            const scrub = 0.09;
+
+            currentProgress += (targetProgress - currentProgress) * scrub;
+
+            path.style.strokeDashoffset = length * (1 - currentProgress);
+
+            requestAnimationFrame(animate);
+          }
+
+          // Lenis sync
+          if (window.lenis) {
+            lenis.on('scroll', update);
+          } else {
+            window.addEventListener('scroll', update, { passive: true });
+          }
+
+          window.addEventListener('resize', update);
+
+          update();
+          animate();
+        }
+        
+        // ============================================
+        // POWER SAVING MODE TOGGLE
+        // ============================================
+        function initPowerSavingMode() {
+            const powerSavingBtn = document.getElementById('powerSavingBtn');
+            const tooltip = document.getElementById('powerSavingTooltip');
+            
+            // Check if user has a saved preference
+            const savedMode = localStorage.getItem('powerSavingMode');
+            let isPowerSavingEnabled = savedMode === 'true' ? true : false;
+            
+            // Apply saved mode on load - wait a moment for DottedSurfaceAnimation to initialize
+            setTimeout(() => {
+                if (isPowerSavingEnabled) {
+                    enablePowerSavingMode();
                 }
+                updateButtonState();
+            }, 100);
+            
+            // Toggle on button click
+            powerSavingBtn.addEventListener('click', () => {
+                isPowerSavingEnabled = !isPowerSavingEnabled;
+                localStorage.setItem('powerSavingMode', isPowerSavingEnabled.toString());
+                
+                if (isPowerSavingEnabled) {
+                    enablePowerSavingMode();
+                } else {
+                    disablePowerSavingMode();
+                }
+                updateButtonState();
             });
+            
+            function updateButtonState() {
+                if (isPowerSavingEnabled) {
+                    powerSavingBtn.classList.add('active');
+                    tooltip.textContent = 'Power Saving: ON';
+                } else {
+                    powerSavingBtn.classList.remove('active');
+                    tooltip.textContent = 'Power Saving: OFF';
+                }
+            }
+            
+            function enablePowerSavingMode() {
+                // Dispose the dotted surface animation
+                if (window.dottedSurfaceAnimation) {
+                    window.dottedSurfaceAnimation.dispose();
+                    window.dottedSurfaceAnimation = null;
+                }
+                
+                // Completely remove the container from DOM
+                const container = document.getElementById('dotted-surface-container');
+                if (container) {
+                    container.remove();
+                }
+            }
+            
+            function disablePowerSavingMode() {
+                // Remove any existing container first
+                const existingContainer = document.getElementById('dotted-surface-container');
+                if (existingContainer) {
+                    existingContainer.remove();
+                }
+                
+                // Set to null to force recreation
+                window.dottedSurfaceAnimation = null;
+                
+                // Recreate the dotted surface animation
+                setTimeout(() => {
+                    if (!window.dottedSurfaceAnimation) {
+                        try {
+                            window.dottedSurfaceAnimation = new DottedSurfaceAnimation({
+                                zIndex: 0,
+                                customColor: '#6a6a6a',
+                            });
+                        } catch (e) {
+                            console.error('Error creating DottedSurfaceAnimation:', e);
+                        }
+                    }
+                }, 50);
+            }
+        }
+        
+        // Initialize power saving mode when DOM is ready and THREE is loaded
+        function checkAndInitPowerSaving() {
+            if (typeof DottedSurfaceAnimation !== 'undefined' && typeof THREE !== 'undefined') {
+                initPowerSavingMode();
+            } else {
+                setTimeout(checkAndInitPowerSaving, 100);
+            }
+        }
+        
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', checkAndInitPowerSaving);
+        } else {
+            checkAndInitPowerSaving();
         }
     </script>
    
