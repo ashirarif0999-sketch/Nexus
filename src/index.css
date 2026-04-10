@@ -511,7 +511,7 @@
 }
 @media(max-width:1024px){
     .register-page-container, .login-page-container{
-    background: url(/auth-bg-image.png);
+    background: url(public/images/auth-bg-image.avif);
     backdrop-filter: blur(20px);
     }
     .register-form-section, .login-form-section{
