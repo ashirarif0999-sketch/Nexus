@@ -266,6 +266,8 @@
             }
         }
 
+
+
         @keyframes rotatePlus {
             from {
                 transform: rotate(0deg);
@@ -1260,8 +1262,9 @@ font-family: 'DM Sans', sans-serif;
 
         .pricing-card {
             border: 1px solid var(--border-light);
-            border-radius: var(--radius-2xl);
+            border-radius: 8px;
             padding: 36px;
+            height: 410px;
             overflow: hidden;
             background: var(--neutral-0);
             box-shadow: var(--shadow-card);
@@ -1275,33 +1278,53 @@ font-family: 'DM Sans', sans-serif;
             top: 0;
             left: 0;
             right: 0;
-            height: 3px;
+            height: 18px;
             background: var(--neutral-200);
-            border-radius: var(--radius-2xl) var(--radius-2xl) 0 0;
+            border-radius: 0px;
         }
 
         .pricing-card:hover {
             box-shadow: var(--shadow-card-hover);
-            transform: translateY(-3px);
         }
 
         .pricing-card.featured {
             border: 1px solid var(--border-primary);
+            border-top: none;
             background: var(--primary-50);
             box-shadow: var(--shadow-primary);
         }
 
         .pricing-card.featured::before {
-            background: var(--primary-500);
+            content: "";
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(45deg, #405cff, #ffffff88, #405cff, #405cff);
+            background-size: 200% 200%;
+            background-position: 100% 50%;
+            transition: background-position 0.3s var(--ease-out);
+            pointer-events: none;
+            z-index: -1;
         }
 
+        .features-column.featured .features-column-header::before{
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+    background: linear-gradient(45deg, #405cff, #f8f8fa, #405cff, #405cff);
+        }
         .pricing-card.featured:hover {
             box-shadow: 0 8px 32px rgba(64, 92, 255, 0.3);
+            
         }
-
+.pricing-card.featured:hover::before {
+    background-position: 0% 50%;
+}
         .pricing-card-badge {
             position: absolute;
-            top: 20px;
+            top: auto;
             right: 20px;
             background: rgba(64, 92, 255, 0.1);
             border: 1px solid rgba(64, 92, 255, 0.2);
@@ -1387,18 +1410,23 @@ font-family: 'DM Sans', sans-serif;
 
         .pricing-cta {
             height: 48px;
-            width: 100%;
-            background: var(--neutral-900);
-            color: var(--text-inverse);
-            font-family: 'DM Sans', sans-serif;
-            font-size: 14px;
-            font-weight: 500;
-            border-radius: var(--radius-lg);
-            border: none;
-            cursor: pointer;
-            margin-top: 28px;
-            transition: background var(--transition-fast), transform var(--transition-fast);
-        }
+    width: 100%;
+    background: var(--neutral-900);
+    color: var(--text-inverse);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    position: absolute;
+    bottom: 10px;
+    width: auto;
+    right: 10px;
+    left: 10px;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    margin-top: 28px;
+    transition: background var(--transition-fast), transform var(--transition-fast);
+}
 
         .pricing-cta:hover {
             background: var(--neutral-800);
@@ -1447,20 +1475,18 @@ font-family: 'DM Sans', sans-serif;
 
         .features-column {
             border: 1px solid var(--border-light);
-            border-radius: var(--radius-xl);
+            border-radius: 8px;
             background: var(--neutral-0);
             overflow: hidden;
         }
 
         .features-column-header {
-            border-top: 3px solid var(--neutral-300);
+            border-top: 20px solid var(--neutral-300);
             padding: 24px;
             background: var(--neutral-50);
         }
 
-        .features-column.featured .features-column-header {
-            border-top-color: var(--primary-500);
-        }
+       
 
         .features-column-badge {
             display: inline-block;
@@ -1629,11 +1655,11 @@ font-family: 'DM Sans', sans-serif;
         
         .testimonials-section {
             background: var(--bg-dark);
-            padding: 80px 24px;
+            padding: 80px 0px;
         }
 
         .testimonials-container {
-            max-width: 1200px;
+            max-width: -webkit-fill-available;
             margin: 0 auto;
             text-align: center;
         }
@@ -1669,6 +1695,14 @@ font-family: 'DM Sans', sans-serif;
         .testimonial-carousel {
             margin-top: 56px;
             position: relative;
+            display: flex;
+            flex-direction: row;
+            gap: 24px;
+            scrollbar-width: thin;
+            scrollbar-color: transparent transparent;
+            padding: 0px calc(50vw - 481px);
+            overflow-x: auto;
+            scroll-behavior: smooth;
         }
 
         .testimonial-card {
@@ -1676,25 +1710,27 @@ font-family: 'DM Sans', sans-serif;
             border: 1px solid rgba(255, 255, 255, 0.07);
             border-radius: var(--radius-2xl);
             padding: 48px;
-            max-width: 820px;
-            margin: 0 auto;
+            width: 900px;
+            overflow: hidden;
+            flex-shrink: 0;
             position: relative;
-            opacity: 0;
-            transition: opacity 300ms var(--ease-out-expo);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 64px;
         }
 
-        .testimonial-card.active {
-            opacity: 1;
-        }
+
 
         .testimonial-quote-mark {
-            position: absolute;
-            top: 20px;
-            left: 40px;
-            font-family: 'DM Serif Display', serif;
-            font-size: 100px;
-            color: rgba(255, 255, 255, 0.05);
-            line-height: 1;
+                position: absolute;
+    top: -9px;
+    left: 36px;
+    font-family: 'DM Serif Display', serif;
+    font-size: 39px;
+    scale: 3.5;
+    color: rgba(255, 255, 255, 0.05);
+    line-height: 1;
         }
 
         .testimonial-text {
@@ -1703,30 +1739,37 @@ font-family: 'DM Sans', sans-serif;
             font-size: clamp(18px, 2.5vw, 28px);
             color: var(--text-inverse);
             line-height: 1.4;
-            text-align: center;
+            text-align: left;
             position: relative;
             z-index: 1;
+            flex: 1;
         }
 
         .testimonial-attribution {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            margin-top: 36px;
+            justify-content: flex-start;
+            gap: 12px;
+            flex-shrink: 0;
+            width: 200px;
         }
 
         .testimonial-portrait {
-            width: 48px;
-            height: 48px;
-            border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.15);
-            object-fit: cover;
+            width: -webkit-fill-available;
+    height: -webkit-fill-available;
+    top: 0;
+    z-index: -1;
+    position: absolute;
+    object-fit: cover;
         }
 
         .testimonial-info {
-            margin-left: 12px;
-            text-align: left;
-        }
+         text-align: left;
+    bottom: -102px;
+    right: 30px;
+    position: relative;
+}
 
         .testimonial-name {
             font-family: 'DM Sans', sans-serif;
@@ -2167,9 +2210,12 @@ font-family: 'DM Sans', sans-serif;
             }
         }
 
-        @media (max-width: 768px) {
+        @media (max-width: 950px) {
             .navbar-nav {
                 display: none;
+            }
+            .navbar-inner{
+                justify-content: space-between;
             }
 
             .navbar-hamburger {
@@ -2201,7 +2247,9 @@ font-family: 'DM Sans', sans-serif;
                 flex-direction: column;
                 text-align: center;
             }
-
+            .navbar{
+                width: 100vh;
+            }
             .testimonial-card {
                 padding: 32px 24px;
             }
@@ -2272,14 +2320,7 @@ font-family: 'DM Sans', sans-serif;
             display: block;
         }
 
-        .content-fade {
-            opacity: 1;
-            transition: opacity 400ms var(--ease-out-expo);
-        }
-
-        .content-fade.fading-out {
-            opacity: 0;
-        }
+       
 
         .content-fade.hidden {
             display: none;
@@ -2780,7 +2821,7 @@ font-family: 'DM Sans', sans-serif;
 
                     <div class="pricing-cards">
                         <!-- SPV Pricing Card -->
-                        <div class="pricing-card featured reveal-element" style="max-width: 600px;">
+                        <div class="pricing-card featured reveal-element" style="max-width: 600px;height: 550px;">
                             <h3 class="pricing-card-name">SPVs</h3>
                             <p class="pricing-card-tag">Transparent pricing, so you know your SPV costs upfront.</p>
                             
@@ -3279,10 +3320,10 @@ font-family: 'DM Sans', sans-serif;
 
             <div class="testimonial-carousel reveal-element" id="testimonial-carousel">
                 <div class="testimonial-card active" data-slide="0">
-                    <span class="testimonial-quote-mark">"</span>
+                    <span class="testimonial-quote-mark"><i data-lucide="quote"></i></span>
                     <p class="testimonial-text">There is zero chance we could operate at the speed, scope, and bandwidth we do without Nexus powering our entire back office. It feels like we have a team of specialists behind us on every deal, transaction, and situation.</p>
                     <div class="testimonial-attribution">
-                        <img src="https://picsum.photos/seed/morgan/48/48" alt="Morgan Schwanke" class="testimonial-portrait">
+                        <img src="https://cdn.prod.website-files.com/65e107f9514935a5faedb2fb/65f47f20e93f3e3fe0802285_morgan-schwanke.png" alt="Morgan Schwanke" class="testimonial-portrait">
                         <div class="testimonial-info">
                             <p class="testimonial-name">Morgan Schwanke</p>
                             <p class="testimonial-title">General Partner, Mana Ventures</p>
@@ -3291,29 +3332,29 @@ font-family: 'DM Sans', sans-serif;
                 </div>
 
                 <div class="testimonial-card" data-slide="1">
-                    <span class="testimonial-quote-mark">"</span>
+                    <span class="testimonial-quote-mark"><i data-lucide="quote"></i></span>
                     <p class="testimonial-text">The platform has transformed how we source and evaluate deals. What used to take weeks of manual work now happens in hours. Nexus is central to our entire investment process.</p>
                     <div class="testimonial-attribution">
-                        <img src="https://picsum.photos/seed/joshua/48/48" alt="Joshua Baer" class="testimonial-portrait">
+                        <img src="https://www.cs.utexas.edu/sites/default/files/styles/faculty_photo/public/2024-02/baer_joshua_1.jpg?itok=QmzjddT4" alt="Joshua Baer" class="testimonial-portrait">
                         <div class="testimonial-info">
                             <p class="testimonial-name">Joshua Baer</p>
                             <p class="testimonial-title">Managing Partner, Capital Factory</p>
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="testimonial-controls">
-                    <button class="testimonial-nav-btn" id="testimonial-prev" aria-label="Previous testimonial">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                    </button>
-                    <div class="testimonial-dots" id="testimonial-dots">
-                        <div class="testimonial-dot active"></div>
-                        <div class="testimonial-dot"></div>
-                    </div>
-                    <button class="testimonial-nav-btn" id="testimonial-next" aria-label="Next testimonial">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-                    </button>
+            <div class="testimonial-controls">
+                <button class="testimonial-nav-btn" id="testimonial-prev" aria-label="Previous testimonial">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                </button>
+                <div class="testimonial-dots" id="testimonial-dots">
+                    <div class="testimonial-dot active"></div>
+                    <div class="testimonial-dot"></div>
                 </div>
+                <button class="testimonial-nav-btn" id="testimonial-next" aria-label="Next testimonial">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
             </div>
         </div>
     </section>
@@ -3337,10 +3378,10 @@ font-family: 'DM Sans', sans-serif;
 
             <div class="testimonial-carousel reveal-element" id="testimonial-carousel-spv">
                 <div class="testimonial-card active" data-slide="0">
-                    <span class="testimonial-quote-mark">"</span>
+                    <span class="testimonial-quote-mark"><i data-lucide="quote"></i></span>
                     <p class="testimonial-text">AngelList takes the complexity and hassle out of launching a new investment vehicle so we can focus on picking the companies we want to invest in and supporting the founders.</p>
                     <div class="testimonial-attribution">
-                        <img src="https://picsum.photos/seed/brian/48/48" alt="Brian Nichols" class="testimonial-portrait">
+                        <img src="https://www.infobae.com/resizer/v2/WJGR3VEVAJFV7BNHTOPIHVPPRI.jpg?auth=28cb0736b5b5b9a22eb2b585c68a56c0fa108a7b3775b72090735e56104f7129&smart=true&width=1200&height=675&quality=85" alt="Brian Nichols" class="testimonial-portrait">
                         <div class="testimonial-info">
                             <p class="testimonial-name">Brian Nichols</p>
                             <p class="testimonial-title">Angel Squad Co-founder, Hustle Fund</p>
@@ -3349,7 +3390,19 @@ font-family: 'DM Sans', sans-serif;
                 </div>
 
                 <div class="testimonial-card" data-slide="1">
-                    <span class="testimonial-quote-mark">"</span>
+                    <span class="testimonial-quote-mark"><i data-lucide="quote"></i></span>
+                    <p class="testimonial-text">When it comes to SPVs, there's no other platform. AngelList is the gold standard for syndicate management and investor relations.</p>
+                    <div class="testimonial-attribution">
+                        <img src="https://images.axios.com/WP8c7RXZu_hFvq0OI7Ni7VUE76s=/407x0:2407x2000/1366x1366/2018/04/16/1523862137935.jpg" alt="Niv Dror" class="testimonial-portrait">
+                        <div class="testimonial-info">
+                            <p class="testimonial-name">Niv Dror</p>
+                            <p class="testimonial-title">General Partner, Shrug</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="testimonial-card" data-slide="2">
+                    <span class="testimonial-quote-mark"><i data-lucide="quote"></i></span>
                     <p class="testimonial-text">When it comes to SPVs, there's no other platform. AngelList is the gold standard for syndicate management and investor relations.</p>
                     <div class="testimonial-attribution">
                         <img src="https://picsum.photos/seed/niv/48/48" alt="Niv Dror" class="testimonial-portrait">
@@ -3359,19 +3412,20 @@ font-family: 'DM Sans', sans-serif;
                         </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="testimonial-controls">
-                    <button class="testimonial-nav-btn" id="testimonial-prev-spv" aria-label="Previous testimonial">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                    </button>
-                    <div class="testimonial-dots" id="testimonial-dots-spv">
-                        <div class="testimonial-dot active"></div>
-                        <div class="testimonial-dot"></div>
-                    </div>
-                    <button class="testimonial-nav-btn" id="testimonial-next-spv" aria-label="Next testimonial">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-                    </button>
+            <div class="testimonial-controls">
+                <button class="testimonial-nav-btn" id="testimonial-prev-spv" aria-label="Previous testimonial">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
+                </button>
+                <div class="testimonial-dots" id="testimonial-dots-spv">
+                    <div class="testimonial-dot active"></div>
+                    <div class="testimonial-dot"></div>
+                    <div class="testimonial-dot"></div>
                 </div>
+                <button class="testimonial-nav-btn" id="testimonial-next-spv" aria-label="Next testimonial">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
+                </button>
             </div>
         </div>
     </section>
@@ -3961,24 +4015,18 @@ font-family: 'DM Sans', sans-serif;
         // ============================================
         // TESTIMONIAL CAROUSEL
         // ============================================
-        const testimonialCards = document.querySelectorAll('.testimonial-card');
-        const testimonialDots = document.querySelectorAll('.testimonial-dot');
+        const testimonialCarousel = document.getElementById('testimonial-carousel');
+        const testimonialCards = testimonialCarousel.querySelectorAll('.testimonial-card');
+        const testimonialDots = document.getElementById('testimonial-dots').querySelectorAll('.testimonial-dot');
         const testimonialPrev = document.getElementById('testimonial-prev');
         const testimonialNext = document.getElementById('testimonial-next');
-        const testimonialCarousel = document.getElementById('testimonial-carousel');
 
         let currentSlide = 0;
         const totalSlides = testimonialCards.length;
         let autoAdvanceInterval = null;
 
         function updateTestimonialCarousel() {
-            testimonialCards.forEach((card, index) => {
-                if (index === currentSlide) {
-                    card.classList.add('active');
-                } else {
-                    card.classList.remove('active');
-                }
-            });
+            testimonialCards[currentSlide].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
 
             testimonialDots.forEach((dot, index) => {
                 if (index === currentSlide) {
@@ -4015,21 +4063,72 @@ font-family: 'DM Sans', sans-serif;
 
         testimonialNext.addEventListener('click', () => {
             nextSlide();
-            stopAutoAdvance();
-            setTimeout(startAutoAdvance, 3000);
         });
 
         testimonialPrev.addEventListener('click', () => {
             prevSlide();
-            stopAutoAdvance();
-            setTimeout(startAutoAdvance, 3000);
         });
 
-        testimonialCarousel.addEventListener('mouseenter', stopAutoAdvance);
-        testimonialCarousel.addEventListener('mouseleave', startAutoAdvance);
-
         updateTestimonialCarousel();
-        startAutoAdvance();
+
+        // ============================================
+        // SPV TESTIMONIAL CAROUSEL
+        // ============================================
+        const testimonialCarouselSpv = document.getElementById('testimonial-carousel-spv');
+        const testimonialCardsSpv = testimonialCarouselSpv.querySelectorAll('.testimonial-card');
+        const testimonialDotsSpv = document.getElementById('testimonial-dots-spv').querySelectorAll('.testimonial-dot');
+        const testimonialPrevSpv = document.getElementById('testimonial-prev-spv');
+        const testimonialNextSpv = document.getElementById('testimonial-next-spv');
+
+        let currentSlideSpv = 0;
+        const totalSlidesSpv = testimonialCardsSpv.length;
+        let autoAdvanceIntervalSpv = null;
+
+        function updateTestimonialCarouselSpv() {
+            testimonialCardsSpv[currentSlideSpv].scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+
+            testimonialDotsSpv.forEach((dot, index) => {
+                if (index === currentSlideSpv) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+
+            testimonialPrevSpv.disabled = currentSlideSpv === 0;
+            testimonialNextSpv.disabled = currentSlideSpv === totalSlidesSpv - 1;
+        }
+
+        function nextSlideSpv() {
+            currentSlideSpv = (currentSlideSpv + 1) % totalSlidesSpv;
+            updateTestimonialCarouselSpv();
+        }
+
+        function prevSlideSpv() {
+            currentSlideSpv = (currentSlideSpv - 1 + totalSlidesSpv) % totalSlidesSpv;
+            updateTestimonialCarouselSpv();
+        }
+
+        function startAutoAdvanceSpv() {
+            autoAdvanceIntervalSpv = setInterval(nextSlideSpv, 5000);
+        }
+
+        function stopAutoAdvanceSpv() {
+            if (autoAdvanceIntervalSpv) {
+                clearInterval(autoAdvanceIntervalSpv);
+                autoAdvanceIntervalSpv = null;
+            }
+        }
+
+        testimonialNextSpv.addEventListener('click', () => {
+            nextSlideSpv();
+        });
+
+        testimonialPrevSpv.addEventListener('click', () => {
+            prevSlideSpv();
+        });
+
+        updateTestimonialCarouselSpv();
 
         // ============================================
         // KEYBOARD NAVIGATION FOR CAROUSEL
@@ -4037,44 +4136,12 @@ font-family: 'DM Sans', sans-serif;
         document.addEventListener('keydown', (e) => {
             if (e.key === 'ArrowLeft') {
                 prevSlide();
-                stopAutoAdvance();
-                setTimeout(startAutoAdvance, 3000);
             } else if (e.key === 'ArrowRight') {
                 nextSlide();
-                stopAutoAdvance();
-                setTimeout(startAutoAdvance, 3000);
             }
         });
 
-        // ============================================
-        // PRICING CARD HOVER EFFECTS
-        // ============================================
-        const pricingCards = document.querySelectorAll('.pricing-card');
-
-        pricingCards.forEach(card => {
-            card.addEventListener('mouseenter', () => {
-                card.style.transform = 'translateY(-3px)';
-            });
-
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'translateY(0)';
-            });
-        });
-
-        // ============================================
-        // SERVICES CARD HOVER EFFECTS
-        // ============================================
-        const servicesCards = document.querySelectorAll('.services-card');
-
-        servicesCards.forEach(card => {
-            card.addEventListener('mouseenter', () => {
-                card.style.transform = 'translateY(-2px)';
-            });
-
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'translateY(0)';
-            });
-        });
+      
 
         // ============================================
         // FEATURE TABLE ROW HOVER
@@ -4252,6 +4319,14 @@ font-family: 'DM Sans', sans-serif;
         // ============================================
         window.addEventListener('beforeunload', () => {
             lenis.destroy();
+        });
+
+        // Disable scroll restoration and scroll to top on page load
+        window.history.scrollRestoration = 'manual';
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                window.scrollTo(0, 0);
+            }, 10);
         });
     </script>
 </body>

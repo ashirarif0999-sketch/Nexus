@@ -1055,7 +1055,7 @@ font-family: 'DM Sans', sans-serif;
         }
 
         .hero-headline {
-             font-family: 'oldschool-grotesk-bold', 'DM Sans', sans-serif;
+             font-family: 'oldschool-grotesk-regular', 'DM Sans', sans-serif;
     font-size: clamp(52px, 7vw, 100px);
     font-weight: 600;
     line-height: 1.0;
@@ -1550,6 +1550,9 @@ font-family: 'DM Sans', sans-serif;
             transform: translateY(0px) !important;
             scroll-snap-align: center;
             position: relative;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
         }
 
         .testimonial-card.revealed {
@@ -1632,7 +1635,8 @@ font-family: 'DM Sans', sans-serif;
             font-size: 13px;
             font-weight: 600;
             color: var(--text-inverse);
-            margin-bottom: 8px;
+            text-align: center;
+            margin: 8px 0;
         }
 
         .testimonial-cta {
@@ -1654,15 +1658,25 @@ font-family: 'DM Sans', sans-serif;
             border-radius: 50%;
             border: 2px solid rgba(255, 255, 255, 0.15);
             object-fit: cover;
-            margin-bottom: 24px;
+        }
+
+        .testimonial-content-wrapper {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .testimonial-attributes-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 8px;
         }
 
         .testimonial-stats {
             display: flex;
             flex-wrap: wrap;
             gap: 16px;
-            padding-top: 24px;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         .testimonial-stat {
@@ -2629,89 +2643,105 @@ font-family: 'DM Sans', sans-serif;
                 <div class="carousel-track" id="carousel-track">
                     <!-- Card 1 -->
                     <div class="testimonial-card testimonial-card-1">
-                        <span class="testimonial-badge testimonial-badge-1">Former founder</span>
-                        <h3 class="testimonial-fund-name">GTMfund</h3>
-                        <p class="testimonial-quote">"For Fund II, we transitioned to a traditional closed-end fund with institutional support. This allowed us to be more intentional about our portfolio construction—how many deals we're doing, our check sizes, and the overall fund size. We worked closely with Nexus throughout this transition, and their team was incredible in supporting us."</p>
-                        <p class="testimonial-attribution">Paul Irving</p>
-                        <a href="#" class="testimonial-cta">Read the Q+A →</a>
-                        <img src="https://picsum.photos/seed/gtmfund/80/80" alt="Paul Irving" class="testimonial-portrait">
-                        <div class="testimonial-stats">
-                            <div class="testimonial-stat">
-                                <div class="testimonial-stat-label">Partner</div>
-                                <div class="testimonial-stat-value">Paul Irving</div>
-                            </div>
-                            <div class="testimonial-stat">
-                                <div class="testimonial-stat-label">Latest Fund</div>
-                                <div class="testimonial-stat-value">$54M Fund II</div>
-                            </div>
-                            <div class="testimonial-stat">
-                                <div class="testimonial-stat-label">LP Base</div>
-                                <div class="testimonial-stat-value">350+ GTM Leaders</div>
+                        <div class="testimonial-content-wrapper">
+                            <span class="testimonial-badge testimonial-badge-1">Former founder</span>
+                            <h3 class="testimonial-fund-name">GTMfund</h3>
+                            <p class="testimonial-quote">"For Fund II, we transitioned to a traditional closed-end fund with institutional support. This allowed us to be more intentional about our portfolio construction—how many deals we're doing, our check sizes, and the overall fund size. We worked closely with Nexus throughout this transition, and their team was incredible in supporting us."</p>
+                            <a href="#" class="testimonial-cta">Read the Q+A →</a>
+                        </div>
+                        <div class="testimonial-attributes-wrapper">
+                            <img src="https://picsum.photos/seed/gtmfund/80/80" alt="Paul Irving" class="testimonial-portrait">
+                            <p class="testimonial-attribution">Paul Irving</p>
+                            <div class="testimonial-stats">
+                                <div class="testimonial-stat">
+                                    <div class="testimonial-stat-label">Partner</div>
+                                    <div class="testimonial-stat-value">Paul Irving</div>
+                                </div>
+                                <div class="testimonial-stat">
+                                    <div class="testimonial-stat-label">Latest Fund</div>
+                                    <div class="testimonial-stat-value">$54M Fund II</div>
+                                </div>
+                                <div class="testimonial-stat">
+                                    <div class="testimonial-stat-label">LP Base</div>
+                                    <div class="testimonial-stat-value">350+ GTM Leaders</div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Card 2 -->
                     <div class="testimonial-card testimonial-card-2">
-                        <span class="testimonial-badge testimonial-badge-2">Venture-backed</span>
-                        <h3 class="testimonial-fund-name">Capital Factory</h3>
-                        <p class="testimonial-quote">"We've been on Nexus from the beginning, from our first Rolling Fund to our most recent $125M SPV. The platform keeps getting more efficient and adding more features, and their white-glove support helps us launch different fund structures and close LPs at any scale."</p>
-                        <p class="testimonial-attribution">Joshua Baer</p>
-                        <img src="https://picsum.photos/seed/capitalfactory/80/80" alt="Joshua Baer" class="testimonial-portrait">
-                        <div class="testimonial-stats">
-                            <div class="testimonial-stat">
-                                <div class="testimonial-stat-label">Partner</div>
-                                <div class="testimonial-stat-value">Joshua Baer</div>
-                            </div>
-                            <div class="testimonial-stat">
-                                <div class="testimonial-stat-label">Platform</div>
-                                <div class="testimonial-stat-value">Rolling Funds, SPVs, Venture Funds</div>
+                        <div class="testimonial-content-wrapper">
+                            <span class="testimonial-badge testimonial-badge-2">Venture-backed</span>
+                            <h3 class="testimonial-fund-name">Capital Factory</h3>
+                            <p class="testimonial-quote">"We've been on Nexus from the beginning, from our first Rolling Fund to our most recent $125M SPV. The platform keeps getting more efficient and adding more features, and their white-glove support helps us launch different fund structures and close LPs at any scale."</p>
+                        </div>
+                        <div class="testimonial-attributes-wrapper">
+                            <img src="https://picsum.photos/seed/capitalfactory/80/80" alt="Joshua Baer" class="testimonial-portrait">
+                            <p class="testimonial-attribution">Joshua Baer</p>
+                            <div class="testimonial-stats">
+                                <div class="testimonial-stat">
+                                    <div class="testimonial-stat-label">Partner</div>
+                                    <div class="testimonial-stat-value">Joshua Baer</div>
+                                </div>
+                                <div class="testimonial-stat">
+                                    <div class="testimonial-stat-label">Platform</div>
+                                    <div class="testimonial-stat-value">Rolling Funds, SPVs, Venture Funds</div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Card 3 -->
                     <div class="testimonial-card testimonial-card-3">
-                        <span class="testimonial-badge testimonial-badge-3">Partner investor</span>
-                        <h3 class="testimonial-fund-name">Sarah Smith Fund</h3>
-                        <p class="testimonial-quote">"For the Nexus Rolling Fund specifically, I wanted to be in business from day one. The nice thing is you can always be accepting new LPs. Literally the day I wanted to start, I was able to start investing in companies and not turn off my deal flow."</p>
-                        <p class="testimonial-attribution">Sarah Smith</p>
-                        <img src="https://picsum.photos/seed/sarahsmith/80/80" alt="Sarah Smith" class="testimonial-portrait">
-                        <div class="testimonial-stats">
-                            <div class="testimonial-stat">
-                                <div class="testimonial-stat-label">Partner</div>
-                                <div class="testimonial-stat-value">Sarah Smith</div>
-                            </div>
-                            <div class="testimonial-stat">
-                                <div class="testimonial-stat-label">Firm</div>
-                                <div class="testimonial-stat-value">Nexus Capital Ventures</div>
-                            </div>
-                            <div class="testimonial-stat">
-                                <div class="testimonial-stat-label">Acquisitions</div>
-                                <div class="testimonial-stat-value">40+</div>
+                        <div class="testimonial-content-wrapper">
+                            <span class="testimonial-badge testimonial-badge-3">Partner investor</span>
+                            <h3 class="testimonial-fund-name">Sarah Smith Fund</h3>
+                            <p class="testimonial-quote">"For the Nexus Rolling Fund specifically, I wanted to be in business from day one. The nice thing is you can always be accepting new LPs. Literally the day I wanted to start, I was able to start investing in companies and not turn off my deal flow."</p>
+                        </div>
+                        <div class="testimonial-attributes-wrapper">
+                            <img src="https://picsum.photos/seed/sarahsmith/80/80" alt="Sarah Smith" class="testimonial-portrait">
+                            <p class="testimonial-attribution">Sarah Smith</p>
+                            <div class="testimonial-stats">
+                                <div class="testimonial-stat">
+                                    <div class="testimonial-stat-label">Partner</div>
+                                    <div class="testimonial-stat-value">Sarah Smith</div>
+                                </div>
+                                <div class="testimonial-stat">
+                                    <div class="testimonial-stat-label">Firm</div>
+                                    <div class="testimonial-stat-value">Nexus Capital Ventures</div>
+                                </div>
+                                <div class="testimonial-stat">
+                                    <div class="testimonial-stat-label">Acquisitions</div>
+                                    <div class="testimonial-stat-value">40+</div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Card 4 -->
                     <div class="testimonial-card testimonial-card-4">
-                        <span class="testimonial-badge testimonial-badge-4">Power operator</span>
-                        <h3 class="testimonial-fund-name">Kearny Jackson</h3>
-                        <p class="testimonial-quote">"I invest in SPVs, run my own SPVs, have my own fund, and am an LP in a bunch of different funds. Having everything in one place is really awesome."</p>
-                        <p class="testimonial-attribution">Brian Krishnan</p>
-                        <img src="https://picsum.photos/seed/kearny/80/80" alt="Brian Krishnan" class="testimonial-portrait">
-                        <div class="testimonial-stats">
-                            <div class="testimonial-stat">
-                                <div class="testimonial-stat-label">Partner</div>
-                                <div class="testimonial-stat-value">Brian Krishnan</div>
-                            </div>
-                            <div class="testimonial-stat">
-                                <div class="testimonial-stat-label">Firm</div>
-                                <div class="testimonial-stat-value">Brown & Krishnan</div>
-                            </div>
-                            <div class="testimonial-stat">
-                                <div class="testimonial-stat-label">Geo</div>
-                                <div class="testimonial-stat-value">Nigeria, Hong Kong, Pakistan</div>
+                        <div class="testimonial-content-wrapper">
+                            <span class="testimonial-badge testimonial-badge-4">Power operator</span>
+                            <h3 class="testimonial-fund-name">Kearny Jackson</h3>
+                            <p class="testimonial-quote">"I invest in SPVs, run my own SPVs, have my own fund, and am an LP in a bunch of different funds. Having everything in one place is really awesome."</p>
+                        </div>
+                        <div class="testimonial-attributes-wrapper">
+                            <img src="https://picsum.photos/seed/kearny/80/80" alt="Brian Krishnan" class="testimonial-portrait">
+                            <p class="testimonial-attribution">Brian Krishnan</p>
+                            <div class="testimonial-stats">
+                                <div class="testimonial-stat">
+                                    <div class="testimonial-stat-label">Partner</div>
+                                    <div class="testimonial-stat-value">Brian Krishnan</div>
+                                </div>
+                                <div class="testimonial-stat">
+                                    <div class="testimonial-stat-label">Firm</div>
+                                    <div class="testimonial-stat-value">Brown & Krishnan</div>
+                                </div>
+                                <div class="testimonial-stat">
+                                    <div class="testimonial-stat-label">Geo</div>
+                                    <div class="testimonial-stat-value">Nigeria, Hong Kong, Pakistan</div>
+                                </div>
                             </div>
                         </div>
                     </div>

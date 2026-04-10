@@ -31,21 +31,22 @@
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js" defer></script>
     
    <style>
-@font-face {
-    font-family: 'oldschool-grotesk-regular';
-    src: url('/fonts/OldschoolGroteskTrial-Regular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-@font-face {
-    font-family: 'oldschool-grotesk-bold';
-    src: url('/fonts/OldschoolGroteskTrial-ExtraBold.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+ @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+ @font-face {
+     font-family: 'oldschool-grotesk-regular';
+     src: url('/fonts/OldschoolGroteskTrial-Regular.ttf') format('truetype');
+     font-weight: normal;
+     font-style: normal;
+     font-display: swap;
+ }
+ @font-face {
+     font-family: 'oldschool-grotesk-bold';
+     src: url('/fonts/OldschoolGroteskTrial-ExtraBold.ttf') format('truetype');
+     font-weight: normal;
+     font-style: normal;
+     font-display: swap;
+ }
 
     html {
   scroll-behavior: smooth;
@@ -1123,7 +1124,7 @@ font-family: 'DM Sans', sans-serif;
        }
         
         .hero-headline {
-            font-family: 'oldschool-grotesk-bold', 'DM Sans', sans-serif;
+            font-family: 'oldschool-grotesk-regular', 'DM Sans', sans-serif;
     font-size: clamp(52px, 7vw, 100px);
     font-weight: 600;
     line-height: 1.0;
@@ -1169,25 +1170,29 @@ font-family: 'DM Sans', sans-serif;
         
         .hero-cta-primary {
             font-family: 'DM Sans', sans-serif;
-            font-size: 14px;
-            font-weight: 500;
-            color:#0D0E12;
-            background:#E6E6F2;
-            padding: 12px 24px;
-            border-radius: 6px;
-            display: inline-flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            transition: all var(--transition-fast);
+    font-size: 20px;
+    font-weight: 500;
+    color: #0D0E12;
+    background: #E6E6F2;
+    padding: 7px 43px;
+    border-radius: 49px;
+    display: inline-flex;
+    align-items: center;
+    box-shadow: 0px 0px 0px 0px #2f44c0;
+    gap: var(--spacing-sm);
+    transition: all var(--transition-fast);
         }
         
         .hero-cta-primary:hover {
             background: #405cff;
-            transform: scale(1.01);
             color: aliceblue;
-            box-shadow: var(--shadow-primary);
+            transform:translateY(-6px);
+                box-shadow: 0px 6px 0px 0px #2f44c0;
         }
-        
+        .hero-cta-primary:active{
+            box-shadow: 0px 0px 0px 0px #2f44c0;
+            transform: translateY(0px);
+        }
         .hero-cta-primary svg {
             width: 14px;
             height: 14px;
@@ -2127,8 +2132,8 @@ display: flex;
         }
         
         .cta-heading {
-            font-family: 'DM Serif Display', serif;
-            font-size: clamp(36px, 4vw, 52px);
+            font-family: 'oldschool-grotesk-regular','DM Serif Display', serif;
+            font-size: clamp(36px, 4vw, 40px);
             font-weight: 800;
             line-height: 1.05;
             color: var(--text-inverse);
