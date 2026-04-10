@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <meta name="description" content="Nexus — Where Capital Meets Ambition. A business networking platform connecting entrepreneurs seeking funding with investors looking for promising startups.">
     <meta name="theme-color" content="#242eae">
     <title>Nexus — Where Capital Meets Ambition</title>
@@ -175,21 +175,21 @@
  
 
         /* ============================================
-           RESET & BASE STYLES
-           ============================================ */
+            RESET & BASE STYLES
+            ============================================ */
         *, *::before, *::after {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
         }
-        
+
         html {
             scroll-behavior: smooth;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
         }
-        
+
        body {
     font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
     font-size: 16px;
@@ -197,8 +197,37 @@
     color: var(--text-primary);
     background-color: #0D0E12;
     overflow-x: hidden;
-    padding-top:100px !important;
 }
+
+        /* Mobile Layout Fixes */
+        .section, .container, .hero, .pricing, .footer {
+            width: 100%;
+            max-width: -webkit-fill-available;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* SVG / Ribbon Bleed Fix */
+        .squiggle-container, .svg-background, .ribbon-wrapper, .gradient-curve {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .squiggle-container svg {
+            width: 100%;
+            max-width: 1920px;
+            height: auto;
+            position: absolute;
+            top: -25%;
+            left: 50%;
+            transform: translateX(-50%);
+        }
         
         @media (hover: none) {
             body {
@@ -431,7 +460,7 @@
            SECTION 1 — NAVBAR (PILL-SHAPED)
            ============================================ */
         .navbar {
-position: fixed;
+position: fixed !important;
     top: 0px;
     left: 50%;
     transform: translateX(-50%);
@@ -2696,70 +2725,102 @@ border-left: 2px solid var(--primary-500);
             .container-small {
                 padding: 0 24px;
             }
-            
+
             .hero-inner {
                 padding: 0 24px;
             }
-            
+
             .hero-cards {
                 grid-template-columns: 1fr;
             }
-            
+
             .full-service-card {
                 grid-template-columns: 1fr;
                 padding: 32px 0px 32px 32px;
             }
-            
+
             .full-service-portraits {
                 order: -1;
                 margin-bottom: 32px;
             }
-            
+
             .stats-number-cell:nth-child(2),
             .stats-number-cell:nth-child(4) {
                 border-left: none;
                 padding-left: 0;
             }
-            
+
             .cta-block {
                 padding: 40px 24px;
             }
-            
+
             .social-proof-logos {
                 gap: var(--spacing-md);
             }
-            
+
             .footer-links-grid {
                 grid-template-columns: 1fr;
             }
-            
+
             .footer-bottom {
                 flex-direction: column;
                 text-align: center;
             }
-            
+
             .testimonial-quote-mark {
                 font-size: 80px;
             }
-            
+
             /* Navbar Mobile Adjustments */
             .navbar {
                 padding: 10px 16px;
                 width: calc(100% - 32px);
             }
-            
+
             .navbar-inner {
                 gap: var(--spacing-md);
                 justify-content: space-between;
             }
-            
+
             .navbar-signin {
-                        display: flex;
+                         display: flex;
         background: #405CFF;
         padding: 8px 16px;
         border-radius: 4px !important;
             }
             .navbar-cta{display: none;}
+
+            /* Mobile Layout Patches */
+            .section, .container {
+                padding: 2rem 1rem;
+            }
+
+            .grid, .flex-row, .cards-wrapper {
+                display: flex !important;
+                flex-direction: column !important;
+                gap: 1.5rem !important;
+            }
+
+            .hero-cards {
+                max-width: 100% !important;
+                width: 100% !important;
+                margin-left: 0 !important;
+                padding-left: 0 !important;
+                padding-right: 0 !important;
+            }
+
+            .squiggle-container svg {
+                width: 200%;
+                left: 50%;
+                top: -40%;
+                transform: translateX(-50%);
+            }
+
+            /* Fix overlapping nav/footer */
+            nav, .main-nav, footer {
+                position: relative !important;
+                z-index: 10;
+            }
         }
         
         /* Small Mobile — 480px */
