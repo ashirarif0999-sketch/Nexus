@@ -1,5 +1,5 @@
 import React, { useState, useEffect, memo } from 'react';
-import { Outlet, Navigate } from 'react-router-dom';
+import { Outlet, Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Navbar } from './Navbar';
 import { Sidebar } from './Sidebar';
@@ -8,6 +8,7 @@ import { ROUTES } from '../../config/routes';
 
 export const DashboardLayout: React.FC = memo(() => {
   const { user, isAuthenticated, isLoading } = useAuth();
+  const location = useLocation();
   const [showTour, setShowTour] = useState(false);
   const [sidebarExpanded, setSidebarExpanded] = useState(false);
 
@@ -47,7 +48,7 @@ export const DashboardLayout: React.FC = memo(() => {
       <div className="dashboard-content flex-1 flex flex-col">
         <Navbar onToggleDock={handleToggleDock} />
 
-        <main className={`dashboard-main flex-1 p-6 overflow-y-auto ${sidebarExpanded ? 'dock-expanded' : ''}`}>
+        <main className={`dashboard-main flex-1 ${sidebarExpanded ? 'dock-expanded' : ''} ${location.pathname === ROUTES.CALENDAR ? (sidebarExpanded ? 'calendar-expanded' : 'no-padding') : 'p-6 overflow-y-auto'}`}>
           <div className="dashboard-main-content max-w-7xl mx-auto">
             <Outlet />
           </div>

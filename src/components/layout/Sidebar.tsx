@@ -22,6 +22,7 @@ interface NavItem {
 interface SidebarProps {
   onExpandChange?: (expanded: boolean) => void;
   isExpanded?: boolean;
+  onCollapse?: () => void;
 }
 
 // ─── Tooltip ──────────────────────────────────────────────────────────────────
@@ -47,10 +48,18 @@ Tooltip.displayName = 'Tooltip';
 
 // ─── Dock Nav Item ─────────────────────────────────────────────────────────────
 
-const DockItem: React.FC<NavItem & { isExpanded: boolean }> = memo(({ to, icon, text, badge, isExpanded }) => {
+const DockItem: React.FC<NavItem & { isExpanded: boolean; onCollapse?: () => void }> = memo(({ to, icon, text, badge, isExpanded, onCollapse }) => {
+  const handleClick = () => {
+    // Collapse dock on mobile screens (< 950px) when item is clicked
+    if (window.matchMedia('(max-width: 950px)').matches) {
+      onCollapse?.();
+    }
+  };
+
   const content = (
     <NavLink
       to={to}
+      onClick={handleClick}
       className={({ isActive }) =>
         `dock-item ${isActive ? 'dock-item--active' : ''} ${isExpanded ? 'dock-item--expanded' : ''}`
       }
@@ -258,7 +267,12 @@ export const Sidebar: React.FC<SidebarProps> = memo(({ onExpandChange, isExpande
           {/* Main nav items */}
           <nav className="dock__nav">
             {navItems.map((item, i) => (
-              <DockItem key={item.to} {...item} isExpanded={isExpanded} />
+              <DockItem 
+                key={item.to} 
+                {...item} 
+                isExpanded={isExpanded} 
+                onCollapse={() => handleExpandChange(false)} 
+              />
             ))}
           </nav>
         </div>

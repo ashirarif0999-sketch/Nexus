@@ -1,7 +1,101 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+/* Premium FullCalendar Styling */
+.fc {
+  @apply font-sans;
+}
+
+.fc .fc-toolbar {
+  @apply mb-6;
+}
+
+.fc .fc-toolbar-title {
+  @apply text-xl font-bold text-gray-800;
+}
+
+.fc .fc-button {
+  @apply bg-white border border-gray-200 text-gray-700 hover:bg-gray-50 hover:border-gray-300 px-4 py-2 rounded-lg font-medium transition-all duration-200 shadow-sm hover:shadow;
+}
+
+.fc .fc-button-primary:disabled {
+  @apply bg-gray-50 text-gray-400;
+}
+
+.fc .fc-button.fc-button-active {
+  @apply bg-primary-600 text-white border-primary-600 hover:bg-primary-700 shadow-md shadow-primary-200;
+}
+
+.fc .fc-daygrid-day {
+  @apply border-gray-100;
+}
+
+.fc .fc-daygrid-day-top {
+  @apply py-2;
+}
+
+.fc .fc-daygrid-day-number {
+  @apply text-gray-600 font-medium text-sm p-2;
+}
+
+.fc .fc-event {
+  @apply rounded-lg border-none shadow-sm hover:shadow-md transition-all duration-200 cursor-pointer;
+}
+
+.fc .fc-event-title {
+  @apply font-medium text-sm;
+}
+
+.fc .fc-timegrid-slot {
+  @apply border-gray-100;
+}
+
+.fc .fc-timegrid-axis-cushion {
+  @apply text-gray-500 text-xs font-medium;
+}
+
+.fc .fc-col-header-cell {
+  @apply bg-gray-50/50 border-gray-100;
+}
+
+.fc .fc-col-header-cell-cushion {
+  @apply py-3 text-gray-600 uppercase text-xs font-bold tracking-wider;
+}
+
+.fc .fc-day-today {
+  @apply bg-blue-50/30 !important;
+}
+
+.fc .fc-daygrid-event-harness {
+  @apply px-1 py-0.5;
+}
+
+.fc .fc-scrollgrid {
+  @apply border-gray-200 rounded-xl overflow-hidden;
+}
+
+.fc .fc-scrollgrid-section-header {
+  @apply rounded-t-xl;
+}
+
+.fc .fc-list-table {
+  @apply border-collapse;
+}
+
+.fc .fc-list-day {
+  @apply bg-gray-50/50;
+}
+
+.fc .fc-list-event {
+  @apply hover:bg-blue-50/30 transition-colors;
+}
+
+.fc .fc-now-indicator {
+  @apply bg-red-500 border-red-500;
+}
 
 /* Custom Font - Mileast */
 @font-face {
@@ -37,7 +131,6 @@
 .font-mileast {
     font-family: 'Mileast', sans-serif;
 }
-
 
 .sidebar-container{
     z-index: 30;
@@ -852,8 +945,25 @@ position: relative;
         display: block;
         position: fixed;
         background: #f7f7f9;
-        z-index: 10;
+        z-index: 5;
         width: stretch;
+        max-width: 80rem;
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    @media (min-width: 640px) {
+        .navbar-container{
+            padding-left: 1.5rem;
+            padding-right: 1.5rem;
+        }
+    }
+    @media (min-width: 1024px) {
+        .navbar-container{
+            padding-left: 2rem;
+            padding-right: 2rem;
+        }
     }
 }
 /*SIDEBAR CSS*/
@@ -1261,9 +1371,13 @@ justify-content: flex-start;
     }
 }
 .profile-page-navigation{
-    border-radius: 50%;
+    border-radius: 50px;
     position: fixed;
     top: 25px;
+    width: 45px;
+    z-index: 10;
+    height: 45px !important;
+    border: 2px solid #f1efef;
     background: #f9fafb;
     i{
         font-size: 40px;
@@ -1302,8 +1416,72 @@ span{
     height: 200px;
 
 }
+
 .right-panel-profile-status{
 width: 23px;
 height: 23px;
 }
+}
+
+@media (max-width:950px){
+    .chatpage-container{
+        top: 63px;
+        left: 0;
+        border-radius: 0px;
+    }
+    .custom-scrollbar{
+        scrollbar-width: thin;
+    }
+}
+
+
+.modal-backdrop{
+    z-index: -1;
+}
+
+
+
+/* Calendar page - add padding-left when dock is expanded */
+.dashboard-main.calendar-expanded {
+  padding-left: calc(220px + 0.5rem) !important;
+  padding-right: 0 !important;
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+}
+
+/* Calendar page - custom CSS when dock is NOT expanded */
+.dashboard-main:not(.dock-expanded) .dashboard-main-content {
+  max-width: none;
+}
+.calendar-main{
+    padding: 100px 20px 20px 20px!important;
+}
+@media(max-width: 950px){
+    .dashboard-main{
+        padding-left: 0px !important ;
+    }
+    .calendar-header{
+        top: 63px !important;
+        width: 100% !important;
+    }
+    .calendar-main{
+        padding-top: 180px !important;
+    }
+}
+/* Calendar padding fix */
+.dashboard-main {
+  padding-left:calc(60px + 0.5rem) ;
+  margin: 0 !important;
+  max-width: 100% !important;
+}
+.dashboard-main .calendar-header{
+    position: absolute;
+    top: 0;
+    width: -webkit-fill-available;
+}
+.event-detail-panel{
+    place-self: anchor-center;
+}
+.schedule-meeting-panel{
+    z-index: 9999;
 }

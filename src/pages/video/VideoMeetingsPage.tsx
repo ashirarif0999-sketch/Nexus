@@ -94,7 +94,7 @@ export const VideoMeetingsPage: React.FC = () => {
           <Plus size={18} className="mr-2" />
           New Meeting
         </button>
-        
+
         <div className="search-container relative flex-1 max-w-md">
           <Search className="search-icon absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
           <input
@@ -157,7 +157,7 @@ export const VideoMeetingsPage: React.FC = () => {
                       meeting.status === 'completed' ? 'text-green-600' : 'text-primary-600'
                     }`} />
                   </div>
-                  
+
                   <div className="meeting-details">
                     <h3 className="meeting-title font-medium text-gray-900">{meeting.title}</h3>
                     <div className="meeting-meta flex items-center gap-4 mt-1 text-sm text-gray-500">
@@ -180,13 +180,13 @@ export const VideoMeetingsPage: React.FC = () => {
 
                 <div className="meeting-actions flex items-center gap-2">
                   <span className={`meeting-status-badge px-3 py-1 rounded-full text-xs font-medium ${
-                    meeting.status === 'completed' 
-                      ? 'bg-green-100 text-green-800' 
+                    meeting.status === 'completed'
+                      ? 'bg-green-100 text-green-800'
                       : 'bg-yellow-100 text-yellow-800'
                   }`}>
                     {meeting.status === 'completed' ? 'Completed' : 'Scheduled'}
                   </span>
-                  
+
                   {meeting.status === 'scheduled' ? (
                     <button
                       onClick={() => handleJoinMeeting(meeting.id)}
@@ -204,7 +204,7 @@ export const VideoMeetingsPage: React.FC = () => {
                       Review
                     </button>
                   )}
-                  
+
                   <button className="p-2 text-gray-400 hover:text-gray-600">
                     <MoreVertical size={18} />
                   </button>
@@ -231,7 +231,7 @@ export const VideoMeetingsPage: React.FC = () => {
             </div>
           </div>
         </button>
-        
+
         <button className="p-4 bg-white rounded-lg border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all text-left">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-blue-100 rounded-lg">
@@ -243,7 +243,7 @@ export const VideoMeetingsPage: React.FC = () => {
             </div>
           </div>
         </button>
-        
+
         <button className="p-4 bg-white rounded-lg border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all text-left">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-green-100 rounded-lg">

@@ -1,5 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { SendHorizontal, Mic } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { SendHorizontal, Mic, MicOff, Video, VideoOff, Volume2, X, PanelLeftClose, PanelLeftOpen, Phone, Search, MoreVertical } from 'lucide-react';
+import Picker from '@emoji-mart/react';
+import data from '@emoji-mart/data';
+import { useDropzone } from 'react-dropzone';
 import { useAuth } from '../../context/AuthContext';
 import { findUserById } from '../../data/users';
 import { Message, ChatConversation } from '../../types';
@@ -26,10 +29,94 @@ export const MessagesPage: React.FC = () => {
   const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' } | null>(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState<string | null>(null);
   const [replyingTo, setReplyingTo] = useState<Message | null>(null);
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+  const [isTyping, setIsTyping] = useState(false);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [pendingFiles, setPendingFiles] = useState<File[]>([]);
+  const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+  const [uploadProgress, setUploadProgress] = useState<number>(0); // For future cloud upload
+
+  // ===== CALL UI MOCKUP STATE =====
+  type CallStatus = 'idle' | 'connecting' | 'active' | 'ended';
+  type CallType = 'audio' | 'video' | null;
+
+  const [callState, setCallState] = useState<{
+    status: CallStatus;
+    type: CallType;
+    isMuted: boolean;
+    isCameraOff: boolean;
+    startTime: number | null;
+    timerInterval: number | null;
+  }>({
+    status: 'idle',
+    type: null,
+    isMuted: false,
+    isCameraOff: false,
+    startTime: null,
+    timerInterval: null,
+  });
+
+  const [callDuration, setCallDuration] = useState(0);
+  const localVideoRef = useRef<HTMLVideoElement>(null);
 
   const showToast = (message: string, type: 'success' | 'error' = 'success') => {
     setToast({ message, type });
     setTimeout(() => setToast(null), 3000);
+  };
+
+  const formatDuration = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = seconds % 60;
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const MAX_FILE_SIZE = 25 * 1024 * 1024; // 25MB
+  const ALLOWED_TYPES = ['image/*', 'video/*', '.pdf', '.doc', '.docx'];
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    accept: {
+      'image/*': ['.png', '.jpg', '.jpeg', '.gif', '.webp'],
+      'video/*': ['.mp4', '.webm'],
+      'application/pdf': ['.pdf'],
+      'application/msword': ['.doc'],
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx']
+    },
+    maxSize: MAX_FILE_SIZE,
+    maxFiles: 5,
+    onDrop: (acceptedFiles, rejectedFiles) => {
+      if (rejectedFiles.length > 0) {
+        showToast(rejectedFiles[0].errors[0].message, 'error');
+        return;
+      }
+
+      setPendingFiles(prev => [...prev, ...acceptedFiles]);
+
+      // Generate preview URLs
+      const newUrls = acceptedFiles.map(file => {
+        if (file.type.startsWith('image/')) return URL.createObjectURL(file);
+        if (file.type.startsWith('video/')) return URL.createObjectURL(file);
+        return null; // Fallback for docs
+      }).filter(Boolean) as string[];
+
+      setPreviewUrls(prev => [...prev, ...newUrls]);
+      showToast(`${acceptedFiles.length} file(s) attached`);
+    }
+  });
+
+  // 🧹 Cleanup object URLs on unmount or file removal
+  useEffect(() => {
+    return () => {
+      previewUrls.forEach(url => URL.revokeObjectURL(url));
+    };
+  }, []);
+
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
   };
 
   // Load conversations on component mount
@@ -239,29 +326,46 @@ export const MessagesPage: React.FC = () => {
   };
 
   const handleSendMessage = async () => {
-    if (!newMessage.trim() || !currentUser || !selectedContact) return;
+    if ((!newMessage.trim() && pendingFiles.length === 0) || !currentUser || !selectedContact) return;
 
     try {
-      const messageData: any = {
+      const baseMessage: Omit<Message, "id" | "timestamp" | "isRead" | "reactions" | "isStarred" | "isDeleted"> = {
         senderId: currentUser.id,
         receiverId: selectedContact,
-        content: newMessage
+        content: newMessage.trim() || (pendingFiles.length > 0 ? `📎 ${pendingFiles.length} file(s)` : ''),
       };
 
-      // Add reply information if replying
       if (replyingTo) {
-        messageData.replyTo = replyingTo.id;
-        messageData.replyContent = replyingTo.content;
+        baseMessage.replyTo = replyingTo.id;
+        baseMessage.replyContent = replyingTo.content;
       }
 
-      const sentMessage = await sendMessageCustom(messageData);
+      let attachmentData: { attachmentUrl: string; attachmentType: 'image' | 'video' | 'file'; attachmentName: string; attachmentSize: number } | undefined;
+
+      // 📎 Handle attachments temporarily (not saved to IndexedDB)
+      if (pendingFiles.length > 0) {
+        const file = pendingFiles[0]; // Simplified: send 1st file. Loop for multiple later.
+        const buffer = await file.arrayBuffer();
+        const base64 = btoa(String.fromCharCode(...new Uint8Array(buffer)));
+
+        attachmentData = {
+          attachmentUrl: `data:${file.type};base64,${base64}`,
+          attachmentType: file.type.startsWith('image/') ? 'image'
+            : file.type.startsWith('video/') ? 'video' : 'file',
+          attachmentName: file.name,
+          attachmentSize: file.size
+        };
+      }
+
+      const sentMessage = await sendMessageCustom(baseMessage);
+
+      // Add attachment data to local state only (temporary, vanishes on reload)
+      const sentMessageWithAttachment = attachmentData ? { ...sentMessage, ...attachmentData } : sentMessage;
 
       // Add the new message to the local state for immediate UI update
-      setMessages(prev => [...prev, sentMessage]);
-      setNewMessage('');
-      setReplyingTo(null); // Clear reply state
+      setMessages(prev => [...prev, sentMessageWithAttachment]);
 
-      // Update conversations list with the new last message
+      // Update conversations
       setConversations(prev =>
         prev.map(conv =>
           conv.participants.includes(selectedContact!)
@@ -270,7 +374,50 @@ export const MessagesPage: React.FC = () => {
         )
       );
 
+      // Cleanup
+      setNewMessage('');
+      setReplyingTo(null);
+      pendingFiles.forEach((_, index) => {
+        if (previewUrls[index]) URL.revokeObjectURL(previewUrls[index]);
+      });
+      setPendingFiles([]);
+      setPreviewUrls([]);
+
       showToast('Message sent');
+
+      // 🟢 MOCK REPLY SEQUENCE START
+      setIsTyping(true);
+
+      // 1. Show typing indicator after short delay
+      setTimeout(() => {
+        // 2. After "typing" for 2.5s, send mock reply
+        setTimeout(() => {
+          setIsTyping(false);
+
+          const mockReply: Message = {
+            id: `mock-reply-${Date.now()}`,
+            senderId: selectedContact,
+            receiverId: currentUser.id,
+            content: "Thanks for your message! Let's discuss this further. 👋",
+            timestamp: new Date().toISOString(),
+            isRead: false,
+          };
+
+          // Add to messages
+          setMessages(prev => [...prev, mockReply]);
+
+          // Update conversation list
+          setConversations(prev =>
+            prev.map(conv =>
+              conv.participants.includes(selectedContact!)
+                ? { ...conv, lastMessage: mockReply, updatedAt: mockReply.timestamp }
+                : conv
+            )
+          );
+        }, 2500); // Typing duration
+      }, 800); // Delay before typing starts
+      // 🟢 MOCK REPLY SEQUENCE END
+
     } catch (err) {
       console.error('Error sending message:', err);
       showToast('Failed to send message', 'error');
@@ -291,13 +438,84 @@ export const MessagesPage: React.FC = () => {
     }
   };
 
-  const handleVideoCall = () => {
-    alert('Video calling feature coming soon!');
+  const startCall = (type: CallType) => {
+    if (!selectedContact) return;
+
+    // Show connecting state
+    setCallState(prev => ({
+      ...prev,
+      status: 'connecting',
+      type,
+      isMuted: false,
+      isCameraOff: type === 'audio', // Camera off by default for audio calls
+      startTime: null,
+    }));
+
+    // Mock connection delay (1.5s)
+    setTimeout(() => {
+      setCallState(prev => ({
+        ...prev,
+        status: 'active',
+        startTime: Date.now(),
+      }));
+
+      // Start timer
+      const interval = setInterval(() => {
+        setCallDuration(prev => prev + 1);
+      }, 1000);
+
+      setCallState(prev => ({ ...prev, timerInterval: interval }));
+
+      showToast(`Connected to ${findUserById(selectedContact)?.name}`, 'success');
+
+      // Mock local video stream (for video calls)
+      if (type === 'video' && localVideoRef.current) {
+        // In real app: navigator.mediaDevices.getUserMedia(...)
+        // For mock: use a placeholder video or canvas
+        localVideoRef.current.srcObject = null; // Would attach real stream here
+      }
+    }, 1500);
   };
 
-  const handlePhoneCall = () => {
-    alert('Voice calling feature coming soon!');
+  const endCall = () => {
+    // Clear timer
+    if (callState.timerInterval) {
+      clearInterval(callState.timerInterval);
+    }
+
+    // Show ended state briefly for animation
+    setCallState(prev => ({ ...prev, status: 'ended' }));
+
+    // Reset after animation
+    setTimeout(() => {
+      setCallState({
+        status: 'idle',
+        type: null,
+        isMuted: false,
+        isCameraOff: false,
+        startTime: null,
+        timerInterval: null,
+      });
+      setCallDuration(0);
+    }, 300);
+
+    showToast('Call ended', 'success');
   };
+
+  const toggleMute = () => {
+    setCallState(prev => ({ ...prev, isMuted: !prev.isMuted }));
+    showToast(callState.isMuted ? 'Unmuted' : 'Muted', 'success');
+  };
+
+  const toggleCamera = () => {
+    if (callState.type !== 'video') return;
+    setCallState(prev => ({ ...prev, isCameraOff: !prev.isCameraOff }));
+    showToast(callState.isCameraOff ? 'Camera on' : 'Camera off', 'success');
+  };
+
+  // Updated handlers
+  const handleVideoCall = () => startCall('video');
+  const handlePhoneCall = () => startCall('audio');
 
   const handleSearch = () => {
     alert('Search functionality coming soon!');
@@ -307,12 +525,10 @@ export const MessagesPage: React.FC = () => {
     alert('More options menu coming soon!');
   };
 
-  const handleEmojiPicker = () => {
-    alert('Emoji picker coming soon!');
-  };
-
   const handleAttachment = () => {
-    alert('File attachment coming soon!');
+    // Trigger the hidden input
+    const input = document.querySelector('[data-dropzone-input]') as HTMLInputElement;
+    input?.click();
   };
 
   const handleMicToggle = () => {
@@ -342,7 +558,7 @@ export const MessagesPage: React.FC = () => {
   };
 
   React.useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleClickOutside = (_event: MouseEvent) => {
       if (activeMessageId) {
         setActiveMessageId(null);
       }
@@ -376,9 +592,9 @@ export const MessagesPage: React.FC = () => {
   }
 
   return (
-    <div className="chatpage-container">
-      <main className="flex bg-[#F0F2F5] font-sans overflow-hidden transition-all duration-300 relative h-[calc(100vh-160px)] w-full rounded-2xl border border-[#E9EDEF]">
-        <aside className="bg-[#FFFFFF] flex flex-col border-r border-[#E9EDEF] transition-all duration-300 z-30 w-[360px] shrink-0">
+    <div className="chatpage-container-parent">
+      <main className="chatpage-container flex bg-[#F0F2F5] font-sans overflow-hidden transition-all duration-300 relative h-[calc(100vh-160px)] w-full rounded-2xl border border-[#E9EDEF]">
+        <aside className={`bg-[#FFFFFF] flex flex-col border-r border-[#E9EDEF] transition-all duration-300 z-30 w-[360px] shrink-0 ${isSidebarOpen ? '' : 'hidden'}`}>
           <div className="h-16 bg-[#F0F2F5] px-4 flex items-center justify-between shrink-0">
             <div className="flex items-center gap-3">
               <div className="avatar-wrapper w-10 h-10 cursor-pointer">
@@ -550,29 +766,24 @@ export const MessagesPage: React.FC = () => {
               </div>
             )}
             <div className="flex items-center gap-4 text-[#54656F]">
+              {/* Sidebar Toggle - Only show on mobile */}
+              <button 
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)} 
+                className="p-2 hover:bg-[#F0F2F5] rounded-full transition-colors hover:text-[#111B21] lg:hidden"
+              >
+                {isSidebarOpen ? <PanelLeftClose size={20} /> : <PanelLeftOpen size={20} />}
+              </button>
               <button onClick={handleVideoCall} className="p-2 hover:bg-[#F0F2F5] rounded-full transition-colors hover:text-[#111B21]">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-video">
-                  <path d="m22 8-6 4 6 4V8Z"></path>
-                  <rect width="14" height="12" x="2" y="6" rx="2" ry="2"></rect>
-                </svg>
+                <Video size={20} />
               </button>
               <button onClick={handlePhoneCall} className="p-2 hover:bg-[#F0F2F5] rounded-full transition-colors hover:text-[#111B21]">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-phone">
-                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                </svg>
+                <Phone size={20} />
               </button>
               <button onClick={handleSearch} className="p-2 hover:bg-[#F0F2F5] rounded-full transition-colors hover:text-[#111B21]">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-search">
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <path d="m21 21-4.3-4.3"></path>
-                </svg>
+                <Search size={20} />
               </button>
               <button onClick={handleMoreOptions} className="p-2 hover:bg-[#F0F2F5] rounded-full transition-colors hover:text-[#111B21]">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-more-vertical">
-                  <circle cx="12" cy="12" r="1"></circle>
-                  <circle cx="12" cy="5" r="1"></circle>
-                  <circle cx="12" cy="19" r="1"></circle>
-                </svg>
+                <MoreVertical size={20} />
               </button>
             </div>
           </header>
@@ -594,8 +805,9 @@ export const MessagesPage: React.FC = () => {
                             day: 'numeric',
                             month: 'long',
                             year: 'numeric'
-                          })}
-                        </div>
+                })}
+
+</div>
                       )}
 
                       <div className={`flex w-full group relative ${index === 0 ? 'mt-2' : 'mt-2'}`}>
@@ -637,6 +849,42 @@ export const MessagesPage: React.FC = () => {
                             <span>{message.content}</span>
                           </div>
 
+                          {/* Attachment Display */}
+                          {message.attachmentUrl && (
+                            <div className="mt-2">
+                              {message.attachmentType === 'image' && (
+                                <img
+                                  src={message.attachmentUrl}
+                                  alt={message.attachmentName}
+                                  className="max-w-full max-h-64 rounded-lg cursor-pointer"
+                                  onClick={() => window.open(message.attachmentUrl, '_blank')}
+                                />
+                              )}
+                              {message.attachmentType === 'video' && (
+                                <video
+                                  src={message.attachmentUrl}
+                                  controls
+                                  className="max-w-full max-h-64 rounded-lg"
+                                />
+                              )}
+                              {message.attachmentType === 'file' && (
+                                <a
+                                  href={message.attachmentUrl}
+                                  download={message.attachmentName}
+                                  className="flex items-center gap-2 p-2 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors"
+                                >
+                                  <svg className="w-6 h-6 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" />
+                                  </svg>
+                                  <div className="flex-1 min-w-0">
+                                    <p className="text-sm font-medium truncate">{message.attachmentName}</p>
+                                    <p className="text-xs text-gray-500">{message.attachmentSize ? `${(message.attachmentSize / 1024 / 1024).toFixed(1)} MB` : ''}</p>
+                                  </div>
+                                </a>
+                              )}
+                            </div>
+                          )}
+
                           {/* Message Reactions */}
                           {message.reactions && message.reactions.length > 0 && (
                             <div className="flex flex-wrap gap-1 mt-2">
@@ -668,12 +916,17 @@ export const MessagesPage: React.FC = () => {
                     </React.Fragment>
                   );
                 })}
-              </div>
-            ) : selectedContact ? (
-              <div className="h-full flex flex-col items-center justify-center">
-                <div className="bg-[rgba(255,217,102,0.15)] text-[#111B21] text-[13px] rounded-[8px] px-4 py-3 text-center max-w-[85%] shadow-sm">
-                  No messages yet. Start the conversation!
-                </div>
+
+                {/* 🔹 TYPING INDICATOR UI */}
+                {isTyping && (
+                  <div className="flex w-full mt-2">
+                    <div className="bg-[#FFFFFF] px-3 py-2 shadow-sm rounded-[8px] rounded-tl-[0px] max-w-fit flex items-center gap-1">
+                      <span className="w-2 h-2 bg-[#8696A0] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
+                      <span className="w-2 h-2 bg-[#8696A0] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
+                      <span className="w-2 h-2 bg-[#8696A0] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
+                    </div>
+                  </div>
+                )}
               </div>
             ) : (
               <div className="h-full flex flex-col items-center justify-center">
@@ -709,8 +962,64 @@ export const MessagesPage: React.FC = () => {
               </div>
             )}
 
-            <div className="flex items-end gap-3">
-              <button onClick={handleEmojiPicker} className="text-[#54656F] hover:text-[#405CFF] transition-colors mb-1">
+            {/* Attachment Preview Chips */}
+            {pendingFiles.length > 0 && (
+              <div className="flex flex-wrap gap-2 px-2 pb-2">
+                {pendingFiles.map((file, idx) => {
+                  const isImage = file.type.startsWith('image/');
+                  const isVideo = file.type.startsWith('video/');
+                  const previewUrl = previewUrls[idx];
+                  const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
+
+                  return (
+                    <div key={`${file.name}-${idx}`} className="relative group w-20 h-20 rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
+                      {isImage && previewUrl && (
+                        <img src={previewUrl} alt={file.name} className="w-full h-full object-cover" />
+                      )}
+                      {isVideo && previewUrl && (
+                        <video src={previewUrl} className="w-full h-full object-cover" />
+                      )}
+                      {!isImage && !isVideo && (
+                        <div className="flex flex-col items-center justify-center h-full text-[10px] text-gray-500">
+                          <svg className="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z" /></svg>
+                          <span className="truncate max-w-[60px]">{file.name.split('.').pop()?.toUpperCase()}</span>
+                        </div>
+                      )}
+
+                      {/* Remove Button */}
+                      <button
+                        onClick={() => {
+                          setPendingFiles(prev => prev.filter((_, i) => i !== idx));
+                          setPreviewUrls(prev => prev.filter((_, i) => i !== idx));
+                          if (previewUrl) URL.revokeObjectURL(previewUrl);
+                        }}
+                        className="absolute -top-2 -right-2 w-5 h-5 bg-red-500 text-white rounded-full flex items-center justify-center text-xs opacity-0 group-hover:opacity-100 transition-opacity"
+                      >
+                        ✕
+                      </button>
+
+                      <div className="absolute bottom-0 left-0 right-0 bg-black/50 text-white text-[9px] px-1 truncate">
+                        {file.name}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+
+            {/* Hidden input + dropzone wrapper */}
+            <div
+              {...getRootProps()}
+              className={`hidden ${isDragActive ? 'bg-[#E0F2FE] border-2 border-dashed border-[#405CFF] rounded-lg p-4 text-center' : ''}`}
+            >
+              <input {...getInputProps()} data-dropzone-input />
+              {isDragActive ? (
+                <p className="text-[#405CFF] text-sm font-medium">Drop files here...</p>
+              ) : null}
+            </div>
+
+            <div className="flex items-end gap-3 relative">
+              <button onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="text-[#54656F] hover:text-[#405CFF] transition-colors mb-1">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-smile">
                   <circle cx="12" cy="12" r="10"></circle>
                   <path d="M8 14s1.5 2 4 2 4-2 4-2"></path>
@@ -718,6 +1027,21 @@ export const MessagesPage: React.FC = () => {
                   <line x1="15" x2="15.01" y1="9" y2="9"></line>
                 </svg>
               </button>
+              {showEmojiPicker && (
+                <div className="absolute bottom-full mb-2 right-0 z-50 bg-white rounded-lg shadow-lg">
+                  <Picker
+                    data={data}
+                    set="joypixels"
+                    onEmojiSelect={(emoji: any) => {
+                      setNewMessage(prev => prev + emoji.native);
+                      setShowEmojiPicker(false);
+                    }}
+                    theme="light"
+                    previewPosition="none"
+                    skinTonePosition="none"
+                  />
+                </div>
+              )}
               <button onClick={handleAttachment} className="text-[#54656F] hover:text-[#405CFF] transition-colors mb-1">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-paperclip">
                   <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48"></path>
@@ -735,7 +1059,7 @@ export const MessagesPage: React.FC = () => {
                 ></textarea>
               </div>
 
-              {newMessage.trim() ? (
+              {newMessage.trim() || pendingFiles.length > 0 ? (
                 <button
                   onClick={handleSendMessage}
                   className="w-[42px] h-[42px] bg-[#405CFF] rounded-full flex items-center justify-center text-white hover:bg-[#3451E0] active:scale-95 transition-all shadow-sm mb-1"
@@ -980,6 +1304,184 @@ export const MessagesPage: React.FC = () => {
           toast.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
         }`}>
           {toast.message}
+        </div>
+      )}
+
+      {/* ===== CALL OVERLAY MOCKUP ===== */}
+      {callState.status !== 'idle' && selectedContact && (
+        <div className={`fixed inset-0 z-[400] flex flex-col items-center justify-center transition-all duration-300 ${
+          callState.status === 'ended' ? 'opacity-0 pointer-events-none' : 'opacity-100'
+        } ${callState.type === 'video' ? 'bg-black' : 'bg-gradient-to-br from-slate-900 to-slate-800'}`}>
+
+          {/* Background pattern for audio calls */}
+          {callState.type === 'audio' && (
+            <div className="absolute inset-0 opacity-10"
+                 style={{ backgroundImage: 'radial-gradient(circle, #405CFF 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
+          )}
+
+          {/* Connecting State */}
+          {callState.status === 'connecting' && (
+            <div className="text-center z-10">
+              <div className="relative mb-6">
+                <div className="w-24 h-24 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center animate-pulse">
+                  <img
+                    src={findUserById(selectedContact)?.avatarUrl || ''}
+                    alt="Contact"
+                    className="w-20 h-20 rounded-full object-cover border-4 border-white/20"
+                  />
+                </div>
+                <div className="absolute inset-0 rounded-full border-4 border-blue-400/50 animate-ping" />
+              </div>
+              <h3 className="text-white text-xl font-medium mb-2">
+                Calling {findUserById(selectedContact)?.name}...
+              </h3>
+              <p className="text-white/70 text-sm">
+                {callState.type === 'video' ? 'Video call' : 'Voice call'} • {callState.isMuted ? 'Muted' : 'Speaking'}
+              </p>
+            </div>
+          )}
+
+          {/* Active Call State */}
+          {callState.status === 'active' && (
+            <>
+              {/* Remote video / avatar */}
+              <div className="relative z-10 mb-8">
+                {callState.type === 'video' ? (
+                  <div className="w-72 h-96 bg-slate-700 rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+                    {/* Mock remote video - replace with <video> later */}
+                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-600 to-slate-800">
+                      <div className="text-center">
+                        <img
+                          src={findUserById(selectedContact)?.avatarUrl || ''}
+                          alt="Remote"
+                          className="w-24 h-24 rounded-full mx-auto mb-4 opacity-80"
+                        />
+                        <p className="text-white/80 text-sm">Remote video stream</p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  // Audio call avatar
+                  <div className="w-32 h-32 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center shadow-xl">
+                    <img
+                      src={findUserById(selectedContact)?.avatarUrl || ''}
+                      alt="Contact"
+                      className="w-28 h-28 rounded-full object-cover border-4 border-white/30"
+                    />
+                  </div>
+                )}
+
+                {/* Online indicator */}
+                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-4 border-slate-900" />
+              </div>
+
+              {/* Caller name & timer */}
+              <div className="text-center z-10 mb-8">
+                <h3 className="text-white text-2xl font-semibold mb-1">
+                  {findUserById(selectedContact)?.name}
+                </h3>
+                <p className="text-white/70 text-sm mb-3">
+                  {callState.type === 'video' ? 'Video call' : 'Voice call'}
+                </p>
+                <div className="inline-flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full">
+                  <span className="text-white font-mono text-lg">{formatDuration(callDuration)}</span>
+                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
+                </div>
+              </div>
+
+              {/* Local video preview (video calls only) */}
+              {callState.type === 'video' && !callState.isCameraOff && (
+                <div className="absolute bottom-24 right-6 w-32 h-24 bg-slate-700 rounded-xl overflow-hidden shadow-lg border border-white/20 z-20">
+                  <video
+                    ref={localVideoRef}
+                    autoPlay
+                    muted
+                    playsInline
+                    className="w-full h-full object-cover"
+                  />
+                  {/* Fallback for mock */}
+                  {!localVideoRef.current?.srcObject && (
+                    <div className="absolute inset-0 flex items-center justify-center bg-slate-600/50">
+                      <span className="text-white/70 text-xs">Local preview</span>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              {/* Camera off indicator */}
+              {callState.type === 'video' && callState.isCameraOff && (
+                <div className="absolute bottom-24 right-6 w-32 h-24 bg-slate-800 rounded-xl flex items-center justify-center shadow-lg border border-white/20 z-20">
+                  <div className="text-center">
+<VideoOff className="w-8 h-8 text-white/50 mx-auto mb-1" />
+                    <span className="text-white/70 text-xs">Camera off</span>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+
+          {/* Control Bar */}
+          <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-30">
+            <div className="flex items-center gap-3 bg-black/60 backdrop-blur-sm px-4 py-3 rounded-full border border-white/10 shadow-xl">
+              {/* Mute Toggle */}
+              <button
+                onClick={toggleMute}
+                className={`p-3 rounded-full transition-all ${
+                  callState.isMuted
+                    ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
+                    : 'bg-white/10 text-white hover:bg-white/20'
+                }`}
+                title={callState.isMuted ? 'Unmute' : 'Mute'}
+              >
+                {callState.isMuted ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
+              </button>
+
+              {/* Camera Toggle (video only) */}
+              {callState.type === 'video' && (
+                <button
+                  onClick={toggleCamera}
+                  className={`p-3 rounded-full transition-all ${
+                    callState.isCameraOff
+                      ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
+                      : 'bg-white/10 text-white hover:bg-white/20'
+                  }`}
+                  title={callState.isCameraOff ? 'Turn on camera' : 'Turn off camera'}
+                >
+                  {callState.isCameraOff ? <VideoOff className="w-5 h-5" /> : <Video className="w-5 h-5" />}
+                </button>
+              )}
+
+              {/* Speaker Toggle (mock) */}
+              <button
+                className="p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all"
+                title="Speaker"
+              >
+<Volume2 className="w-5 h-5" />
+              </button>
+
+              {/* Divider */}
+              <div className="w-px h-6 bg-white/20 mx-1" />
+
+              {/* Hang Up */}
+              <button
+                onClick={endCall}
+                className="p-4 bg-red-500 hover:bg-red-600 text-white rounded-full transition-all shadow-lg hover:shadow-red-500/25 active:scale-95"
+                title="End call"
+              >
+<X className="w-6 h-6" />
+              </button>
+            </div>
+          </div>
+
+          {/* Status Toast */}
+          {(callState.isMuted || callState.isCameraOff) && callState.status === 'active' && (
+            <div className="fixed top-6 left-1/2 -translate-x-1/2 z-30">
+              <div className="bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm flex items-center gap-2">
+                {callState.isMuted && <span>Muted </span>}
+                {callState.isCameraOff && callState.type === 'video' && <span>| Camera off</span>}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

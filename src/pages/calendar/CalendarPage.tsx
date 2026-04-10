@@ -7,6 +7,7 @@ import listPlugin from '@fullcalendar/list';
 import { Plus, X, Clock, Calendar as CalendarIcon, Video, ExternalLink, Menu } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { clsx } from 'clsx';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ROUTES } from '../../config/routes';
 
 // Types
@@ -102,19 +103,39 @@ const AddAvailabilityModal: React.FC<AddAvailabilityModalProps> = ({
     onClose();
   };
 
-  if (!isOpen) return null;
-
   return (
-    <div className="schedule-meeting-modal modal-overlay fixed inset-0 z-50 overflow-y-auto">
-      <div className="schedule-meeting-container modal-container flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-        {/* Background overlay */}
-        <div
-          className="modal-backdrop schedule-meeting-backdrop fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity"
-          onClick={onClose}
-        />
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
+          className="schedule-meeting-modal modal-overlay fixed inset-0 z-50 overflow-y-auto"
+        >
+          <div className="schedule-meeting-container modal-container fixed inset-0 flex items-center justify-center px-4 pt-4 pb-20">
+            {/* Background overlay */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="modal-backdrop schedule-meeting-backdrop fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity"
+                onClick={onClose}
+                style={{ zIndex: 999 }}
+              />
 
-        {/* Modal panel */}
-        <div className="schedule-meeting-panel modal-panel inline-block align-bottom bg-white rounded-2xl px-6 pt-6 pb-6 text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full">
+            {/* Modal panel */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.2, type: "spring", stiffness: 300, damping: 30 }}
+              className="schedule-meeting-panel modal-panel bg-white rounded-2xl px-6 pt-6 pb-6 text-left overflow-hidden shadow-2xl"
+              style={{
+                zIndex: 1000,
+                maxWidth: '28rem',
+                width: '100%'
+              }}>
           <div className="schedule-meeting-header modal-header flex items-center justify-between mb-6">
             <h3 className="modal-title text-xl font-semibold text-gray-900 flex items-center">
               <CalendarIcon className="w-5 h-5 mr-2 text-primary-600" />
@@ -148,12 +169,12 @@ const AddAvailabilityModal: React.FC<AddAvailabilityModalProps> = ({
               <label htmlFor="date" className="form-label block text-sm font-semibold text-gray-700">
                 Date
               </label>
-              <input
+               <input
                 type="date"
                 id="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="form-input mt-2 block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                className="form-input mt-2 block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white/80 backdrop-blur-sm transition-all hover:border-gray-300"
                 required
               />
             </div>
@@ -208,7 +229,7 @@ const AddAvailabilityModal: React.FC<AddAvailabilityModalProps> = ({
                 generateMeetLink ? 'bg-blue-50 border-2 border-primary-200' : 'bg-gray-50 border-2 border-gray-100'
               )}
             >
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-3 justify-between gap">
                 <div className={clsx('w-10 h-10 rounded-lg flex items-center justify-center', generateMeetLink ? 'bg-primary-100' : 'bg-gray-200')}>
                   <Video className={clsx('w-5 h-5', generateMeetLink ? 'text-primary-600' : 'text-gray-500')} />
                 </div>
@@ -252,9 +273,11 @@ const AddAvailabilityModal: React.FC<AddAvailabilityModalProps> = ({
               </button>
             </div>
           </form>
-        </div>
-      </div>
-    </div>
+          </motion.div>
+       </div>
+      </motion.div>
+      )}
+    </AnimatePresence>
   );
 };
 
@@ -370,33 +393,24 @@ export const CalendarPage: React.FC = () => {
   return (
     <div className="calendar-page page-main-content min-h-screen bg-gray-50">
       {/* Mobile Header */}
-      <div className="calendar-mobile-header md:hidden bg-white border-b border-gray-200 px-4 py-3 flex items-center justify-between sticky top-0 z-10">
-        <button
-          onClick={() => setShowMobileMenu(!showMobileMenu)}
-          className="p-2 rounded-lg hover:bg-gray-100"
-        >
-          <Menu className="w-6 h-6 text-gray-600" />
-        </button>
-        <h1 className="text-lg font-bold text-gray-900">Scheduling Hub</h1>
-        <div className="w-10" /> {/* Spacer */}
-      </div>
+      
 
       {/* Main Content */}
       <div className="calendar-content flex flex-col md:flex-row">
         {/* Page Content */}
-        <main className="calendar-main page-content flex-1 p-4 md:p-8">
-          {/* Header */}
-          <div className="calendar-header page-header flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
+        <main className="calendar-main page-content flex-1 p-0">
+          {/* Header - Glassmorphism Effect */}
+          <div className="calendar-header page-header bg-white/80 backdrop-blur-md sticky top-0 z-10 -mx-4  px-4 md:px-8 py-4 mb-6 border-b border-gray-200/50 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div className="calendar-title-section">
               <h1 className="text-2xl md:text-3xl font-bold text-gray-900">Scheduling Hub</h1>
               <p className="mt-1 text-sm text-gray-500">
                 Manage your investor meetings and availability
               </p>
             </div>
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center justify-between gap-2 whitespace-nowrap">
               <button
                 onClick={() => navigate(ROUTES.VIDEO.ROOM('meeting-1'))}
-                className="inline-flex items-center px-4 py-2.5 text-sm font-semibold text-white bg-green-600 border border-transparent rounded-xl hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 shadow-lg shadow-green-200 transition-all"
+                className="inline-flex items-center px-4 py-2.5 text-sm font-semibold text-white bg-green-600 border border-transparent rounded-xl hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 shadow-lg shadow-green-200 transition-all hover:scale-105 transform"
               >
                 <Video className="w-4 h-4 mr-2" />
                 Join Call
@@ -406,7 +420,7 @@ export const CalendarPage: React.FC = () => {
                   setSelectedDate(undefined);
                   setIsModalOpen(true);
                 }}
-                className="inline-flex items-center px-4 py-2.5 text-sm font-semibold text-white bg-primary-600 border border-transparent rounded-xl hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 shadow-lg shadow-primary-200 transition-all"
+                className="inline-flex items-center px-4 py-2.5 text-sm font-semibold text-white bg-primary-600 border border-transparent rounded-xl hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 shadow-lg shadow-primary-200 transition-all hover:scale-105 transform"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Schedule Meeting
@@ -430,47 +444,48 @@ export const CalendarPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Calendar Card - Nexus Styling */}
-          <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-            <FullCalendar
-              plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
-              initialView={initialView}
-              headerToolbar={{
-                left: 'prev,next today',
-                center: 'title',
-                right: isMobile ? 'listWeek' : 'dayGridMonth,timeGridWeek,listWeek',
-              }}
-              events={events}
-              dateClick={handleDateClick}
-              eventClick={handleEventClick}
-              height="auto"
-              dayMaxEvents={isMobile ? 999 : 3}
-              eventDisplay="block"
-              eventTimeFormat={{
-                hour: '2-digit',
-                minute: '2-digit',
-                meridiem: 'short',
-              }}
-              slotMinTime="06:00:00"
-              slotMaxTime="22:00:00"
-              allDaySlot={false}
-              nowIndicator={true}
-              selectable={true}
-              selectMirror={true}
-              editable={true}
-              // Nexus Blue Styling
-              eventBackgroundColor="#2563EB"
-              eventBorderColor="#1D4ED8"
-              dayHeaderClassNames="text-gray-500 uppercase text-xs font-bold tracking-wider"
-              dayCellClassNames="hover:bg-gray-50"
-              buttonText={{
-                today: 'Today',
-                month: 'Month',
-                week: 'Week',
-                day: 'Day',
-                list: 'List',
-              }}
-            />
+          {/* Calendar Card - Premium Nexus Styling */}
+          <div className="bg-white/95 backdrop-blur-sm p-4 md:p-6 rounded-3xl shadow-lg border border-gray-200/60 overflow-hidden hover:shadow-xl transition-shadow duration-300">
+             <FullCalendar
+               plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
+               initialView={initialView}
+               headerToolbar={{
+                 left: 'prev,next today',
+                 center: 'title',
+                 right: isMobile ? 'listWeek' : 'dayGridMonth,timeGridWeek,listWeek',
+               }}
+               events={events}
+               dateClick={handleDateClick}
+               eventClick={handleEventClick}
+               height="auto"
+               dayMaxEvents={isMobile ? 999 : 3}
+               eventDisplay="block"
+               eventTimeFormat={{
+                 hour: '2-digit',
+                 minute: '2-digit',
+                 meridiem: 'short',
+               }}
+               slotMinTime="06:00:00"
+               slotMaxTime="22:00:00"
+               allDaySlot={false}
+               nowIndicator={true}
+               selectable={true}
+               selectMirror={true}
+               editable={true}
+               // Premium Nexus Styling
+               eventBackgroundColor="#2563EB"
+               eventBorderColor="#1D4ED8"
+               eventClassNames="rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer"
+               dayHeaderClassNames="text-gray-600 uppercase text-xs font-bold tracking-wider py-3 bg-gray-50/50"
+               dayCellClassNames="hover:bg-blue-50/30 transition-colors duration-200"
+               buttonText={{
+                 today: 'Today',
+                 month: 'Month',
+                 week: 'Week',
+                 day: 'Day',
+                 list: 'List',
+               }}
+             />
           </div>
 
           {/* Upcoming Meetings Section */}
@@ -484,10 +499,13 @@ export const CalendarPage: React.FC = () => {
                 .filter((event) => new Date(event.start) >= new Date())
                 .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime())
                 .slice(0, 3)
-                .map((event) => (
-                  <div
+                .map((event, index) => (
+                  <motion.div
                     key={event.id}
-                    className="bg-white rounded-xl border border-gray-100 p-5 hover:shadow-lg transition-all duration-200"
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                    className="group bg-white rounded-2xl border border-gray-100 p-5 shadow-sm hover:shadow-xl hover:ring-2 hover:ring-primary-500 hover:border-transparent transition-all duration-300 cursor-pointer transform hover:-translate-y-1"
                   >
                     <div className="flex items-start justify-between mb-3">
                       <div>
@@ -531,7 +549,7 @@ export const CalendarPage: React.FC = () => {
                         Join Google Meet
                       </button>
                     )}
-                  </div>
+                  </motion.div>
                 ))}
             </div>
           </div>
@@ -547,14 +565,35 @@ export const CalendarPage: React.FC = () => {
       />
 
       {/* Event Detail Modal */}
-      {selectedEvent && (
-        <div className="event-detail-modal modal-overlay fixed inset-0 z-50 overflow-y-auto">
-          <div className="event-detail-container modal-container flex min-h-screen items-center justify-center px-4 pt-4 pb-20 text-center sm:block sm:p-0">
-            <div
-              className="modal-backdrop event-detail-backdrop fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity"
-              onClick={closeEventModal}
-            />
-            <div className="event-detail-panel modal-panel inline-block align-bottom bg-white rounded-2xl px-6 pt-6 pb-6 text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md sm:w-full">
+      <AnimatePresence>
+        {selectedEvent && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+            className="event-detail-modal modal-overlay fixed inset-0 z-50 overflow-y-auto"
+          >
+            <div className="event-detail-container modal-container fixed inset-0 flex items-center justify-center px-4 pt-4 pb-20">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="modal-backdrop event-detail-backdrop fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity"
+                onClick={closeEventModal}
+                style={{ zIndex: 999 }}
+              />
+              <motion.div
+                initial={{ opacity: 0, scale: 0.95 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.95 }}
+                transition={{ duration: 0.2, type: "spring", stiffness: 300, damping: 30 }}
+                className="event-detail-panel modal-panel bg-white rounded-2xl px-6 pt-6 pb-6 text-left overflow-hidden shadow-2xl"
+                style={{
+                  zIndex: 1000,
+                  maxWidth: '28rem',
+                  width: '100%'
+                }}>
               <div className="event-detail-header modal-header flex items-center justify-between mb-4">
                 <h3 className="event-detail-title text-xl font-semibold text-gray-900">{selectedEvent.title}</h3>
                 <button
@@ -595,14 +634,15 @@ export const CalendarPage: React.FC = () => {
                     <Video className="w-4 h-4 mr-2" />
                     Join Google Meet
                   </button>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  );
-};
+                 )}
+               </div>
+             </motion.div>
+           </div>
+          </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
+    );
+  };
 
 export default CalendarPage;
