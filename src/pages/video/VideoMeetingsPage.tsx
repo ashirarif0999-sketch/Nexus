@@ -196,17 +196,17 @@ export const VideoMeetingsPage: React.FC = () => {
                       Join
                     </button>
                   ) : (
-                    <button
-                      onClick={() => handleJoinMeeting(meeting.id)}
-                      className="flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
-                    >
+                     <button
+                       onClick={() => handleJoinMeeting(meeting.id)}
+                       className="review-meeting-button flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                     >
                       <MessageSquare size={16} />
                       Review
                     </button>
                   )}
 
-                  <button className="p-2 text-gray-400 hover:text-gray-600">
-                    <MoreVertical size={18} />
+                   <button className="more-options-button p-2 text-gray-400 hover:text-gray-600">
+                     <MoreVertical size={18} />
                   </button>
                 </div>
               </div>
@@ -216,40 +216,40 @@ export const VideoMeetingsPage: React.FC = () => {
       </div>
 
       {/* Quick Actions */}
-      <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="quick-actions mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
         <button
           onClick={handleStartNewMeeting}
-          className="p-4 bg-white rounded-lg border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all text-left"
+          className="quick-action-button p-4 bg-white rounded-lg border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all text-left"
         >
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-primary-100 rounded-lg">
+          <div className="action-content flex items-center gap-3">
+            <div className="action-icon p-2 bg-primary-100 rounded-lg">
               <Video className="h-5 w-5 text-primary-600" />
             </div>
-            <div>
+            <div className="action-text">
               <h3 className="font-medium text-gray-900">Start Instant Meeting</h3>
               <p className="text-sm text-gray-500">Start a new video call now</p>
             </div>
           </div>
         </button>
 
-        <button className="p-4 bg-white rounded-lg border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all text-left">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-blue-100 rounded-lg">
+        <button className="quick-action-button p-4 bg-white rounded-lg border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all text-left">
+          <div className="action-content flex items-center gap-3">
+            <div className="action-icon p-2 bg-blue-100 rounded-lg">
               <Calendar className="h-5 w-5 text-blue-600" />
             </div>
-            <div>
+            <div className="action-text">
               <h3 className="font-medium text-gray-900">Schedule Meeting</h3>
               <p className="text-sm text-gray-500">Plan a meeting for later</p>
             </div>
           </div>
         </button>
 
-        <button className="p-4 bg-white rounded-lg border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all text-left">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-green-100 rounded-lg">
+        <button className="quick-action-button p-4 bg-white rounded-lg border border-gray-200 hover:border-primary-500 hover:shadow-md transition-all text-left">
+          <div className="action-content flex items-center gap-3">
+            <div className="action-icon p-2 bg-green-100 rounded-lg">
               <Plus className="h-5 w-5 text-green-600" />
             </div>
-            <div>
+            <div className="action-text">
               <h3 className="font-medium text-gray-900">Join Meeting</h3>
               <p className="text-sm text-gray-500">Enter a meeting code</p>
             </div>

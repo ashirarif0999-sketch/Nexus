@@ -417,10 +417,9 @@
 .avatar-wrapper {
     aspect-ratio: 1 / 1;
     display: flex;
-    align-items: center;
     justify-content: center;
     width: fit-content;
-    flex-shrink: 0; /* Prevent squeezing */
+    flex-shrink: 0;
     min-width: fit-content;
     min-height: fit-content;
 }
@@ -1428,9 +1427,18 @@ height: 23px;
         top: 63px;
         left: 0;
         border-radius: 0px;
+        height: calc(100vh - 63px);
+        overflow: auto;
     }
     .custom-scrollbar{
         scrollbar-width: thin;
+    }
+}
+
+@media (max-width:479px){
+    .chatpage-container{
+        height: calc(100vh - 70px);
+        top: 70px;
     }
 }
 
@@ -1451,7 +1459,6 @@ height: 23px;
 
 /* Calendar page - custom CSS when dock is NOT expanded */
 .dashboard-main:not(.dock-expanded) .dashboard-main-content {
-  max-width: none;
 }
 .calendar-main{
     padding: 100px 20px 20px 20px!important;
@@ -1462,6 +1469,7 @@ height: 23px;
     }
     .calendar-header{
         top: 63px !important;
+        padding:10px !important;
         width: 100% !important;
     }
     .calendar-main{
@@ -1475,13 +1483,871 @@ height: 23px;
   max-width: 100% !important;
 }
 .dashboard-main .calendar-header{
-    position: absolute;
+    position: fixed;
     top: 0;
-    width: -webkit-fill-available;
+    padding:1rem 4rem;
+    justify-self: center;
+    width: stretch;
 }
 .event-detail-panel{
     place-self: anchor-center;
 }
 .schedule-meeting-panel{
     z-index: 9999;
+}
+
+/* shadcn File Upload - Proper Button Style */
+.file-upload-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+  border: none;
+}
+
+.file-upload-input {
+  position: relative;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  z-index: 2;
+  border-radius: inherit;
+}
+
+.file-upload-input::-webkit-file-upload-button,
+.file-upload-input::-moz-focus-inner {
+  display: none !important;
+}
+
+.file-upload-input:focus-visible + .input-wrapper,
+.file-upload-wrapper:focus-within .input-wrapper {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Video Meetings Page Responsiveness */
+.video-meetings-page {
+  padding: 1.5rem;
+}
+
+.video-meetings-page .video-meetings-header {
+  margin-bottom: 2rem;
+}
+
+.video-meetings-page .video-meetings-action-bar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.video-meetings-page .video-meetings-action-bar .new-meeting-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5rem 1rem;
+  background-color: #2563eb;
+  color: white;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.video-meetings-page .video-meetings-action-bar .new-meeting-button:hover {
+  background-color: #1d4ed8;
+}
+
+.video-meetings-page .video-meetings-action-bar .search-container {
+  position: relative;
+  flex: 1;
+  max-width: 28rem;
+}
+
+.video-meetings-page .video-meetings-action-bar .search-input {
+  width: 100%;
+  padding-left: 2.5rem;
+  padding-right: 1rem;
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+}
+
+.video-meetings-page .video-meetings-action-bar .search-input:focus {
+  outline: none;
+  ring: 2px solid #3b82f6;
+  border-color: transparent;
+}
+
+.video-meetings-page .video-meetings-action-bar .filter-buttons {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.video-meetings-page .video-meetings-action-bar .filter-button {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  text-transform: capitalize;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.video-meetings-page .meetings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.video-meetings-page .no-meetings-empty-state {
+  text-align: center;
+  padding: 3rem 0;
+}
+
+.video-meetings-page .no-meetings-empty-state .empty-state-icon {
+  margin: 0 auto;
+  height: 3rem;
+  width: 3rem;
+  color: #9ca3af;
+}
+
+.video-meetings-page .no-meetings-empty-state .empty-state-title {
+  margin-top: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #111827;
+}
+
+.video-meetings-page .no-meetings-empty-state .empty-state-description {
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.video-meetings-page .no-meetings-empty-state .empty-state-action {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  background-color: #2563eb;
+  color: white;
+  border-radius: 0.5rem;
+}
+
+.video-meetings-page .no-meetings-empty-state .empty-state-action:hover {
+  background-color: #1d4ed8;
+}
+
+.video-meetings-page .meeting-card {
+  background-color: white;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  padding: 1rem;
+  transition: box-shadow 0.2s;
+}
+
+.video-meetings-page .meeting-card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.video-meetings-page .meeting-card-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.video-meetings-page .meeting-info {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.video-meetings-page .meeting-icon {
+  padding: 0.75rem;
+  border-radius: 9999px;
+}
+
+.video-meetings-page .meeting-details .meeting-title {
+  font-weight: 500;
+  color: #111827;
+}
+
+.video-meetings-page .meeting-meta {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 0.25rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.video-meetings-page .meeting-participant,
+.video-meetings-page .meeting-date,
+.video-meetings-page .meeting-time {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.video-meetings-page .meeting-actions {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.video-meetings-page .meeting-status-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 9999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.video-meetings-page .join-meeting-button,
+.video-meetings-page .review-meeting-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+}
+
+.video-meetings-page .join-meeting-button {
+  background-color: #2563eb;
+  color: white;
+}
+
+.video-meetings-page .join-meeting-button:hover {
+  background-color: #1d4ed8;
+}
+
+.video-meetings-page .review-meeting-button {
+  border: 1px solid #d1d5db;
+  color: #374151;
+}
+
+.video-meetings-page .review-meeting-button:hover {
+  background-color: #f9fafb;
+}
+
+.video-meetings-page .more-options-button {
+  padding: 0.5rem;
+  color: #9ca3af;
+}
+
+.video-meetings-page .more-options-button:hover {
+  color: #6b7280;
+}
+
+.video-meetings-page .quick-actions {
+  margin-top: 2rem;
+  display: grid;
+  gap: 1rem;
+}
+.new-meeting-button{
+    width: max-content;
+}
+.video-meetings-page .quick-action-button {
+  padding: 1rem;
+  background-color: white;
+  border-radius: 0.5rem;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s;
+  text-align: left;
+}
+
+.video-meetings-page .quick-action-button:hover {
+  border-color: #3b82f6;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.video-meetings-page .action-content {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.video-meetings-page .action-icon {
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+}
+
+.video-meetings-page .action-text h3 {
+  font-weight: 500;
+  color: #111827;
+}
+
+.video-meetings-page .action-text p {
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+/* Responsiveness under 768px */
+@media (max-width: 767px) {
+  .video-meetings-page {
+    padding: 1rem;
+  }
+
+  .video-meetings-page .video-meetings-action-bar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .video-meetings-page .video-meetings-action-bar .search-container {
+    max-width: none;
+  }
+
+  .video-meetings-page .video-meetings-action-bar .filter-buttons {
+    justify-content: center;
+  }
+
+  .video-meetings-page .meeting-card-content {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  .video-meetings-page .meeting-info {
+    width: 100%;
+  }
+
+  .video-meetings-page .meeting-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .video-meetings-page .meeting-meta {
+    flex-wrap: wrap;
+    gap: 0.5rem;
+  }
+
+  .video-meetings-page .quick-actions {
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+}
+
+/* Responsiveness under 480px */
+@media (max-width: 479px) {
+  .video-meetings-page {
+    padding: 0.75rem;
+  }
+
+  .video-meetings-page .video-meetings-header .page-title {
+    font-size: 1.5rem;
+  }
+
+  .video-meetings-page .video-meetings-action-bar .new-meeting-button {
+    padding: 0.75rem 1rem;
+  }
+
+  .video-meetings-page .video-meetings-action-bar .search-input {
+    padding-left: 2rem;
+  }
+
+  .video-meetings-page .video-meetings-action-bar .filter-buttons {
+    flex-wrap: wrap;
+  }
+
+  .video-meetings-page .meeting-card {
+    padding: 0.75rem;
+  }
+
+  .video-meetings-page .meeting-info {
+    gap: 0.75rem;
+  }
+
+  .video-meetings-page .meeting-icon {
+    padding: 0.5rem;
+  }
+
+  .video-meetings-page .meeting-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.25rem;
+  }
+
+  .video-meetings-page .meeting-actions {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: stretch;
+  }
+
+  .video-meetings-page .join-meeting-button,
+  .video-meetings-page .review-meeting-button {
+    justify-content: center;
+  }
+
+  .video-meetings-page .quick-action-button {
+    padding: 0.75rem;
+  }
+
+  .video-meetings-page .action-content {
+    gap: 0.5rem;
+  }
+
+  .video-meetings-page .action-icon {
+    padding: 0.375rem;
+  }
+}
+
+/* Messages Page Mobile Sidebar */
+@media (max-width: 767px) {
+  .messages-sidebar:not(.hidden) {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+    z-index: 50;
+    background: #ffffff;
+  }
+}
+
+.investor-card-header, .enterprenuer-card-header{
+   .avatar-container{
+    width: max-content;
+    height: max-content;
+    img{
+        height: 83px;
+        width: 83px;
+    }
+    .avatar-status{
+        width: 12px;
+        height: 12px;
+        position: relative;
+        bottom: 15px;
+        left: 60px;
+    }
+   }
+}
+
+/* Video Room Responsiveness */
+.video-room-container {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  background-color: rgb(15, 23, 42);
+  color: white;
+  overflow: hidden;
+  min-height: 100vh;
+}
+
+.video-room-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  background-color: rgba(0, 0, 0, 0.3);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  z-index: 20;
+  gap: 0.5rem;
+}
+
+.video-room-header-left {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.video-room-back-button {
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  transition: background-color 0.2s;
+  color: rgb(156, 163, 175);
+}
+
+.video-room-back-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.video-room-meeting-info {
+  min-width: 0;
+  flex: 1;
+}
+
+.video-room-video-area {
+  flex: 1;
+  display: grid;
+  gap: 0.5rem;
+  padding: 1rem;
+  overflow-y: auto;
+  align-items: start;
+  justify-items: center;
+}
+
+.video-tile {
+  position: relative;
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 1rem;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  height: 100%;
+}
+
+.video-tile:hover {
+  border-color: rgba(255, 255, 255, 0.1);
+}
+
+.control-bar-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 40;
+  width: 100%;
+}
+
+.control-bar {
+display: flex;
+    place-self: center;
+    gap: 8px;
+    width: -moz-max-content;
+    width: max-content;
+    padding: 0.5rem 1rem;
+    background-color: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-bottom: none;
+    border-radius: 141px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+    align-items: center;
+}
+
+.control-bar-info-button {
+  padding: 0.5rem;
+  color: rgb(209, 213, 219);
+  border-radius: 0.5rem;
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.control-bar-info-button:hover {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.control-bar-separator {
+  width: 1px;
+  height: 2rem;
+  background-color: rgba(255, 255, 255, 0.1);
+  margin: 0 0.25rem;
+}
+
+
+
+.control-button {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 3rem;
+  height: 3rem;
+  border-radius: 0.5rem;
+  transition: all 0.2s;
+  border: none;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.control-button:hover {
+  transform: scale(1.05);
+}
+
+.control-button:active {
+  transform: scale(0.95);
+}
+
+.control-button-label {
+  font-size: 0.625rem;
+  color: rgb(156, 163, 175);
+  font-weight: 500;
+}
+
+.control-button-badge {
+  position: absolute;
+  top: -0.125rem;
+  right: -0.125rem;
+  min-width: 1.125rem;
+  height: 1.125rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgb(37, 99, 235);
+  color: white;
+  font-size: 0.625rem;
+  font-weight: 700;
+  border-radius: 9999px;
+  padding: 0 0.125rem;
+}
+
+.side-panel {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 20rem;
+  background-color: rgba(0, 0, 0, 0.95);
+  backdrop-filter: blur(12px);
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+}
+
+.side-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.side-panel-tabs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.side-panel-tab {
+  padding: 0.375rem 0.75rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  border-radius: 0.375rem;
+  transition: color 0.2s, background-color 0.2s;
+  color: rgb(156, 163, 175);
+}
+
+.side-panel-tab:hover {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.side-panel-close-button {
+  padding: 0.375rem;
+  border-radius: 0.5rem;
+  color: rgb(156, 163, 175);
+  transition: color 0.2s, background-color 0.2s;
+}
+
+.side-panel-close-button:hover {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.side-panel-content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.side-panel-people,
+.side-panel-chat,
+.side-panel-activities {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.side-panel-chat-messages {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  margin-bottom: 0.5rem;
+}
+
+.side-panel-chat-empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  color: rgb(156, 163, 175);
+  text-align: center;
+}
+
+.side-panel-chat-empty p {
+  font-size: 0.875rem;
+}
+
+.side-panel-chat-input {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: auto;
+  padding-top: 0.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.side-panel-chat-send-button {
+  padding: 0.5rem;
+  background-color: rgb(37, 99, 235);
+  border-radius: 0.5rem;
+  color: white;
+  transition: background-color 0.2s;
+}
+
+.side-panel-chat-send-button:hover {
+  background-color: rgb(29, 78, 216);
+}
+
+/* Responsiveness under 768px */
+@media (max-width: 767px) {
+  .video-room-header {
+    padding: 0.75rem;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.5rem;
+  }
+
+  .video-room-header-left {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .video-room-video-area {
+    padding: 0.75rem;
+    gap: 0.375rem;
+  }
+
+  .control-bar {
+    padding: 0.5rem;
+    gap: 0.125rem;
+  }
+
+  .control-button {
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+
+  .control-button-label {
+    font-size: 0.5625rem;
+  }
+
+  .control-bar-separator {
+    height: 1.5rem;
+  }
+
+  .side-panel {
+    width: 100%;
+    z-index: 35;
+  }
+
+  .side-panel-content {
+    padding: 0.5rem;
+  }
+
+  .video-room-video-area {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* Responsiveness under 480px */
+@media (max-width: 479px) {
+  .video-room-header {
+    padding: 0.5rem;
+  }
+
+  .video-room-header-left {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.375rem;
+  }
+
+  .video-room-video-area {
+    padding: 0.5rem;
+    gap: 0.25rem;
+    grid-template-columns: repeat(1, minmax(0, 1fr));
+  }
+
+  .control-bar {
+    padding: 0.375rem;
+    gap: 0.125rem;
+  }
+
+  .control-button {
+    width: 2.25rem;
+    height: 2.25rem;
+  }
+
+  .control-button-label {
+    font-size: 0.5rem;
+  }
+
+  .control-bar-separator {
+    display: none;
+  }
+
+  .side-panel-header {
+    padding: 0.75rem;
+  }
+
+  .side-panel-tabs {
+    gap: 0.375rem;
+  }
+
+  .side-panel-tab {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.8125rem;
+  }
+
+  .side-panel-content {
+    padding: 0.375rem;
+  }
+
+  .video-room-back-button {
+    padding: 0.375rem;
+  }
+
+  .video-room-meeting-info {
+    font-size: 0.875rem;
+  }
+}
+
+/* Toast Styles */
+.toast-container {
+  position: fixed;
+  top: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 28rem;
+  padding: 0 1rem;
+  place-items: center;
+}
+
+.toast-item {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 9999px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(12px);
+  font-size: 0.875rem;
+  font-weight: 500;
+  width: max-content;
+}
+
+.toast-info {
+  background-color: rgba(31, 41, 55, 0.9);
+  color: white;
+}
+
+.toast-success {
+  background-color: rgba(16, 185, 129, 0.9);
+  color: rgb(236, 253, 245);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.toast-warning {
+  background-color: rgba(245, 158, 11, 0.9);
+  color: rgb(254, 249, 195);
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.toast-error {
+  background-color: rgba(239, 68, 68, 0.9);
+  color: rgb(254, 226, 226);
+  border: 1px solid rgba(239, 68, 68, 0.3);
 }

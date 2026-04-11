@@ -2,6 +2,7 @@ import React, { createContext, useState, useContext, useEffect, useCallback, use
 import { User, UserRole, AuthContextType, Entrepreneur, Investor } from '../types';
 import { users } from '../data/users';
 import toast from 'react-hot-toast';
+import { userProfilesDB } from '../utils/userProfilesDB';
 
 // Create Auth Context
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -82,9 +83,25 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       }
       
-      setUser(foundUser);
-      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(foundUser));
-      toast.success('Successfully logged in!');
+       // Load profile data from IndexedDB
+       const profile = await userProfilesDB.getProfile(foundUser.id);
+       if (profile) {
+         foundUser = { ...foundUser, ...profile };
+       } else {
+         // Initialize profile in IndexedDB if it doesn't exist
+         await userProfilesDB.saveProfile({
+           id: foundUser.id,
+           avatarUrl: foundUser.avatarUrl,
+           name: foundUser.name,
+           bio: foundUser.bio || '',
+           location: 'San Francisco, CA',
+           lastUpdated: Date.now()
+         });
+       }
+
+       setUser(foundUser);
+       localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(foundUser));
+       toast.success('Successfully logged in!');
     } catch (error) {
       toast.error((error as Error).message);
       throw error;
@@ -143,12 +160,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             maximumInvestment: '$500,000'
           };
       
-      // Add user to mock data
-      users.push(newUser as Entrepreneur | Investor);
-      
-      setUser(newUser);
-      localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(newUser));
-      toast.success('Account created successfully!');
+       // Add user to mock data
+       users.push(newUser as Entrepreneur | Investor);
+
+       // Initialize profile in IndexedDB
+       await userProfilesDB.saveProfile({
+         id: newUser.id,
+         avatarUrl: newUser.avatarUrl,
+         name: newUser.name,
+         bio: '',
+         location: 'San Francisco, CA',
+         lastUpdated: Date.now()
+       });
+
+       setUser(newUser);
+       localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(newUser));
+       toast.success('Account created successfully!');
     } catch (error) {
       toast.error((error as Error).message);
       throw error;
@@ -215,22 +242,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1000));
-      
+
       // Update user in mock data
       const userIndex = users.findIndex(u => u.id === userId);
       if (userIndex === -1) {
         throw new Error('User not found');
       }
-      
+
       const updatedUser = { ...users[userIndex], ...updates };
       (users as unknown as User[])[userIndex] = updatedUser;
-      
+
+      // Save profile data to IndexedDB
+      await userProfilesDB.updateProfile(userId, {
+        avatarUrl: updatedUser.avatarUrl,
+        name: updatedUser.name,
+        bio: updatedUser.bio,
+      });
+
       // Update current user if it's the same user
       if (user?.id === userId) {
         setUser(updatedUser as User);
         localStorage.setItem(USER_STORAGE_KEY, JSON.stringify(updatedUser));
       }
-      
+
       toast.success('Profile updated successfully');
     } catch (error) {
       toast.error((error as Error).message);

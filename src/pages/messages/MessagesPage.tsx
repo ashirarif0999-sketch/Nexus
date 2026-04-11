@@ -539,6 +539,11 @@ export const MessagesPage: React.FC = () => {
     setSelectedContact(contactId);
     setShowContactInfo(false); // Close contact info when switching conversations
 
+    // Close sidebar on mobile when selecting conversation
+    if (window.innerWidth < 768) {
+      setIsSidebarOpen(false);
+    }
+
     // Mark conversation as read when opened
     if (currentUser) {
       try {
@@ -569,20 +574,20 @@ export const MessagesPage: React.FC = () => {
 
   if (!currentUser) {
     return (
-      <div className="chatpage-container flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+<div className="loading-screen messages-loading-container flex items-center justify-center min-h-screen">
+<div className="spinner messages-loading-spinner animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="chatpage-container flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="text-red-600 mb-4">⚠️ {error}</div>
+      <div className="messages-error-container flex items-center justify-center min-h-screen">
+        <div className="messages-error-content text-center">
+          <div className="messages-error-message text-red-600 mb-4">⚠️ {error}</div>
           <button
             onClick={() => window.location.reload()}
-            className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+            className="messages-error-retry-button px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
           >
             Retry
           </button>
@@ -592,18 +597,18 @@ export const MessagesPage: React.FC = () => {
   }
 
   return (
-    <div className="chatpage-container-parent">
+    <div className="chatpage-main-container">
       <main className="chatpage-container flex bg-[#F0F2F5] font-sans overflow-hidden transition-all duration-300 relative h-[calc(100vh-160px)] w-full rounded-2xl border border-[#E9EDEF]">
-        <aside className={`bg-[#FFFFFF] flex flex-col border-r border-[#E9EDEF] transition-all duration-300 z-30 w-[360px] shrink-0 ${isSidebarOpen ? '' : 'hidden'}`}>
-          <div className="h-16 bg-[#F0F2F5] px-4 flex items-center justify-between shrink-0">
-            <div className="flex items-center gap-3">
+        <aside className={`messages-sidebar bg-[#FFFFFF] flex flex-col border-r border-[#E9EDEF] transition-all duration-300 z-30 w-[360px] shrink-0 ${isSidebarOpen ? '' : 'hidden'}`}>
+          <div className="sidebar-header h-16 bg-[#F0F2F5] px-4 flex items-center justify-between shrink-0">
+            <div className="sidebar-avatar-section flex items-center gap-3">
               <div className="avatar-wrapper w-10 h-10 cursor-pointer">
                 <div className="avatar-container relative inline-block">
                   <img src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg" alt="Michael Rodriguez" className="avatar-image rounded-full object-cover h-12 w-12 h-8 w-8" />
                 </div>
               </div>
             </div>
-            <div className="flex items-center gap-5 text-[#54656F]">
+            <div className="sidebar-header-actions flex items-center gap-5 text-[#54656F]">
               <button onClick={handleMoreOptions} className="hover:text-[#111B21] transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-message-circle">
                   <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path>
@@ -619,26 +624,26 @@ export const MessagesPage: React.FC = () => {
             </div>
           </div>
 
-          <div className="px-3 py-2 shrink-0">
-            <div className="bg-[#F0F2F5] rounded-lg h-9 flex items-center px-3 gap-3">
+          <div className="sidebar-search-container px-3 py-2 shrink-0">
+            <div className="search-input-wrapper bg-[#F0F2F5] rounded-lg h-9 flex items-center px-3 gap-3">
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-search text-[#54656F]">
                 <circle cx="11" cy="11" r="8"></circle>
                 <path d="m21 21-4.3-4.3"></path>
               </svg>
-              <input type="text" placeholder="Search or start new chat" className="bg-transparent border-none focus:ring-0 text-[14px] text-[#111B21] placeholder:text-[#667781] w-full" />
+              <input type="text" placeholder="Search or start new chat" className="search-input bg-transparent border-none focus:ring-0 text-[14px] text-[#111B21] placeholder:text-[#667781] w-full" />
             </div>
           </div>
 
-          <div className="flex-1 overflow-y-auto custom-scrollbar">
+          <div className="conversations-list flex-1 overflow-y-auto custom-scrollbar">
             {isLoading ? (
               // Loading skeleton for conversations
-              <div className="p-3">
+              <div className="loading-skeleton-container p-3">
                 {[...Array(3)].map((_, i) => (
-                  <div key={i} className="h-[72px] flex items-center px-3 gap-3 mb-2">
-                    <div className="w-[49px] h-[49px] bg-gray-200 rounded-full animate-pulse"></div>
-                    <div className="flex-1">
-                      <div className="h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
-                      <div className="h-3 bg-gray-200 rounded animate-pulse w-3/4"></div>
+                  <div key={i} className="skeleton-item h-[72px] flex items-center px-3 gap-3 mb-2">
+                    <div className="skeleton-avatar w-[49px] h-[49px] bg-gray-200 rounded-full animate-pulse"></div>
+                    <div className="skeleton-content flex-1">
+                      <div className="skeleton-name h-4 bg-gray-200 rounded animate-pulse mb-2"></div>
+                      <div className="skeleton-message h-3 bg-gray-200 rounded animate-pulse w-3/4"></div>
                     </div>
                   </div>
                 ))}
@@ -658,11 +663,11 @@ export const MessagesPage: React.FC = () => {
                 <div
                   key={conversation.id}
                   onClick={() => handleContactSelect(partnerId)}
-                  className={`h-[72px] flex items-center px-3 gap-3 cursor-pointer transition-colors border-b border-[#F0F2F5] last:border-0 ${
+                  className={`conversation-item h-[72px] flex items-center px-3 gap-3 cursor-pointer transition-colors border-b border-[#F0F2F5] last:border-0 ${
                     isActive ? 'bg-[#F0F2F5]' : 'hover:bg-[#F5F6F6]'
                   }`}
                 >
-                  <div className="relative shrink-0">
+                  <div className="conversation-avatar-container relative shrink-0">
                     <div className="avatar-wrapper w-[49px] h-[49px] rounded-full">
                       <div className="avatar-container relative inline-block">
                         <img
@@ -676,8 +681,8 @@ export const MessagesPage: React.FC = () => {
                       <span className="absolute bottom-0 right-0 w-[10px] h-[10px] bg-[#00A884] rounded-full ring-2 ring-white"></span>
                     )}
                   </div>
-                  <div className="flex-1 overflow-hidden flex flex-col justify-center">
-                    <div className="flex justify-between items-center mb-1">
+                  <div className="conversation-content flex-1 overflow-hidden flex flex-col justify-center">
+                    <div className="conversation-header flex justify-between items-center mb-1">
                       <span className={`text-[15px] font-medium truncate ${isActive ? 'text-[#111B21]' : 'text-[#111B21]'}`}>
                         {partner.name}
                       </span>
@@ -685,7 +690,7 @@ export const MessagesPage: React.FC = () => {
                         {lastMessage ? new Date(lastMessage.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : ''}
                       </span>
                     </div>
-                    <div className="flex justify-between items-center">
+                    <div className="conversation-footer flex justify-between items-center">
                       <div className="flex items-center gap-1 truncate text-[13px] text-[#667781] max-w-[200px]">
                         {lastMessage?.senderId === currentUser?.id && (
                           <svg width="16" height="11" viewBox="0 0 16 11" fill="none" className="ml-1">
@@ -706,7 +711,7 @@ export const MessagesPage: React.FC = () => {
                );
             })}
             {!isLoading && conversations.length === 0 && (
-              <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
+              <div className="empty-conversations flex-1 flex flex-col items-center justify-center p-8 text-center">
                 <div className="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-600">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
@@ -719,15 +724,15 @@ export const MessagesPage: React.FC = () => {
           </div>
         </aside>
 
-        <section className="flex-1 flex flex-col relative overflow-hidden transition-all duration-300 flex">
-          <header className="h-16 bg-[#F0F2F5] border-b border-[#E9EDEF] px-4 flex items-center justify-between shrink-0 z-10">
+        <section className="chat-section flex-1 flex flex-col relative overflow-hidden transition-all duration-300 flex">
+          <header className="chat-header h-16 bg-[#F0F2F5] border-b border-[#E9EDEF] px-4 flex items-center justify-between shrink-0 z-10">
             {selectedContact && currentUser ? (
-              <div className="flex items-center gap-3">
+              <div className="chat-user-info flex items-center gap-3">
                 <div
-                  className="flex items-center gap-3 cursor-pointer"
+                  className="chat-user-clickable flex items-center gap-3 cursor-pointer"
                   onClick={() => setShowContactInfo(true)}
                 >
-                  <div className="relative">
+                  <div className="chat-avatar-container relative">
                     <div className="avatar-wrapper w-10 h-10">
                       <div className="avatar-container relative inline-block">
                         <img
@@ -752,8 +757,8 @@ export const MessagesPage: React.FC = () => {
                 </div>
               </div>
             ) : (
-              <div className="flex items-center gap-3">
-                <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+              <div className="chat-no-contact flex items-center gap-3">
+                <div className="no-contact-avatar w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-gray-400">
                     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                     <circle cx="12" cy="7" r="4"></circle>
@@ -765,7 +770,7 @@ export const MessagesPage: React.FC = () => {
                 </div>
               </div>
             )}
-            <div className="flex items-center gap-4 text-[#54656F]">
+            <div className="chat-header-actions flex items-center gap-4 text-[#54656F]">
               {/* Sidebar Toggle - Only show on mobile */}
               <button 
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)} 
@@ -788,9 +793,9 @@ export const MessagesPage: React.FC = () => {
             </div>
           </header>
 
-          <div className="flex-1 overflow-y-auto px-[8%] py-4 bg-[#EFEAE2] custom-scrollbar relative" style={{ backgroundImage: 'radial-gradient(rgb(209, 215, 219) 0.5px, transparent 0.5px)', backgroundSize: '20px 20px' }}>
+          <div className="messages-area flex-1 overflow-y-auto px-[8%] py-4 bg-[#EFEAE2] custom-scrollbar relative" style={{ backgroundImage: 'radial-gradient(rgb(209, 215, 219) 0.5px, transparent 0.5px)', backgroundSize: '20px 20px' }}>
             {messages.length > 0 ? (
-              <div className="flex flex-col">
+              <div className="messages-container flex flex-col">
                 {messages.map((message, index) => {
                   const isOwn = message.senderId === currentUser?.id;
                   const prevMessage = messages[index - 1];
@@ -800,7 +805,7 @@ export const MessagesPage: React.FC = () => {
                   return (
                     <React.Fragment key={message.id}>
                       {showDateSeparator && (
-                        <div className="text-[12.5px] text-[#667781] bg-[rgba(225,221,214,0.9)] px-4 py-1 rounded-full mx-auto my-4 w-fit select-none">
+                        <div className="date-separator text-[12.5px] text-[#667781] bg-[rgba(225,221,214,0.9)] px-4 py-1 rounded-full mx-auto my-4 w-fit select-none">
                           {new Date(message.timestamp).toLocaleDateString('en-US', {
                             day: 'numeric',
                             month: 'long',
@@ -810,12 +815,12 @@ export const MessagesPage: React.FC = () => {
 </div>
                       )}
 
-                      <div className={`flex w-full group relative ${index === 0 ? 'mt-2' : 'mt-2'}`}>
+                      <div className={`message-wrapper flex w-full group relative ${index === 0 ? 'mt-2' : 'mt-2'}`}>
                         <div className={`absolute opacity-0 group-hover:opacity-100 transition-opacity z-10 ${
                           isOwn ? 'right-[100%]' : 'left-[100%]'
                         }`} style={{ top: '50%', transform: 'translateY(-50%)' }}>
                           <button
-                            className="p-1 rounded-full hover:bg-[#E9EDEF] transition-colors"
+                            className="context-menu-button p-1 rounded-full hover:bg-[#E9EDEF] transition-colors"
                             onClick={(e) => {
                               e.stopPropagation();
                               const rect = e.currentTarget.getBoundingClientRect();
@@ -829,14 +834,14 @@ export const MessagesPage: React.FC = () => {
                             </svg>
                           </button>
                         </div>
-                        <div className={`relative px-3 py-2 shadow-sm max-w-[65%] rounded-[8px] text-[#111B21] text-[14.2px] leading-[19px] ${
+                        <div className={`message-bubble relative px-3 py-2 shadow-sm max-w-[65%] rounded-[8px] text-[#111B21] text-[14.2px] leading-[19px] ${
                           isOwn
                             ? 'bg-[#D9FDD3] rounded-tr-[0px] ml-auto'
                             : 'bg-[#FFFFFF] rounded-tl-[0px] mr-auto'
                         }`}>
                           {/* Reply indicator */}
                           {message.replyTo && message.replyContent && (
-                            <div className="bg-gray-50 border-l-4 border-gray-300 pl-3 py-2 mb-2 rounded">
+                            <div className="reply-indicator bg-gray-50 border-l-4 border-gray-300 pl-3 py-2 mb-2 rounded">
                               <p className="text-xs text-gray-600 mb-1">
                                 Replying to {message.senderId === currentUser?.id ? 'yourself' :
                                   findUserById(messages.find(m => m.id === message.replyTo)?.senderId || '')?.name}
@@ -845,13 +850,13 @@ export const MessagesPage: React.FC = () => {
                             </div>
                           )}
 
-                          <div className="whitespace-pre-wrap break-words">
+                          <div className="message-content whitespace-pre-wrap break-words">
                             <span>{message.content}</span>
                           </div>
 
                           {/* Attachment Display */}
                           {message.attachmentUrl && (
-                            <div className="mt-2">
+                            <div className="attachment-container mt-2">
                               {message.attachmentType === 'image' && (
                                 <img
                                   src={message.attachmentUrl}
@@ -887,11 +892,11 @@ export const MessagesPage: React.FC = () => {
 
                           {/* Message Reactions */}
                           {message.reactions && message.reactions.length > 0 && (
-                            <div className="flex flex-wrap gap-1 mt-2">
+                            <div className="reactions-container flex flex-wrap gap-1 mt-2">
                               {message.reactions.map((reaction, index) => (
                                 <span
                                   key={`${reaction.emoji}-${reaction.userId}-${index}`}
-                                  className="inline-flex items-center gap-1 px-2 py-1 text-xs bg-gray-100 rounded-full"
+                                  className="reaction inline-flex items-center gap-1 px-2 py-1 text-xs bg-gray-100 rounded-full"
                                   title={`Reacted by ${reaction.userId}`}
                                 >
                                   <span>{reaction.emoji}</span>
@@ -900,7 +905,7 @@ export const MessagesPage: React.FC = () => {
                               ))}
                             </div>
                           )}
-                          <div className={`flex justify-end items-center gap-1 mt-1 select-none text-right`}>
+                          <div className={`message-footer flex justify-end items-center gap-1 mt-1 select-none text-right`}>
                             <span className="text-[11px] text-[#667781] min-w-fit">
                               {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                             </span>
@@ -919,8 +924,8 @@ export const MessagesPage: React.FC = () => {
 
                 {/* 🔹 TYPING INDICATOR UI */}
                 {isTyping && (
-                  <div className="flex w-full mt-2">
-                    <div className="bg-[#FFFFFF] px-3 py-2 shadow-sm rounded-[8px] rounded-tl-[0px] max-w-fit flex items-center gap-1">
+                  <div className="typing-indicator-wrapper flex w-full mt-2">
+                    <div className="typing-bubble bg-[#FFFFFF] px-3 py-2 shadow-sm rounded-[8px] rounded-tl-[0px] max-w-fit flex items-center gap-1">
                       <span className="w-2 h-2 bg-[#8696A0] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></span>
                       <span className="w-2 h-2 bg-[#8696A0] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></span>
                       <span className="w-2 h-2 bg-[#8696A0] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></span>
@@ -929,7 +934,7 @@ export const MessagesPage: React.FC = () => {
                 )}
               </div>
             ) : (
-              <div className="h-full flex flex-col items-center justify-center">
+              <div className="empty-messages h-full flex flex-col items-center justify-center">
                 <div className="w-16 h-16 bg-indigo-50 rounded-full flex items-center justify-center mb-4">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-indigo-600">
                     <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
@@ -941,10 +946,10 @@ export const MessagesPage: React.FC = () => {
             )}
           </div>
 
-          <div className="h-auto bg-[#F0F2F5] border-t border-[#E9EDEF] px-4 py-3 shrink-0 z-10">
+          <div className="input-area h-auto bg-[#F0F2F5] border-t border-[#E9EDEF] px-4 py-3 shrink-0 z-10">
             {/* Reply Indicator */}
             {replyingTo && (
-              <div className="bg-[#F0F2F5] border-l-4 border-[#405CFF] px-3 py-2 mb-3 flex justify-between items-start rounded">
+              <div className="input-reply-indicator bg-[#F0F2F5] border-l-4 border-[#405CFF] px-3 py-2 mb-3 flex justify-between items-start rounded">
                 <div className="flex-1">
                   <p className="text-[13px] text-[#405CFF] font-semibold">
                     Replying to {replyingTo.senderId === currentUser?.id ? 'yourself' : findUserById(replyingTo.senderId)?.name}
@@ -964,7 +969,7 @@ export const MessagesPage: React.FC = () => {
 
             {/* Attachment Preview Chips */}
             {pendingFiles.length > 0 && (
-              <div className="flex flex-wrap gap-2 px-2 pb-2">
+              <div className="attachments-preview flex flex-wrap gap-2 px-2 pb-2">
                 {pendingFiles.map((file, idx) => {
                   const isImage = file.type.startsWith('image/');
                   const isVideo = file.type.startsWith('video/');
@@ -972,7 +977,7 @@ export const MessagesPage: React.FC = () => {
                   const sizeMB = (file.size / (1024 * 1024)).toFixed(1);
 
                   return (
-                    <div key={`${file.name}-${idx}`} className="relative group w-20 h-20 rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
+                    <div key={`${file.name}-${idx}`} className="attachment-item relative group w-20 h-20 rounded-lg overflow-hidden bg-gray-100 border border-gray-200">
                       {isImage && previewUrl && (
                         <img src={previewUrl} alt={file.name} className="w-full h-full object-cover" />
                       )}
@@ -1010,7 +1015,7 @@ export const MessagesPage: React.FC = () => {
             {/* Hidden input + dropzone wrapper */}
             <div
               {...getRootProps()}
-              className={`hidden ${isDragActive ? 'bg-[#E0F2FE] border-2 border-dashed border-[#405CFF] rounded-lg p-4 text-center' : ''}`}
+              className={`dropzone-wrapper hidden ${isDragActive ? 'bg-[#E0F2FE] border-2 border-dashed border-[#405CFF] rounded-lg p-4 text-center' : ''}`}
             >
               <input {...getInputProps()} data-dropzone-input />
               {isDragActive ? (
@@ -1018,7 +1023,7 @@ export const MessagesPage: React.FC = () => {
               ) : null}
             </div>
 
-            <div className="flex items-end gap-3 relative">
+            <div className="input-wrapper flex items-end gap-3 relative">
               <button onClick={() => setShowEmojiPicker(!showEmojiPicker)} className="text-[#54656F] hover:text-[#405CFF] transition-colors mb-1">
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-smile">
                   <circle cx="12" cy="12" r="10"></circle>
@@ -1054,7 +1059,7 @@ export const MessagesPage: React.FC = () => {
                   onKeyDown={handleKeyDown}
                   placeholder="Type a message"
                   rows={1}
-                  className="flex-1 bg-transparent border-none focus:ring-0 text-[15px] text-[#111B21] placeholder:text-[#8696A0] resize-none"
+                  className="message-textarea flex-1 bg-transparent border-none focus:ring-0 text-[15px] text-[#111B21] placeholder:text-[#8696A0] resize-none"
                   style={{ minHeight: '42px', maxHeight: '120px', height: '42px' }}
                 ></textarea>
               </div>
@@ -1077,8 +1082,8 @@ export const MessagesPage: React.FC = () => {
           </div>
 
           {/* Contact Info Drawer */}
-          <div className={`absolute right-0 top-0 h-full bg-[#FFFFFF] border-l border-[#E9EDEF] z-20 transition-transform duration-300 ease-in-out flex flex-col ${showContactInfo ? 'translate-x-0' : 'translate-x-full'} w-[340px]`}>
-            <div className="h-16 bg-[#F0F2F5] border-b border-[#E9EDEF] px-4 flex items-center gap-4 shrink-0">
+          <div className={`contact-info-drawer absolute right-0 top-0 h-full bg-[#FFFFFF] border-l border-[#E9EDEF] z-20 transition-transform duration-300 ease-in-out flex flex-col ${showContactInfo ? 'translate-x-0' : 'translate-x-full'} w-[340px]`}>
+            <div className="drawer-header h-16 bg-[#F0F2F5] border-b border-[#E9EDEF] px-4 flex items-center gap-4 shrink-0">
               <button
                 onClick={() => setShowContactInfo(false)}
                 className="p-2 -ml-2 text-[#54656F] hover:text-[#111B21] hover:bg-[#F0F2F5] rounded-full transition-colors"
@@ -1091,10 +1096,10 @@ export const MessagesPage: React.FC = () => {
               <h2 className="text-[16px] font-medium text-[#111B21]">Contact Info</h2>
             </div>
 
-            <div className="flex-1 overflow-y-auto custom-scrollbar">
+            <div className="drawer-content flex-1 overflow-y-auto custom-scrollbar">
               {selectedContact && (
-                <div className="bg-[#FFFFFF] flex flex-col items-center py-8 px-6 border-b border-[#E9EDEF]">
-                  <div className="relative">
+                <div className="contact-info-section bg-[#FFFFFF] flex flex-col items-center py-8 px-6 border-b border-[#E9EDEF]">
+                  <div className="contact-avatar-container relative">
                     <div className="avatar-wrapper w-[200px] h-[200px] rounded-full">
                       <div className="avatar-container-right-panel relative inline-block">
                         <img
@@ -1108,89 +1113,89 @@ export const MessagesPage: React.FC = () => {
                       <span className="right-panel-profile-status absolute bottom-4 right-4 w-[14px] h-[14px] bg-[#00A884] border-4 border-white rounded-full"></span>
                     )}
                   </div>
-                  <h3 className="text-[20px] font-semibold text-[#111B21] mt-4">
+                  <h3 className="contact-name text-[20px] font-semibold text-[#111B21] mt-4">
                     {findUserById(selectedContact)?.name || 'Unknown User'}
                   </h3>
-                  <p className="text-[14px] text-[#667781] mt-1">
+                  <p className="contact-role text-[14px] text-[#667781] mt-1">
                     {findUserById(selectedContact)?.role === 'entrepreneur' ? 'Entrepreneur' : 'Investor'}
                   </p>
-                  <p className="text-[13px] text-[#00A884] mt-1">
+                  <p className="contact-online-status text-[13px] text-[#00A884] mt-1">
                     {findUserById(selectedContact)?.isOnline ? 'Online' : 'Offline'}
                   </p>
                 </div>
               )}
 
-              <div className="bg-[#FFFFFF] flex justify-center gap-8 py-4 border-b border-[#E9EDEF]">
-                <button className="flex flex-col items-center gap-2 group">
-                  <div className="w-12 h-12 bg-[#F0F6FF] rounded-full flex items-center justify-center group-hover:bg-[#E0E7FF] transition-colors">
+              <div className="contact-actions-section bg-[#FFFFFF] flex justify-center gap-8 py-4 border-b border-[#E9EDEF]">
+                <button className="contact-action-button flex flex-col items-center gap-2 group">
+                  <div className="action-icon-container w-12 h-12 bg-[#F0F6FF] rounded-full flex items-center justify-center group-hover:bg-[#E0E7FF] transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-message-circle text-[#405CFF]">
                       <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"></path>
                     </svg>
                   </div>
-                  <span className="text-[12px] text-[#405CFF] font-medium">Message</span>
+                  <span className="action-label text-[12px] text-[#405CFF] font-medium">Message</span>
                 </button>
-                <button className="flex flex-col items-center gap-2 group">
-                  <div className="w-12 h-12 bg-[#F0F6FF] rounded-full flex items-center justify-center group-hover:bg-[#E0E7FF] transition-colors">
+                <button className="contact-action-button flex flex-col items-center gap-2 group">
+                  <div className="action-icon-container w-12 h-12 bg-[#F0F6FF] rounded-full flex items-center justify-center group-hover:bg-[#E0E7FF] transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-phone text-[#405CFF]">
                       <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
                     </svg>
                   </div>
-                  <span className="text-[12px] text-[#405CFF] font-medium">Call</span>
+                  <span className="action-label text-[12px] text-[#405CFF] font-medium">Call</span>
                 </button>
-                <button className="flex flex-col items-center gap-2 group">
-                  <div className="w-12 h-12 bg-[#F0F6FF] rounded-full flex items-center justify-center group-hover:bg-[#E0E7FF] transition-colors">
+                <button className="contact-action-button flex flex-col items-center gap-2 group">
+                  <div className="action-icon-container w-12 h-12 bg-[#F0F6FF] rounded-full flex items-center justify-center group-hover:bg-[#E0E7FF] transition-colors">
                     <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-video text-[#405CFF]">
                       <path d="m22 8-6 4 6 4V8Z"></path>
                       <rect width="14" height="12" x="2" y="6" rx="2" ry="2"></rect>
                     </svg>
                   </div>
-                  <span className="text-[12px] text-[#405CFF] font-medium">Video</span>
+                  <span className="action-label text-[12px] text-[#405CFF] font-medium">Video</span>
                 </button>
               </div>
 
-              <div className="bg-[#FFFFFF] px-6 py-4 space-y-2">
+              <div className="contact-details-section bg-[#FFFFFF] px-6 py-4 space-y-2">
                 {selectedContact && findUserById(selectedContact)?.email && (
-                  <div className="flex items-start gap-5 py-3 border-b border-[#F0F2F5] pb-5">
+                  <div className="contact-detail-item flex items-start gap-5 py-3 border-b border-[#F0F2F5] pb-5">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-mail text-[#8696A0] mt-0.5 shrink-0">
                       <rect width="20" height="16" x="2" y="4" rx="2"></rect>
                       <path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"></path>
                     </svg>
-                    <div className="flex-1">
-                      <p className="text-[13px] text-[#667781]">Email</p>
+                    <div className="detail-content flex-1">
+                      <p className="detail-label text-[13px] text-[#667781]">Email                      </p>
                       <a
                         href={`mailto:${findUserById(selectedContact)?.email}`}
-                        className="text-[14px] text-[#405CFF] font-medium hover:underline block truncate"
+                        className="detail-value text-[14px] text-[#405CFF] font-medium hover:underline block truncate"
                       >
                         {findUserById(selectedContact)?.email}
                       </a>
                     </div>
                   </div>
                 )}
-                <div className="flex items-start gap-5 py-3">
+                <div className="contact-detail-item flex items-start gap-5 py-3">
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-calendar text-[#8696A0] mt-0.5 shrink-0">
                     <path d="M8 2v4"></path>
                     <path d="M16 2v4"></path>
                     <rect width="18" height="18" x="3" y="4" rx="2"></rect>
                     <path d="M3 10h18"></path>
                   </svg>
-                  <div>
-                    <p className="text-[13px] text-[#667781]">Member Since</p>
-                    <p className="text-[14px] text-[#111B21] font-medium">March 2024</p>
+                  <div className="detail-content">
+                    <p className="detail-label text-[13px] text-[#667781]">Member Since                    </p>
+                    <p className="detail-value text-[14px] text-[#111B21] font-medium">March 2024</p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-[#FFFFFF] mt-2 px-6 py-2 border-t border-[#E9EDEF]">
+              <div className="contact-danger-section bg-[#FFFFFF] mt-2 px-6 py-2 border-t border-[#E9EDEF]">
                 {selectedContact && (
                   <>
-                    <button className="w-full flex items-center gap-4 py-4 text-[#EA0038] text-[15px] hover:bg-[#F0F2F5] px-4 -mx-4 rounded-lg transition-colors">
+                    <button className="danger-button w-full flex items-center gap-4 py-4 text-[#EA0038] text-[15px] hover:bg-[#F0F2F5] px-4 -mx-4 rounded-lg transition-colors">
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-ban">
                         <circle cx="12" cy="12" r="10"></circle>
                         <path d="m4.9 4.9 14.2 14.2"></path>
                       </svg>
                       <span>Block {findUserById(selectedContact)?.name || 'User'}</span>
                     </button>
-                    <button className="w-full flex items-center gap-4 py-4 text-[#EA0038] text-[15px] hover:bg-[#F0F2F5] px-4 -mx-4 rounded-lg transition-colors">
+                    <button className="danger-button w-full flex items-center gap-4 py-4 text-[#EA0038] text-[15px] hover:bg-[#F0F2F5] px-4 -mx-4 rounded-lg transition-colors">
                       <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-flag">
                         <path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"></path>
                         <line x1="4" x2="4" y1="22" y2="15"></line>
@@ -1201,22 +1206,22 @@ export const MessagesPage: React.FC = () => {
                 )}
               </div>
 
-              <div className="h-8"></div>
+              <div className="drawer-spacer h-8"></div>
             </div>
           </div>
 
           {/* Context Menu */}
           {activeMessageId && (
             <div
-              className="fixed bg-[#FFFFFF] rounded-[8px] shadow-[0_4px_20px_rgba(0,0,0,0.15)] w-52 py-1.5 overflow-hidden z-[100] animate-in fade-in zoom-in-95 duration-150"
+              className="context-menu fixed bg-[#FFFFFF] rounded-[8px] shadow-[0_4px_20px_rgba(0,0,0,0.15)] w-52 py-1.5 overflow-hidden z-[100] animate-in fade-in zoom-in-95 duration-150"
               style={{ left: contextMenuPos.x, top: contextMenuPos.y }}
             >
-              <div className="flex items-center justify-between px-3 py-2 border-b border-[#F0F2F5]">
+              <div className="context-menu-emojis flex items-center justify-between px-3 py-2 border-b border-[#F0F2F5]">
                 {['👍', '❤️', '😂', '😮', '😢', '✊'].map(emoji => (
                   <button
                     key={emoji}
                     onClick={() => handleReaction(emoji)}
-                    className="text-[22px] cursor-pointer hover:scale-125 transition-transform duration-150 select-none"
+                    className="emoji-button text-[22px] cursor-pointer hover:scale-125 transition-transform duration-150 select-none"
                   >
                     {emoji}
                   </button>
@@ -1225,7 +1230,7 @@ export const MessagesPage: React.FC = () => {
 
               <button
                 onClick={handleReply}
-                className="flex items-center gap-3 w-full px-4 py-2.5 text-[14.5px] text-[#111B21] hover:bg-[#F5F6F6] cursor-pointer transition-colors"
+                className="context-menu-item flex items-center gap-3 w-full px-4 py-2.5 text-[14.5px] text-[#111B21] hover:bg-[#F5F6F6] cursor-pointer transition-colors"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-corner-up-left text-[#8696A0]">
                   <polyline points="9,14 4,9 9,4"></polyline>
@@ -1235,7 +1240,7 @@ export const MessagesPage: React.FC = () => {
               </button>
               <button
                 onClick={handleCopy}
-                className="flex items-center gap-3 w-full px-4 py-2.5 text-[14.5px] text-[#111B21] hover:bg-[#F5F6F6] cursor-pointer transition-colors"
+                className="context-menu-item flex items-center gap-3 w-full px-4 py-2.5 text-[14.5px] text-[#111B21] hover:bg-[#F5F6F6] cursor-pointer transition-colors"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-copy text-[#8696A0]">
                   <rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect>
@@ -1243,23 +1248,23 @@ export const MessagesPage: React.FC = () => {
                 </svg>
                 Copy
               </button>
-              <button className="flex items-center gap-3 w-full px-4 py-2.5 text-[14.5px] text-[#111B21] hover:bg-[#F5F6F6] cursor-pointer transition-colors">
+              <button className="context-menu-item flex items-center gap-3 w-full px-4 py-2.5 text-[14.5px] text-[#111B21] hover:bg-[#F5F6F6] cursor-pointer transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-forward text-[#8696A0]">
                   <polyline points="15,17 20,12 15,7"></polyline>
                   <path d="M4,18v-2a4,4 0 0,1,4-4h12"></path>
                 </svg>
                 Forward
               </button>
-              <button className="flex items-center gap-3 w-full px-4 py-2.5 text-[14.5px] text-[#111B21] hover:bg-[#F5F6F6] cursor-pointer transition-colors">
+              <button className="context-menu-item flex items-center gap-3 w-full px-4 py-2.5 text-[14.5px] text-[#111B21] hover:bg-[#F5F6F6] cursor-pointer transition-colors">
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-star text-[#8696A0]">
                   <polygon points="12,2 15,8 22,9 17,14 18,21 12,18 6,21 7,14 2,9 9,8"></polygon>
                 </svg>
                 Star
               </button>
-              <div className="border-t border-[#F0F2F5] my-1"></div>
+              <div className="context-menu-separator border-t border-[#F0F2F5] my-1"></div>
               <button
                 onClick={handleDelete}
-                className="flex items-center gap-3 w-full px-4 py-2.5 text-[14.5px] text-[#EA0038] hover:bg-[#FFF0F3] cursor-pointer transition-colors"
+                className="context-menu-item flex items-center gap-3 w-full px-4 py-2.5 text-[14.5px] text-[#EA0038] hover:bg-[#FFF0F3] cursor-pointer transition-colors"
               >
                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-trash-2">
                   <path d="M3,6h18"></path>
@@ -1276,20 +1281,20 @@ export const MessagesPage: React.FC = () => {
 
       {/* Delete Confirmation Dialog */}
       {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[200]">
-          <div className="bg-white rounded-lg p-6 max-w-sm w-full mx-4">
+        <div className="modal-overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[200]">
+          <div className="modal-content bg-white rounded-lg p-6 max-w-sm w-full mx-4">
             <h3 className="text-lg font-semibold text-gray-900 mb-2">Delete Message</h3>
             <p className="text-gray-600 mb-6">Are you sure you want to delete this message? This action cannot be undone.</p>
-            <div className="flex gap-3 justify-end">
+            <div className="modal-actions flex gap-3 justify-end">
               <button
                 onClick={() => setShowDeleteConfirm(null)}
-                className="px-4 py-2 text-gray-700 bg-gray-200 rounded hover:bg-gray-300"
+                className="modal-cancel-button px-4 py-2 text-gray-700 bg-gray-200 rounded hover:bg-gray-300"
               >
                 Cancel
               </button>
               <button
                 onClick={confirmDelete}
-                className="px-4 py-2 text-white bg-red-600 rounded hover:bg-red-700"
+                className="modal-delete-button px-4 py-2 text-white bg-red-600 rounded hover:bg-red-700"
               >
                 Delete
               </button>
@@ -1300,7 +1305,7 @@ export const MessagesPage: React.FC = () => {
 
       {/* Toast Notification */}
       {toast && (
-        <div className={`fixed bottom-4 right-4 z-50 px-4 py-2 rounded-lg shadow-lg transition-all duration-300 ${
+        <div className={`toast-notification fixed bottom-4 right-4 z-50 px-4 py-2 rounded-lg shadow-lg transition-all duration-300 ${
           toast.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
         }`}>
           {toast.message}
@@ -1309,33 +1314,33 @@ export const MessagesPage: React.FC = () => {
 
       {/* ===== CALL OVERLAY MOCKUP ===== */}
       {callState.status !== 'idle' && selectedContact && (
-        <div className={`fixed inset-0 z-[400] flex flex-col items-center justify-center transition-all duration-300 ${
+        <div className={`call-overlay fixed inset-0 z-[400] flex flex-col items-center justify-center transition-all duration-300 ${
           callState.status === 'ended' ? 'opacity-0 pointer-events-none' : 'opacity-100'
         } ${callState.type === 'video' ? 'bg-black' : 'bg-gradient-to-br from-slate-900 to-slate-800'}`}>
 
           {/* Background pattern for audio calls */}
           {callState.type === 'audio' && (
-            <div className="absolute inset-0 opacity-10"
+            <div className="call-background-pattern absolute inset-0 opacity-10"
                  style={{ backgroundImage: 'radial-gradient(circle, #405CFF 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
           )}
 
           {/* Connecting State */}
           {callState.status === 'connecting' && (
-            <div className="text-center z-10">
-              <div className="relative mb-6">
-                <div className="w-24 h-24 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center animate-pulse">
+            <div className="call-connecting text-center z-10">
+              <div className="call-avatar-container relative mb-6">
+                <div className="call-avatar-wrapper w-24 h-24 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center animate-pulse">
                   <img
                     src={findUserById(selectedContact)?.avatarUrl || ''}
                     alt="Contact"
                     className="w-20 h-20 rounded-full object-cover border-4 border-white/20"
                   />
                 </div>
-                <div className="absolute inset-0 rounded-full border-4 border-blue-400/50 animate-ping" />
+                <div className="call-ping-ring absolute inset-0 rounded-full border-4 border-blue-400/50 animate-ping" />
               </div>
-              <h3 className="text-white text-xl font-medium mb-2">
+              <h3 className="call-title text-white text-xl font-medium mb-2">
                 Calling {findUserById(selectedContact)?.name}...
               </h3>
-              <p className="text-white/70 text-sm">
+              <p className="call-subtitle text-white/70 text-sm">
                 {callState.type === 'video' ? 'Video call' : 'Voice call'} • {callState.isMuted ? 'Muted' : 'Speaking'}
               </p>
             </div>
@@ -1345,11 +1350,11 @@ export const MessagesPage: React.FC = () => {
           {callState.status === 'active' && (
             <>
               {/* Remote video / avatar */}
-              <div className="relative z-10 mb-8">
+              <div className="call-remote-video-container relative z-10 mb-8">
                 {callState.type === 'video' ? (
-                  <div className="w-72 h-96 bg-slate-700 rounded-2xl overflow-hidden shadow-2xl border border-white/10">
+                  <div className="call-remote-video w-72 h-96 bg-slate-700 rounded-2xl overflow-hidden shadow-2xl border border-white/10">
                     {/* Mock remote video - replace with <video> later */}
-                    <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-600 to-slate-800">
+                    <div className="call-remote-placeholder w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-600 to-slate-800">
                       <div className="text-center">
                         <img
                           src={findUserById(selectedContact)?.avatarUrl || ''}
@@ -1362,7 +1367,7 @@ export const MessagesPage: React.FC = () => {
                   </div>
                 ) : (
                   // Audio call avatar
-                  <div className="w-32 h-32 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center shadow-xl">
+                  <div className="call-audio-avatar w-32 h-32 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center shadow-xl">
                     <img
                       src={findUserById(selectedContact)?.avatarUrl || ''}
                       alt="Contact"
@@ -1372,18 +1377,18 @@ export const MessagesPage: React.FC = () => {
                 )}
 
                 {/* Online indicator */}
-                <div className="absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-4 border-slate-900" />
+                <div className="call-online-indicator absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-4 border-slate-900" />
               </div>
 
               {/* Caller name & timer */}
-              <div className="text-center z-10 mb-8">
-                <h3 className="text-white text-2xl font-semibold mb-1">
+              <div className="call-info text-center z-10 mb-8">
+                <h3 className="call-name text-white text-2xl font-semibold mb-1">
                   {findUserById(selectedContact)?.name}
                 </h3>
-                <p className="text-white/70 text-sm mb-3">
+                <p className="call-type text-white/70 text-sm mb-3">
                   {callState.type === 'video' ? 'Video call' : 'Voice call'}
                 </p>
-                <div className="inline-flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full">
+                <div className="call-timer inline-flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full">
                   <span className="text-white font-mono text-lg">{formatDuration(callDuration)}</span>
                   <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
                 </div>
@@ -1391,7 +1396,7 @@ export const MessagesPage: React.FC = () => {
 
               {/* Local video preview (video calls only) */}
               {callState.type === 'video' && !callState.isCameraOff && (
-                <div className="absolute bottom-24 right-6 w-32 h-24 bg-slate-700 rounded-xl overflow-hidden shadow-lg border border-white/20 z-20">
+                <div className="call-local-video absolute bottom-24 right-6 w-32 h-24 bg-slate-700 rounded-xl overflow-hidden shadow-lg border border-white/20 z-20">
                   <video
                     ref={localVideoRef}
                     autoPlay
@@ -1401,7 +1406,7 @@ export const MessagesPage: React.FC = () => {
                   />
                   {/* Fallback for mock */}
                   {!localVideoRef.current?.srcObject && (
-                    <div className="absolute inset-0 flex items-center justify-center bg-slate-600/50">
+                    <div className="call-local-fallback absolute inset-0 flex items-center justify-center bg-slate-600/50">
                       <span className="text-white/70 text-xs">Local preview</span>
                     </div>
                   )}
@@ -1410,7 +1415,7 @@ export const MessagesPage: React.FC = () => {
 
               {/* Camera off indicator */}
               {callState.type === 'video' && callState.isCameraOff && (
-                <div className="absolute bottom-24 right-6 w-32 h-24 bg-slate-800 rounded-xl flex items-center justify-center shadow-lg border border-white/20 z-20">
+                <div className="call-camera-off-indicator absolute bottom-24 right-6 w-32 h-24 bg-slate-800 rounded-xl flex items-center justify-center shadow-lg border border-white/20 z-20">
                   <div className="text-center">
 <VideoOff className="w-8 h-8 text-white/50 mx-auto mb-1" />
                     <span className="text-white/70 text-xs">Camera off</span>
@@ -1421,12 +1426,12 @@ export const MessagesPage: React.FC = () => {
           )}
 
           {/* Control Bar */}
-          <div className="fixed bottom-8 left-1/2 -translate-x-1/2 z-30">
-            <div className="flex items-center gap-3 bg-black/60 backdrop-blur-sm px-4 py-3 rounded-full border border-white/10 shadow-xl">
+          <div className="call-controls fixed bottom-8 left-1/2 -translate-x-1/2 z-30">
+            <div className="call-controls-bar flex items-center gap-3 bg-black/60 backdrop-blur-sm px-4 py-3 rounded-full border border-white/10 shadow-xl">
               {/* Mute Toggle */}
               <button
                 onClick={toggleMute}
-                className={`p-3 rounded-full transition-all ${
+                className={`call-mute-button p-3 rounded-full transition-all ${
                   callState.isMuted
                     ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
                     : 'bg-white/10 text-white hover:bg-white/20'
@@ -1440,7 +1445,7 @@ export const MessagesPage: React.FC = () => {
               {callState.type === 'video' && (
                 <button
                   onClick={toggleCamera}
-                  className={`p-3 rounded-full transition-all ${
+                  className={`call-camera-button p-3 rounded-full transition-all ${
                     callState.isCameraOff
                       ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
                       : 'bg-white/10 text-white hover:bg-white/20'
@@ -1453,19 +1458,19 @@ export const MessagesPage: React.FC = () => {
 
               {/* Speaker Toggle (mock) */}
               <button
-                className="p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all"
+                className="call-speaker-button p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all"
                 title="Speaker"
               >
 <Volume2 className="w-5 h-5" />
               </button>
 
               {/* Divider */}
-              <div className="w-px h-6 bg-white/20 mx-1" />
+              <div className="call-controls-divider w-px h-6 bg-white/20 mx-1" />
 
               {/* Hang Up */}
               <button
                 onClick={endCall}
-                className="p-4 bg-red-500 hover:bg-red-600 text-white rounded-full transition-all shadow-lg hover:shadow-red-500/25 active:scale-95"
+                className="call-end-button p-4 bg-red-500 hover:bg-red-600 text-white rounded-full transition-all shadow-lg hover:shadow-red-500/25 active:scale-95"
                 title="End call"
               >
 <X className="w-6 h-6" />
@@ -1475,8 +1480,8 @@ export const MessagesPage: React.FC = () => {
 
           {/* Status Toast */}
           {(callState.isMuted || callState.isCameraOff) && callState.status === 'active' && (
-            <div className="fixed top-6 left-1/2 -translate-x-1/2 z-30">
-              <div className="bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm flex items-center gap-2">
+            <div className="call-status-toast fixed top-6 left-1/2 -translate-x-1/2 z-30">
+              <div className="call-status-message bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm flex items-center gap-2">
                 {callState.isMuted && <span>Muted </span>}
                 {callState.isCameraOff && callState.type === 'video' && <span>| Camera off</span>}
               </div>

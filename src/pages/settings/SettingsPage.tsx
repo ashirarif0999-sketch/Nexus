@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { User, Lock, Bell, Globe, Palette, CreditCard, DollarSign, ArrowUpCircle, ArrowDownCircle, History, Wallet, X } from 'lucide-react';
 import { clsx } from 'clsx';
 import { Card, CardHeader, CardBody } from '../../components/ui/Card';
@@ -9,24 +9,127 @@ import { Avatar } from '../../components/ui/Avatar';
 import { PasswordStrengthMeter } from '../../components/ui/PasswordStrengthMeter';
 import { useAuth } from '../../context/AuthContext';
 import { save2FAEnabledEmail, is2FAEnabledForEmail, remove2FAEnabledEmail } from '../../utils/2faStorage';
+import toast from 'react-hot-toast';
 
 type SettingsTab = 'profile' | 'security' | 'notifications' | 'language' | 'appearance' | 'billing';
 
 export const SettingsPage: React.FC = () => {
-  const { user } = useAuth();
+  const { user, updateProfile } = useAuth();
   const [activeTab, setActiveTab] = useState<SettingsTab>('profile');
   const [newPassword, setNewPassword] = useState('');
   const [show2FAModal, setShow2FAModal] = useState(false);
   const [otpCode, setOtpCode] = useState('');
   const [twoFactorEnabled, setTwoFactorEnabled] = useState(false);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [profileForm, setProfileForm] = useState({
+    name: user?.name || '',
+    email: user?.email || '',
+    bio: user?.bio || '',
+    location: 'San Francisco, CA'
+  });
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Load 2FA status from localStorage on mount
+  // Load 2FA status and initialize form on mount
   useEffect(() => {
     if (user?.email) {
       const isEnabled = is2FAEnabledForEmail(user.email);
       setTwoFactorEnabled(isEnabled);
     }
-  }, [user?.email]);
+
+    if (user) {
+      setProfileForm({
+        name: user.name,
+        email: user.email,
+        bio: user.bio || '',
+        location: 'San Francisco, CA'
+      });
+    }
+  }, [user]);
+
+  // Handle file selection
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+toast.error('Please select an image file');
+        return;
+      }
+
+      // Validate file size (800KB = 800 * 1024 bytes)
+      if (file.size > 800 * 1024) {
+toast.error('File size must be less than 800KB');
+        return;
+      }
+
+      setSelectedFile(file);
+
+      // Create preview URL
+      const url = URL.createObjectURL(file);
+      setPreviewUrl(url);
+    }
+  };
+
+  // Convert file to base64
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  // Handle photo upload
+  const handlePhotoUpload = async () => {
+    if (!selectedFile || !user) return;
+
+    try {
+      const base64 = await fileToBase64(selectedFile);
+      await updateProfile(user.id, { avatarUrl: base64 });
+
+      // Clean up
+      setSelectedFile(null);
+      if (previewUrl) {
+        URL.revokeObjectURL(previewUrl);
+        setPreviewUrl(null);
+      }
+
+toast.success('Profile photo updated successfully!');
+    } catch (error) {
+      console.error('Error updating profile photo:', error);
+toast.error('Failed to update profile photo. Please try again.');
+    }
+  };
+
+  // Handle cancel
+  const handleCancelUpload = () => {
+    setSelectedFile(null);
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      setPreviewUrl(null);
+    }
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
+  };
+
+  // Handle profile save
+  const handleSaveProfile = async () => {
+    if (!user) return;
+
+    try {
+      await updateProfile(user.id, {
+        name: profileForm.name,
+        bio: profileForm.bio,
+      });
+
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      toast.error('Failed to update profile. Please try again.');
+    }
+  };
 
   if (!user) return null;
   
@@ -132,62 +235,88 @@ export const SettingsPage: React.FC = () => {
                 <h2 className="settings-profile-title text-lg font-medium text-gray-900">Profile Settings</h2>
               </CardHeader>
               <CardBody className="space-y-6">
-                <div className="flex items-center gap-6">
-                  <Avatar
-                    src={user.avatarUrl}
-                    alt={user.name}
-                    size="xl"
-                  />
+                 <div className="flex items-center gap-6">
+                   <Avatar
+                     src={previewUrl || user.avatarUrl}
+                     alt={user.name}
+                     size="xl"
+                   />
 
-                  <div>
-                    <Button variant="outline" size="sm">
-                      Change Photo
-                    </Button>
-                    <p className="mt-2 text-sm text-gray-500">
-                      JPG, GIF or PNG. Max size of 800K
-                    </p>
-                  </div>
-                </div>
+                   <div>
+<div className="file-upload-wrapper">
+  <Input
+    ref={fileInputRef}
+    id="photo-upload"
+    type="file"
+    accept="image/*"
+    className="file-upload-input"
+    onChange={handleFileSelect}
+  />
+</div>
+                     {selectedFile && (
+                       <div className="mt-2 flex gap-2">
+                         <Button size="sm" onClick={handlePhotoUpload}>
+                           Upload
+                         </Button>
+                         <Button variant="outline" size="sm" onClick={handleCancelUpload}>
+                           Cancel
+                         </Button>
+                       </div>
+                     )}
+                     <p className="mt-2 text-sm text-gray-500">
+                       JPG, GIF or PNG. Max size of 800K
+                     </p>
+                   </div>
+                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <Input
-                    label="Full Name"
-                    defaultValue={user.name}
-                  />
+                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                   <Input
+                     label="Full Name"
+                     value={profileForm.name}
+                     onChange={(e) => setProfileForm(prev => ({ ...prev, name: e.target.value }))}
+                   />
 
-                  <Input
-                    label="Email"
-                    type="email"
-                    defaultValue={user.email}
-                  />
+                   <Input
+                     label="Email"
+                     type="email"
+                     value={profileForm.email}
+                     disabled
+                   />
 
-                  <Input
-                    label="Role"
-                    value={user.role}
-                    disabled
-                  />
+                   <Input
+                     label="Role"
+                     value={user.role}
+                     disabled
+                   />
 
-                  <Input
-                    label="Location"
-                    defaultValue="San Francisco, CA"
-                  />
-                </div>
+                   <Input
+                     label="Location"
+                     value={profileForm.location}
+                     onChange={(e) => setProfileForm(prev => ({ ...prev, location: e.target.value }))}
+                   />
+                 </div>
 
-                <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
-                    Bio
-                  </label>
-                  <textarea
-                    className="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
-                    rows={4}
-                    defaultValue={user.bio}
-                  ></textarea>
-                </div>
+                 <div>
+                   <label className="block text-sm font-medium text-gray-700 mb-1">
+                     Bio
+                   </label>
+                   <textarea
+                     className="w-full rounded-md border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500"
+                     rows={4}
+                     value={profileForm.bio}
+                     onChange={(e) => setProfileForm(prev => ({ ...prev, bio: e.target.value }))}
+                   ></textarea>
+                 </div>
 
-                <div className="flex justify-end gap-3">
-                  <Button variant="outline">Cancel</Button>
-                  <Button>Save Changes</Button>
-                </div>
+                 <div className="flex justify-end gap-3">
+                   <Button variant="outline" onClick={() => setProfileForm({
+                     name: user?.name || '',
+                     email: user?.email || '',
+                     bio: user?.bio || '',
+                     location: 'San Francisco, CA'
+                   })}>Cancel</Button>
+                   <Button onClick={handleSaveProfile}>Save Changes</Button>
+                 </div>
               </CardBody>
             </Card>
           )}

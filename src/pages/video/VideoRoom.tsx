@@ -165,11 +165,11 @@ const useMeeting = () => {
 // ============================================
 const Tooltip = ({ children, text }: { children: ReactNode; text: string }) => {
   return (
-    <div className="group relative inline-flex">
+    <div className="tooltip-container group relative inline-flex">
       {children}
-      <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
+      <div className="tooltip-content absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-2 py-1 bg-gray-800 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">
         {text}
-        <div className="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-800"></div>
+        <div className="tooltip-arrow absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-gray-800"></div>
       </div>
     </div>
   );
@@ -183,7 +183,7 @@ const Badge = ({ children, variant = 'default' }: { children: ReactNode; variant
     default: 'bg-gray-700/80 text-gray-200',
   };
   return (
-    <span className={cn('inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold backdrop-blur-sm', styles[variant])}>
+    <span className={cn('badge badge-' + variant, 'inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-semibold backdrop-blur-sm', styles[variant])}>
       {children}
     </span>
   );
@@ -193,10 +193,10 @@ const Avatar = ({ name, size = 'md', isMuted = false }: { name: string; size?: '
   const sizeMap = { sm: 'w-8 h-8 text-xs', md: 'w-10 h-10 text-sm', lg: 'w-16 h-16 text-xl', xl: 'w-24 h-24 text-3xl' };
   const color = getAvatarColor(name);
   return (
-    <div className={cn('relative rounded-full flex items-center justify-center font-semibold text-white', sizeMap[size], color)}>
+    <div className={cn('avatar avatar-' + size, 'relative rounded-full flex items-center justify-center font-semibold text-white', sizeMap[size], color)}>
       {name.charAt(0).toUpperCase()}
       {isMuted && (
-        <div className="absolute -bottom-1 -right-1 bg-red-500 rounded-full p-0.5 border-2 border-gray-900">
+        <div className="avatar-muted-indicator absolute -bottom-1 -right-1 bg-red-500 rounded-full p-0.5 border-2 border-gray-900">
           <MicOff className="w-3 h-3 text-white" />
         </div>
       )}
@@ -220,7 +220,7 @@ const FloatingReaction = ({ emoji }: { emoji: string }) => (
 // ============================================
 const ToastContainer = ({ toasts, removeToast }: { toasts: Toast[]; removeToast: (id: string) => void }) => {
   return (
-    <div className="fixed top-4 left-1/2 -translate-x-1/2 z-[100] flex flex-col gap-2 w-full max-w-sm px-4">
+    <div className="toast-container">
       {toasts.map((toast) => (
         <motion.div
           key={toast.id}
@@ -228,11 +228,11 @@ const ToastContainer = ({ toasts, removeToast }: { toasts: Toast[]; removeToast:
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -10, scale: 0.95 }}
           className={cn(
-            'flex items-center gap-2 px-4 py-2 rounded-full shadow-lg backdrop-blur-md text-sm font-medium',
-            toast.type === 'info' ? 'bg-gray-800/90 text-white' :
-            toast.type === 'success' ? 'bg-emerald-900/90 text-emerald-50 border border-emerald-500/30' :
-            toast.type === 'warning' ? 'bg-amber-900/90 text-amber-50 border border-amber-500/30' :
-            'bg-red-900/90 text-red-50 border border-red-500/30'
+            'toast-item',
+            toast.type === 'info' ? 'toast-info' :
+            toast.type === 'success' ? 'toast-success' :
+            toast.type === 'warning' ? 'toast-warning' :
+            'toast-error'
           )}
         >
           {toast.icon}
@@ -248,60 +248,46 @@ const ToastContainer = ({ toasts, removeToast }: { toasts: Toast[]; removeToast:
 // ============================================
 const ControlButton = ({
   icon,
-  label,
   onClick,
   active = false,
   danger = false,
   badge,
-  tooltipText,
 }: {
   icon: ReactNode;
-  label: string;
   onClick: () => void;
   active?: boolean;
   danger?: boolean;
   badge?: number | string;
-  tooltipText?: string;
-}) => {
-  const btn = (
-    <Tooltip text={tooltipText || label}>
-      <button
-        onClick={onClick}
-        className={cn(
-          'relative flex flex-col items-center justify-center w-12 sm:w-14 h-12 sm:h-14 rounded-full transition-all duration-200 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400/50 touch-manipulation',
-          danger ? 'bg-red-600 hover:bg-red-700 text-white' :
-          active ? 'bg-white/15 text-white backdrop-blur-sm' :
-          'bg-white/10 hover:bg-white/20 text-gray-200'
-        )}
-      >
-        {icon}
-        {badge !== undefined && (
-          <span className="absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center bg-blue-600 text-[10px] font-bold text-white rounded-full px-1">
-            {badge}
-          </span>
-        )}
-      </button>
-    </Tooltip>
-  );
-  return (
-    <div className="flex flex-col items-center gap-1">
-      {btn}
-      <span className="text-[10px] text-gray-400 font-medium">{label}</span>
-    </div>
-  );
-};
+}) => (
+  <button
+    onClick={onClick}
+    className={cn(
+      'control-button relative flex items-center justify-center w-12 sm:w-14 h-12 sm:h-14 rounded-full transition-all duration-200 hover:scale-105 active:scale-95 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-400/50 touch-manipulation',
+      danger ? 'bg-red-600 hover:bg-red-700 text-white' :
+      active ? 'bg-white/15 text-white backdrop-blur-sm' :
+      'bg-white/10 hover:bg-white/20 text-gray-200'
+    )}
+  >
+    {icon}
+    {badge !== undefined && (
+      <span className="control-button-badge absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center bg-blue-600 text-[10px] font-bold text-white rounded-full px-1">
+        {badge}
+      </span>
+    )}
+  </button>
+);
 
 const ChatBubble = ({ message }: { message: ChatMessage }) => {
   const isMe = message.senderName === 'You';
   return (
-    <div className={cn('flex flex-col max-w-[85%]', isMe ? 'self-end' : 'self-start')}>
-      {!isMe && <span className="text-[10px] text-gray-400 ml-1 mb-0.5">{message.senderName}</span>}
+    <div className={cn('chat-bubble-container', 'flex flex-col max-w-[85%]', isMe ? 'self-end' : 'self-start')}>
+      {!isMe && <span className="chat-bubble-sender text-[10px] text-gray-400 ml-1 mb-0.5">{message.senderName}</span>}
       <div className={cn(
-        'px-3 py-2 rounded-2xl text-sm shadow-sm',
+        'chat-bubble-content px-3 py-2 rounded-2xl text-sm shadow-sm',
         isMe ? 'bg-blue-600 text-white rounded-tr-sm' : 'bg-gray-700/80 text-gray-100 rounded-tl-sm'
       )}>
         {message.text}
-        <span className={cn('text-[10px] text-gray-500 mt-0.5', isMe ? 'self-end mr-1' : 'self-start ml-1')}>
+        <span className={cn('chat-bubble-timestamp text-[10px] text-gray-500 mt-0.5', isMe ? 'self-end mr-1' : 'self-start ml-1')}>
           {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
         </span>
       </div>
@@ -310,17 +296,17 @@ const ChatBubble = ({ message }: { message: ChatMessage }) => {
 };
 
 const ParticipantRow = ({ participant, isLocal }: { participant: Participant; isLocal: boolean }) => (
-  <div className="flex items-center justify-between p-2 hover:bg-white/5 rounded-lg transition-colors">
-    <div className="flex items-center gap-3">
+  <div className="participant-row flex items-center justify-between p-2 hover:bg-white/5 rounded-lg transition-colors">
+    <div className="participant-info flex items-center gap-3">
       <Avatar name={isLocal ? 'You' : participant.name} size="sm" isMuted={participant.isMuted} />
-      <div>
-        <p className="text-sm font-medium text-gray-200">{isLocal ? 'You' : participant.name}</p>
-        <p className="text-[10px] text-gray-500 capitalize">{participant.role}</p>
+      <div className="participant-details">
+        <p className="participant-name text-sm font-medium text-gray-200">{isLocal ? 'You' : participant.name}</p>
+        <p className="participant-role text-[10px] text-gray-500 capitalize">{participant.role}</p>
       </div>
     </div>
-    <div className="flex items-center gap-2">
-      {participant.isSpeaking && <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />}
-      <span className="text-xs text-gray-500">
+    <div className="participant-status flex items-center gap-2">
+      {participant.isSpeaking && <span className="participant-speaking-indicator w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />}
+      <span className="participant-audio-status text-xs text-gray-500">
         {participant.isMuted ? 'Muted' : 'Unmuted'}
       </span>
     </div>
@@ -367,7 +353,7 @@ const VideoTile = ({
     <motion.div
       ref={tileRef}
       className={cn(
-        'relative bg-gray-900/40 rounded-2xl overflow-hidden border group h-full',
+        'video-tile relative bg-gray-900/40 rounded-2xl overflow-hidden border group h-full',
         participant.isSpeaking ? 'ring-2 ring-emerald-400/50 shadow-[0_0_20px_rgba(52,211,153,0.3)]' : 'border-gray-700/50',
         isFocused && 'ring-2 ring-blue-400/50',
         isResizing && 'cursor-col-resize'
@@ -378,19 +364,19 @@ const VideoTile = ({
     >
       {/* Video Feed / Placeholder */}
       {participant.isVideoOn ? (
-        <div className="w-full h-full bg-gray-800 flex items-center justify-center">
+        <div className="video-feed-container w-full h-full bg-gray-800 flex items-center justify-center">
           {/* In a real app, this would be a <video> tag */}
           <Avatar name={isLocal ? 'You' : participant.name} size="xl" isMuted={participant.isMuted} />
         </div>
       ) : (
-        <div className="w-full h-full bg-gray-800 flex flex-col items-center justify-center gap-2">
+        <div className="video-placeholder-container w-full h-full bg-gray-800 flex flex-col items-center justify-center gap-2">
           <Avatar name={isLocal ? 'You' : participant.name} size="xl" isMuted={participant.isMuted} />
-          <span className="text-gray-500 text-sm">Camera is off</span>
+          <span className="video-off-message text-gray-500 text-sm">Camera is off</span>
         </div>
       )}
 
       {/* Overlays */}
-      <div className="absolute top-3 left-3 flex items-center gap-2">
+      <div className="video-tile-overlays absolute top-3 left-3 flex items-center gap-2">
         {isLocal && <Badge variant="default">You</Badge>}
         {participant.isScreenSharing && <Badge variant="screen-share">Sharing</Badge>}
         {participant.isPinned && (
@@ -398,17 +384,17 @@ const VideoTile = ({
         )}
       </div>
 
-      <div className="absolute bottom-3 left-3 right-3 flex items-end justify-between">
-        <div className="flex items-center gap-2 bg-black/40 backdrop-blur-sm px-2.5 py-1.5 rounded-lg">
-          <span className="text-sm font-medium text-white truncate max-w-[120px]">{isLocal ? 'You' : participant.name}</span>
-          {participant.isMuted && <MicOff className="w-4 h-4 text-red-400" />}
+      <div className="video-tile-info absolute bottom-3 left-3 right-3 flex items-end justify-between">
+        <div className="video-tile-nameplate flex items-center gap-2 bg-black/40 backdrop-blur-sm px-2.5 py-1.5 rounded-lg">
+          <span className="video-tile-name text-sm font-medium text-white truncate max-w-[120px]">{isLocal ? 'You' : participant.name}</span>
+          {participant.isMuted && <MicOff className="video-tile-mute-icon w-4 h-4 text-red-400" />}
         </div>
 
-        <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+        <div className="video-tile-controls flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
           <Tooltip text={participant.isPinned ? 'Unpin' : 'Pin'}>
             <button
               onClick={() => onTogglePin(participant.id)}
-              className="p-1.5 bg-black/40 hover:bg-black/60 rounded-md backdrop-blur-sm transition-colors"
+              className="video-tile-pin-button p-1.5 bg-black/40 hover:bg-black/60 rounded-md backdrop-blur-sm transition-colors"
             >
               <Pin className={cn('w-3.5 h-3.5', participant.isPinned ? 'text-blue-400' : 'text-white')} />
             </button>
@@ -419,7 +405,7 @@ const VideoTile = ({
       {/* Resize Handle */}
       <div
         onPointerDown={handleResizeStart}
-        className="absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-blue-500/30 transition-colors opacity-0 group-hover:opacity-100"
+        className="video-tile-resize-handle absolute right-0 top-0 bottom-0 w-2 cursor-col-resize hover:bg-blue-500/30 transition-colors opacity-0 group-hover:opacity-100"
       />
     </motion.div>
   );
@@ -447,39 +433,38 @@ const ControlBar = ({
     initial={{ y: 100, opacity: 0 }}
     animate={{ y: 0, opacity: 1 }}
     exit={{ y: 100, opacity: 0 }}
-    className="fixed bottom-4 sm:bottom-6 left-1/2 -translate-x-1/2 z-40 w-auto max-w-[95vw]"
+    className="control-bar-container fixed bottom-0 left-0 right-0 z-40 w-full"
   >
-    <div className="flex flex-wrap items-center justify-center gap-1 px-2 sm:px-4 py-2 bg-gray-900/85 backdrop-blur-xl border border-white/10 rounded-full shadow-2xl">
+    <div className="control-bar px-2 sm:px-4 py-2 bg-gray-900/85 backdrop-blur-xl border border-white/10 shadow-2xl">
       <Tooltip text="Meeting Info">
-        <button className="p-2 text-gray-300 hover:text-white hover:bg-white/10 rounded-full transition-colors">
+        <button className="control-bar-info-button p-2 text-gray-300 hover:text-white hover:bg-white/10 rounded-full transition-colors">
           <Info className="w-5 h-5" />
         </button>
       </Tooltip>
 
-      <div className="hidden sm:block w-px h-8 bg-white/10 mx-1" />
+      <div className="control-bar-separator hidden sm:block w-px h-8 bg-white/10 mx-1" />
 
-      <ControlButton icon={micOn ? <Mic /> : <MicOff />} label="Mute" onClick={onToggleMic} active={micOn} danger={!micOn} />
-      <ControlButton icon={cameraOn ? <Video /> : <VideoOff />} label="Camera" onClick={onToggleCamera} active={cameraOn} danger={!cameraOn} />
-      <ControlButton icon={screenSharing ? <MonitorOff /> : <Monitor />} label="Present" onClick={onToggleScreen} active={screenSharing} />
-      <ControlButton icon={<Captions />} label="Captions" onClick={() => {}} />
+      <ControlButton icon={micOn ? <Mic /> : <MicOff />} onClick={onToggleMic} active={micOn} danger={!micOn} />
+      <ControlButton icon={cameraOn ? <Video /> : <VideoOff />} onClick={onToggleCamera} active={cameraOn} danger={!cameraOn} />
+      <ControlButton icon={screenSharing ? <MonitorOff /> : <Monitor />} onClick={onToggleScreen} active={screenSharing} />
 
-      <div className="hidden sm:block w-px h-8 bg-white/10 mx-1" />
+      <div className="control-bar-separator hidden sm:block w-px h-8 bg-white/10 mx-1" />
 
-      <ControlButton icon={<Smile />} label="React" onClick={onOpenReactions} />
-      <ControlButton icon={<Users />} label="People" onClick={onTogglePeople} badge={3} />
-      <ControlButton icon={<MessageSquare />} label="Chat" onClick={onToggleChat} badge={chatUnread} />
+      <ControlButton icon={<Smile />} onClick={onOpenReactions} />
+      <ControlButton icon={<Users />} onClick={onTogglePeople} badge={3} />
+      <ControlButton icon={<MessageSquare />} onClick={onToggleChat} badge={chatUnread} />
       {/* Layout toggle disabled - always using grid layout */}
-      {/*  <ControlButton icon={<Layout />} label="Layout" onClick={onToggleLayout} tooltipText={`Switch to ${layoutMode === 'grid' ? 'Spotlight' : 'Grid'}`} /> */}
-      <ControlButton icon={isPiPActive ? <Minimize2 /> : <Maximize2 />} label="PiP" onClick={onTogglePiP} />
+      {/*  <ControlButton icon={<Layout />} onClick={onToggleLayout} /> */}
+      <ControlButton icon={isPiPActive ? <Minimize2 /> : <Maximize2 />} onClick={onTogglePiP} />
 
-      <div className="hidden sm:block w-px h-8 bg-white/10 mx-1" />
+      <div className="control-bar-separator hidden sm:block w-px h-8 bg-white/10 mx-1" />
 
-      <ControlButton icon={<PhoneOff className="text-red-400" />} label="Leave" onClick={onEndCall} danger tooltipText="End call" />
+      <ControlButton icon={<PhoneOff className="text-red-400" />} onClick={onEndCall} danger />
     </div>
 
     {/* Call Duration */}
-    <div className="absolute -top-8 left-1/2 -translate-x-1/2 flex items-center gap-1.5 text-xs font-mono text-gray-400 bg-black/40 px-2 py-0.5 rounded-md backdrop-blur-sm">
-      <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+    <div className="control-bar-duration absolute -top-8 left-1/2 -translate-x-1/2 flex items-center gap-1.5 text-xs font-mono text-gray-400 bg-black/40 px-2 py-0.5 rounded-md backdrop-blur-sm">
+      <span className="control-bar-duration-indicator w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
       {formatDuration(callDuration)}
     </div>
   </motion.div>
@@ -502,17 +487,17 @@ const SidePanel = ({
         animate={{ x: 0, opacity: 1 }}
         exit={{ x: '100%', opacity: 0 }}
         transition={{ type: 'spring', stiffness: 300, damping: 30 }}
-        className="fixed right-0 top-0 bottom-0 w-full md:w-80 bg-gray-900/95 backdrop-blur-xl border-l border-white/10 z-30 flex flex-col"
+        className="side-panel fixed right-0 top-0 bottom-0 w-full md:w-80 bg-gray-900/95 backdrop-blur-xl border-l border-white/10 z-30 flex flex-col"
       >
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-white/10">
-          <div className="flex gap-2">
+        <div className="side-panel-header flex items-center justify-between p-4 border-b border-white/10">
+          <div className="side-panel-tabs flex gap-2">
             {(['people', 'chat', 'activities'] as PanelTab[]).map((tab) => (
               <button
                 key={tab}
                 onClick={() => onTabChange(tab)}
                 className={cn(
-                  'px-3 py-1.5 text-xs font-medium rounded-md transition-colors capitalize',
+                  'side-panel-tab px-3 py-1.5 text-xs font-medium rounded-md transition-colors capitalize',
                   activeTab === tab ? 'bg-blue-600 text-white' : 'text-gray-400 hover:text-white hover:bg-white/10'
                 )}
               >
@@ -520,26 +505,26 @@ const SidePanel = ({
               </button>
             ))}
           </div>
-          <button onClick={onClose} className="p-1.5 hover:bg-white/10 rounded-full text-gray-400 hover:text-white transition-colors">
+          <button onClick={onClose} className="side-panel-close-button p-1.5 hover:bg-white/10 rounded-full text-gray-400 hover:text-white transition-colors">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Content */}
-        <div className="flex-1 overflow-y-auto p-3 space-y-2 scrollbar-thin">
+        <div className="side-panel-content flex-1 overflow-y-auto p-3 space-y-2 scrollbar-thin">
           {activeTab === 'people' && (
-            <>
+            <div className="side-panel-people">
               <ParticipantRow participant={localParticipant} isLocal />
               {participants.map((p: Participant) => (
                 <ParticipantRow key={p.id} participant={p} isLocal={false} />
               ))}
-            </>
+            </div>
           )}
           {activeTab === 'chat' && (
-            <div className="flex flex-col h-full">
-              <div className="flex-1 space-y-3 mb-2">
+            <div className="side-panel-chat flex flex-col h-full">
+              <div className="side-panel-chat-messages flex-1 space-y-3 mb-2">
                 {messages.length === 0 ? (
-                  <div className="flex flex-col items-center justify-center h-full text-gray-500">
+                  <div className="side-panel-chat-empty flex flex-col items-center justify-center h-full text-gray-500">
                     <MessageSquare className="w-12 h-12 mb-2 opacity-30" />
                     <p className="text-sm">No messages yet</p>
                   </div>
@@ -547,10 +532,10 @@ const SidePanel = ({
                   messages.map((m: ChatMessage) => <ChatBubble key={m.id} message={m} />)
                 )}
               </div>
-              <div className="flex gap-2 mt-auto pt-2 border-t border-white/10">
+              <div className="side-panel-chat-input flex gap-2 mt-auto pt-2 border-t border-white/10">
                 <input
                   placeholder="Type a message..."
-                  className="flex-1 bg-white/5 border border-white/10 rounded-full px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                  className="side-panel-chat-input-field flex-1 bg-white/5 border border-white/10 rounded-full px-4 py-2 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && e.currentTarget.value.trim()) {
                       onSendMessage(e.currentTarget.value);
@@ -564,28 +549,28 @@ const SidePanel = ({
                     onSendMessage(input.value);
                     input.value = '';
                   }
-                }} className="p-2 bg-blue-600 hover:bg-blue-700 rounded-full text-white transition-colors">
+                }} className="side-panel-chat-send-button p-2 bg-blue-600 hover:bg-blue-700 rounded-full text-white transition-colors">
                   <Send className="w-4 h-4" />
                 </button>
               </div>
             </div>
           )}
           {activeTab === 'activities' && (
-            <div className="space-y-4">
-              <div className="bg-white/5 p-3 rounded-xl">
-                <h4 className="text-sm font-medium text-gray-200 mb-2">Recent Reactions</h4>
-                <div className="flex flex-wrap gap-2">
+            <div className="side-panel-activities space-y-4">
+              <div className="side-panel-reactions bg-white/5 p-3 rounded-xl">
+                <h4 className="side-panel-reactions-title text-sm font-medium text-gray-200 mb-2">Recent Reactions</h4>
+                <div className="side-panel-reactions-grid flex flex-wrap gap-2">
                   {REACTION_EMOJIS.map((emoji) => (
-                    <span key={emoji} className="text-2xl cursor-pointer hover:scale-110 transition-transform">
+                    <span key={emoji} className="side-panel-reaction-emoji text-2xl cursor-pointer hover:scale-110 transition-transform">
                       {emoji}
                     </span>
                   ))}
                 </div>
               </div>
-              <div className="bg-white/5 p-3 rounded-xl">
-                <h4 className="text-sm font-medium text-gray-200 mb-2">Raise Hand</h4>
-                <p className="text-xs text-gray-400 mb-2">Notify others that you'd like to speak.</p>
-                <button className="flex items-center gap-2 px-4 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 rounded-lg w-full justify-center transition-colors">
+              <div className="side-panel-raise-hand bg-white/5 p-3 rounded-xl">
+                <h4 className="side-panel-raise-hand-title text-sm font-medium text-gray-200 mb-2">Raise Hand</h4>
+                <p className="side-panel-raise-hand-description text-xs text-gray-400 mb-2">Notify others that you'd like to speak.</p>
+                <button className="side-panel-raise-hand-button flex items-center gap-2 px-4 py-2 bg-blue-600/20 hover:bg-blue-600/30 text-blue-400 rounded-lg w-full justify-center transition-colors">
                   <Hand className="w-4 h-4" />
                   Raise Hand
                 </button>
@@ -603,18 +588,18 @@ const ReactionPicker = ({ onSelect, onClose }: { onSelect: (e: string) => void; 
     initial={{ scale: 0.8, opacity: 0, y: 20 }}
     animate={{ scale: 1, opacity: 1, y: 0 }}
     exit={{ scale: 0.8, opacity: 0, y: 20 }}
-    className="fixed bottom-28 left-1/2 -translate-x-1/2 bg-gray-900/95 backdrop-blur-xl border border-white/10 rounded-2xl p-4 z-50 shadow-2xl"
+    className="reactions-panel fixed bottom-28 left-1/2 -translate-x-1/2 bg-gray-900/95 backdrop-blur-xl border border-white/10 rounded-2xl p-4 z-50 shadow-2xl"
   >
-    <div className="flex items-center justify-between mb-3">
-      <span className="text-sm font-medium text-gray-200">Reactions</span>
-      <button onClick={onClose} className="p-1 hover:bg-white/10 rounded-md"> <X className="w-4 h-4 text-gray-400" /> </button>
+    <div className="reactions-panel-header flex items-center justify-between mb-3">
+      <span className="reactions-panel-title text-sm font-medium text-gray-200">Reactions</span>
+      <button onClick={onClose} className="reactions-panel-close-button p-1 hover:bg-white/10 rounded-md"> <X className="w-4 h-4 text-gray-400" /> </button>
     </div>
-    <div className="grid grid-cols-4 gap-3">
+    <div className="reactions-panel-grid grid grid-cols-4 gap-3">
       {REACTION_EMOJIS.map((emoji) => (
         <button
           key={emoji}
           onClick={() => onSelect(emoji)}
-          className="p-2 text-2xl hover:bg-white/10 rounded-xl transition-all hover:scale-110 active:scale-90"
+          className="reactions-panel-emoji-button p-2 text-2xl hover:bg-white/10 rounded-xl transition-all hover:scale-110 active:scale-90"
         >
           {emoji}
         </button>
@@ -630,17 +615,17 @@ const PiPWindow = ({ participant, onClose }: { participant: Participant; onClose
     dragElastic={0.1}
     initial={{ scale: 0.8, opacity: 0 }}
     animate={{ scale: 1, opacity: 1 }}
-    className="fixed bottom-32 right-4 w-64 h-44 bg-gray-900 rounded-2xl border border-white/10 shadow-2xl overflow-hidden z-40 cursor-grab active:cursor-grabbing"
+    className="pip-window fixed bottom-32 right-4 w-64 h-44 bg-gray-900 rounded-2xl border border-white/10 shadow-2xl overflow-hidden z-40 cursor-grab active:cursor-grabbing"
   >
-    <div className="absolute inset-0 bg-gradient-to-br from-gray-800 to-black flex items-center justify-center">
+    <div className="pip-window-background absolute inset-0 bg-gradient-to-br from-gray-800 to-black flex items-center justify-center">
       <Avatar name={participant.name} size="lg" isMuted={participant.isMuted} />
     </div>
-    <div className="absolute top-2 left-2 bg-black/50 px-2 py-0.5 rounded text-[10px] text-white font-medium backdrop-blur-sm">
+    <div className="pip-window-label absolute top-2 left-2 bg-black/50 px-2 py-0.5 rounded text-[10px] text-white font-medium backdrop-blur-sm">
       Screen Sharing
     </div>
     <button
       onClick={onClose}
-      className="absolute top-2 right-2 p-1 bg-black/50 hover:bg-black/70 rounded-full backdrop-blur-sm transition-colors"
+      className="pip-window-close-button absolute top-2 right-2 p-1 bg-black/50 hover:bg-black/70 rounded-full backdrop-blur-sm transition-colors"
     >
       <X className="w-3 h-3 text-white" />
     </button>
@@ -666,36 +651,36 @@ const EndCallModal = ({
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         exit={{ scale: 0.9, opacity: 0 }}
-        className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
+        className="leave-meeting-modal-overlay fixed inset-0 z-[60] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4"
         onClick={onClose}
       >
         <motion.div
           initial={{ scale: 0.9, opacity: 0 }}
           animate={{ scale: 1, opacity: 1 }}
           exit={{ scale: 0.9, opacity: 0 }}
-          className="bg-gray-900 border border-white/10 rounded-2xl w-full max-w-md p-6 shadow-2xl"
+          className="leave-meeting-modal-panel bg-gray-900 border border-white/10 rounded-2xl w-full max-w-md p-6 shadow-2xl"
           onClick={(e) => e.stopPropagation()}
         >
-          <h3 className="text-xl font-bold text-white mb-2">Leave meeting?</h3>
-          <p className="text-gray-400 mb-6">
+          <h3 className="leave-meeting-modal-title text-xl font-bold text-white mb-2">Leave meeting?</h3>
+          <p className="leave-meeting-modal-description text-gray-400 mb-6">
             {isHost ? 'Are you sure you want to end the meeting for all participants, or just leave?' : 'You will disconnect from this meeting.'}
           </p>
-          <div className="space-y-3">
+          <div className="leave-meeting-modal-actions space-y-3">
             {isHost && (
               <button
                 onClick={onEndForAll}
-                className="w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-xl transition-colors"
+                className="leave-meeting-modal-end-all-button w-full py-2.5 bg-red-600 hover:bg-red-700 text-white font-medium rounded-xl transition-colors"
               >
                 End meeting for everyone
               </button>
             )}
             <button
               onClick={onLeave}
-              className="w-full py-2.5 bg-white/10 hover:bg-white/15 text-gray-200 font-medium rounded-xl transition-colors"
+              className="leave-meeting-modal-leave-button w-full py-2.5 bg-white/10 hover:bg-white/15 text-gray-200 font-medium rounded-xl transition-colors"
             >
               Leave meeting
             </button>
-            <button onClick={onClose} className="mt-2 text-sm text-gray-500 hover:text-gray-300 transition-colors w-full text-center">
+            <button onClick={onClose} className="leave-meeting-modal-cancel-button mt-2 text-sm text-gray-500 hover:text-gray-300 transition-colors w-full text-center">
               Cancel
             </button>
           </div>
@@ -709,27 +694,27 @@ const PostCallSummary = ({ duration, onRedirect }: { duration: number; onRedirec
   <motion.div
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
-    className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-950 text-center p-6"
+    className="meeting-ended-screen fixed inset-0 z-50 flex flex-col items-center justify-center bg-gray-950 text-center p-6"
   >
     <motion.div
       initial={{ scale: 0.8, y: 20 }}
       animate={{ scale: 1, y: 0 }}
       transition={{ type: 'spring', stiffness: 100 }}
-      className="max-w-md w-full"
+      className="meeting-ended-content max-w-md w-full"
     >
-      <div className="w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
+      <div className="meeting-ended-icon w-20 h-20 bg-emerald-500/20 rounded-full flex items-center justify-center mx-auto mb-6">
         <Check className="w-10 h-10 text-emerald-400" />
       </div>
-      <h2 className="text-3xl font-bold text-white mb-2">Meeting Ended</h2>
-      <div className="flex items-center justify-center gap-4 text-gray-400 mb-8">
-        <div className="flex items-center gap-2">
+      <h2 className="meeting-ended-title text-3xl font-bold text-white mb-2">Meeting Ended</h2>
+      <div className="meeting-ended-duration flex items-center justify-center gap-4 text-gray-400 mb-8">
+        <div className="meeting-ended-duration-item flex items-center gap-2">
           <Clock className="w-4 h-4" />
           <span>{formatDuration(duration)}</span>
         </div>
       </div>
       <button
         onClick={onRedirect}
-        className="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-colors shadow-lg shadow-blue-600/20"
+        className="meeting-ended-return-button px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-colors shadow-lg shadow-blue-600/20"
       >
         Return to Dashboard
       </button>
@@ -1308,35 +1293,35 @@ export const VideoRoom: React.FC = () => {
 
   return (
     <MeetingContext.Provider value={ctxValue}>
-      <div className="flex flex-col h-screen bg-gray-950 text-white overflow-hidden min-h-screen">
+      <div className="video-room-container flex flex-col h-screen bg-gray-950 text-white overflow-hidden min-h-screen">
         {/* Top Bar */}
-        <header className="flex flex-col sm:flex-row sm:items-center justify-between px-4 py-3 bg-gray-900/50 border-b border-white/5 z-20 gap-2 sm:gap-0">
-          <div className="flex items-center gap-3">
-            <button onClick={() => navigate(-1)} className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+        <header className="video-room-header flex flex-col sm:flex-row sm:items-center justify-between px-4 py-3 bg-gray-900/50 border-b border-white/5 z-20 gap-2 sm:gap-0">
+          <div className="video-room-header-left flex items-center gap-3">
+            <button onClick={() => navigate(-1)} className="video-room-back-button p-2 hover:bg-white/10 rounded-lg transition-colors">
               <ArrowLeft className="w-5 h-5 text-gray-400" />
             </button>
-            <div className="min-w-0 flex-1">
-              <h1 className="text-sm font-semibold text-white truncate">Investment Discussion - TechWave AI</h1>
-              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-xs text-gray-400">
-                <span className="flex items-center gap-1"><ShieldCheck className="w-3 h-3" /> Secure meeting • {roomId || 'ABC-1234'}</span>
-                <button onClick={() => navigator.clipboard.writeText(roomId || 'ABC-1234')} className="hover:text-white transition-colors flex items-center gap-1 sm:ml-2">
+            <div className="video-room-meeting-info min-w-0 flex-1">
+              <h1 className="video-room-title text-sm font-semibold text-white truncate">Investment Discussion - TechWave AI</h1>
+              <div className="video-room-meeting-details flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-xs text-gray-400">
+                <span className="video-room-security-status flex items-center gap-1"><ShieldCheck className="w-3 h-3" /> Secure meeting • {roomId || 'ABC-1234'}</span>
+                <button onClick={() => navigator.clipboard.writeText(roomId || 'ABC-1234')} className="video-room-copy-id-button hover:text-white transition-colors flex items-center gap-1 sm:ml-2">
                   <Copy className="w-3 h-3" /> Copy ID
                 </button>
               </div>
             </div>
           </div>
-          <div className="flex items-center justify-between sm:justify-end gap-2">
-            <span className="text-xs text-gray-400 bg-gray-800 px-2 py-1 rounded-full">
+          <div className="video-room-header-right flex items-center justify-between sm:justify-end gap-2">
+            <span className="video-room-participant-count text-xs text-gray-400 bg-gray-800 px-2 py-1 rounded-full">
               {allParticipants.length} people
             </span>
-            <button onClick={() => setShowSettings(true)} className="p-2 hover:bg-white/10 rounded-full text-gray-400 transition-colors"><Settings className="w-5 h-5" /></button>
-            <button onClick={() => setShowInfo(true)} className="p-2 hover:bg-white/10 rounded-full text-gray-400 transition-colors"><Info className="w-5 h-5" /></button>
+            <button onClick={() => setShowSettings(true)} className="video-room-settings-button p-2 hover:bg-white/10 rounded-full text-gray-400 transition-colors"><Settings className="w-5 h-5" /></button>
+            <button onClick={() => setShowInfo(true)} className="video-room-info-button p-2 hover:bg-white/10 rounded-full text-gray-400 transition-colors"><Info className="w-5 h-5" /></button>
           </div>
         </header>
 
         {/* Main Stage - Responsive Grid */}
-        <main className="flex-1 relative flex items-center justify-center p-2 sm:p-4 pb-20 sm:pb-24 overflow-auto">
-          <div className="w-full h-full grid gap-2 sm:gap-3 auto-rows-fr grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
+        <main className="video-room-main-stage flex-1 relative flex items-center justify-center p-2 sm:p-4 pb-20 sm:pb-24 overflow-auto">
+          <div className="video-room-video-grid w-full h-full grid gap-2 sm:gap-3 auto-rows-fr grid-cols-1 xs:grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
             {/* Screen Share - Always rendered but only visible when active */}
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
@@ -1345,7 +1330,7 @@ export const VideoRoom: React.FC = () => {
                 scale: screenSharing ? 1 : 0.9,
                 gridColumn: screenSharing ? 'span 1 / span 4' : 'span 1'
               }}
-              className={`bg-gray-900/40 rounded-2xl overflow-hidden border relative group transition-opacity duration-300 ${
+              className={`video-room-screen-share bg-gray-900/40 rounded-2xl overflow-hidden border relative group transition-opacity duration-300 ${
                 screenSharing ? 'border-blue-400/50 col-span-1 md:col-span-2 lg:col-span-3' : 'border-transparent'
               }`}
               style={{ display: screenSharing ? 'block' : 'none' }}
@@ -1356,7 +1341,7 @@ export const VideoRoom: React.FC = () => {
                 muted
                 playsInline
                 controls={false}
-                className="w-full h-full object-contain bg-black"
+                className="video-room-screen-share-video w-full h-full object-contain bg-black"
                 style={{
                   minHeight: screenSharing ? '200px' : '0',
                   maxHeight: screenSharing ? '60vh' : '0',
@@ -1366,18 +1351,18 @@ export const VideoRoom: React.FC = () => {
                 onLoadStart={() => console.log('Screen share video load start')}
                 onError={(e) => console.error('Screen share video error:', e)}
               />
-              <div className="absolute top-2 left-2 flex items-center gap-2">
-                <div className="bg-black/60 text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
+              <div className="video-room-screen-share-overlays absolute top-2 left-2 flex items-center gap-2">
+                <div className="video-room-screen-share-label bg-black/60 text-white px-2 py-1 rounded text-xs font-medium flex items-center gap-1">
                   <Monitor className="w-3 h-3" />
                   Screen Share
                 </div>
-                <div className="bg-red-600 text-white px-2 py-1 rounded text-xs font-bold animate-pulse">
+                <div className="video-room-screen-share-live-indicator bg-red-600 text-white px-2 py-1 rounded text-xs font-bold animate-pulse">
                   LIVE
                 </div>
               </div>
               <button
                 onClick={stopScreenShare}
-                className="absolute top-2 right-2 p-2 bg-red-600 hover:bg-red-700 text-white rounded-full transition-colors"
+                className="video-room-screen-share-stop-button absolute top-2 right-2 p-2 bg-red-600 hover:bg-red-700 text-white rounded-full transition-colors"
               >
                 <X className="w-4 h-4" />
               </button>
