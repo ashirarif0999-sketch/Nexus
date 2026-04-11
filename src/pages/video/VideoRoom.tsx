@@ -67,6 +67,7 @@ declare global {
 interface PiPWindow extends Window {
   pipContent?: HTMLElement;
   participants?: Participant[];
+  pipVideos?: (HTMLVideoElement | null)[];
 }
 
 interface Participant {
@@ -144,6 +145,7 @@ const REACTION_EMOJIS = ['👍', '❤️', '😂', '😮', '🎉', '👏', '🚀
 interface MeetingContextType {
   addToast: (type: ToastType, message: string) => void;
   participants: Participant[];
+  screenStream: MediaStream | null;
   updateParticipant: (id: string, updates: Partial<Participant>) => void;
   layoutMode: LayoutMode;
   setLayoutMode: (mode: LayoutMode) => void;
@@ -773,6 +775,7 @@ export const VideoRoom: React.FC = () => {
   const toastCounterRef = useRef(0);
   const [screenStream, setScreenStream] = useState<MediaStream | null>(null);
   const screenVideoRef = useRef<HTMLVideoElement>(null);
+  const pipVideosRef = useRef<(HTMLVideoElement | null)[]>([]);
   const [pipWindow, setPipWindow] = useState<PiPWindow | null>(null);
   const [isPiPActive, setIsPiPActive] = useState(false);
 
@@ -832,6 +835,19 @@ export const VideoRoom: React.FC = () => {
         audio: false
       });
 
+      // Pause existing videos to prevent AbortError
+      if (screenVideoRef.current) {
+        screenVideoRef.current.pause();
+        screenVideoRef.current.srcObject = null;
+      }
+      if (pipWindow?.pipVideos) {
+        pipWindow.pipVideos.forEach(v => {
+          if (v) {
+            v.pause();
+            v.srcObject = null;
+          }
+        });
+      }
       console.log('Screen share stream obtained:', stream);
       setScreenStream(stream);
       setScreenSharing(true);
@@ -848,14 +864,15 @@ export const VideoRoom: React.FC = () => {
 
     } catch (error) {
       console.error('Error starting screen share:', error);
-      if (error.name === 'NotAllowedError') {
+      const err = error as Error;
+      if (err.name === 'NotAllowedError') {
         addToast('error', 'Screen sharing permission denied. Please allow screen sharing and try again.');
-      } else if (error.name === 'NotFoundError') {
+      } else if (err.name === 'NotFoundError') {
         addToast('error', 'No screen sharing sources found. Make sure you have a screen or window to share.');
-      } else if (error.name === 'NotReadableError') {
+      } else if (err.name === 'NotReadableError') {
         addToast('error', 'Screen sharing is already in use by another application.');
       } else {
-        addToast('error', `Failed to start screen sharing: ${error.message || 'Unknown error'}`);
+        addToast('error', `Failed to start screen sharing: ${err.message || 'Unknown error'}`);
       }
     }
   }, [addToast, isPiPActive]);
@@ -880,22 +897,22 @@ export const VideoRoom: React.FC = () => {
         console.log('Screen share video is playing');
       });
 
-      // Ensure video plays (handle autoplay restrictions)
-      const playPromise = videoElement.play();
-      if (playPromise !== undefined) {
-        playPromise.then(() => {
-          console.log('Screen share video started playing successfully');
-        }).catch(error => {
-          console.error('Error playing screen share video:', error);
-          // Try to play again after user interaction
-          const handleUserInteraction = () => {
-            screenVideoRef.current?.play().catch(e => console.error('Retry play failed:', e));
-            document.removeEventListener('click', handleUserInteraction);
-          };
-          document.addEventListener('click', handleUserInteraction);
-          addToast('warning', 'Click anywhere to start screen sharing');
-        });
-      }
+      const playVideo = (video: HTMLVideoElement) => {
+        const playPromise = video.play();
+        if (playPromise !== undefined) {
+          playPromise.then(() => console.log('Video playing')).catch(e => {
+            console.error('Play failed:', e);
+            if (e.name === 'AbortError') console.log('AbortError caught - retry ready');
+            // Global retry
+            const retry = () => {
+              video.play().catch(console.error);
+              ['click', 'touchstart', 'keydown'].forEach(ev => document.removeEventListener(ev, retry));
+            };
+            ['click', 'touchstart', 'keydown'].forEach(ev => document.addEventListener(ev, retry, {once: true}));
+          });
+        }
+      };
+      playVideo(videoElement);
 
       // Cleanup function
       return () => {
@@ -928,70 +945,32 @@ export const VideoRoom: React.FC = () => {
     }
   }, [callEnded, pipWindow]);
 
-  // Update PiP window when participants or screen sharing change
+  // Sync screenStream to ALL PiP/main videos when available (fix share-first-then-PiP)
   useEffect(() => {
-    if (pipWindow && !pipWindow.closed && pipWindow.pipContent) {
-      console.log('Updating PiP window - screenSharing:', screenSharing, 'screenStream:', !!screenStream);
-      const content = pipWindow.pipContent;
-      const allParticipants = [localParticipant, ...sortedParticipants];
-
-      // Clear existing content
-      content.innerHTML = '';
-
-      // Rebuild content
-      allParticipants.forEach(participant => {
-        const tile = pipWindow.document.createElement('div');
-        tile.className = 'pip-tile';
-
-        if (participant.id === 'local' && screenSharing && screenStream) {
-          console.log('Showing screen share in PiP for local participant');
-          // Show screen share for local participant
-          const video = pipWindow.document.createElement('video');
-          video.className = 'pip-video';
-          video.autoplay = true;
-          video.muted = true;
-          video.playsInline = true;
-          video.controls = false;
-          video.style.width = '100%';
-          video.style.height = '100%';
-          video.style.objectFit = 'cover';
-          video.style.backgroundColor = '#000';
-          video.srcObject = screenStream;
-
-          // Ensure video plays
-          const playPromise = video.play();
-          if (playPromise !== undefined) {
-            playPromise.then(() => {
-              console.log('PiP update screen share video playing successfully');
-            }).catch(error => {
-              console.error('PiP update screen share video play failed:', error);
-            });
+    if (screenStream) {
+      console.log('Attaching screenStream to all videos');
+      // Main video
+      if (screenVideoRef.current && !screenVideoRef.current.srcObject) {
+        screenVideoRef.current.srcObject = screenStream;
+        playVideo(screenVideoRef.current);
+      }
+      // PiP videos
+      if (pipWindow?.pipVideos) {
+        pipWindow.pipVideos?.forEach(video => {
+          if (video && !video.srcObject) {
+            video.srcObject = screenStream;
+            video.play().catch(e => console.error('PiP play failed:', e));
           }
-
-          tile.appendChild(video);
-        } else {
-          // Show avatar for other participants or local when not sharing
-          const avatar = pipWindow.document.createElement('div');
-          avatar.className = 'pip-avatar';
-          avatar.textContent = participant.name.charAt(0).toUpperCase();
-          tile.appendChild(avatar);
-        }
-
-        const name = pipWindow.document.createElement('div');
-        name.className = 'pip-name';
-        name.textContent = participant.name;
-        tile.appendChild(name);
-
-        if (participant.isSpeaking) {
-          const indicator = pipWindow.document.createElement('div');
-          indicator.className = 'speaking-indicator';
-          tile.appendChild(indicator);
-        }
-
-        content.appendChild(tile);
-      });
+        });
+      }
+        pipVideosRef.current.forEach(video => {
+          if (video && !video.srcObject) {
+            video.srcObject = screenStream;
+            video.play().catch(e => console.error('Local PiP play failed:', e));
+          }
+        });
     }
-  }, [pipWindow, localParticipant, sortedParticipants, screenSharing, screenStream]);
+  }, [screenStream]);
 
   // Clean up on unmount
   useEffect(() => {
@@ -1007,6 +986,19 @@ export const VideoRoom: React.FC = () => {
 
   const stopScreenShare = useCallback(() => {
     console.log('Stopping screen share');
+    // Pause all videos before stopping stream
+    if (screenVideoRef.current) {
+      screenVideoRef.current.pause();
+      screenVideoRef.current.srcObject = null;
+    }
+    if (pipWindow?.pipVideos) {
+      pipWindow.pipVideos.forEach(v => {
+        if (v) {
+          v.pause();
+          v.srcObject = null;
+        }
+      });
+    }
     if (screenStream) {
       screenStream.getTracks().forEach(track => {
         console.log('Stopping track:', track);
@@ -1152,38 +1144,23 @@ export const VideoRoom: React.FC = () => {
           tile.className = 'pip-tile';
 
           if (participant.id === 'local' && screenSharing) {
-            // Show screen share for local participant
-            const video = pipWindow.document.createElement('video');
+            console.log('Creating screen share video in PiP for local participant');
+            const video = pipDocument.createElement('video');
             video.className = 'pip-video';
-            video.autoplay = true;
             video.muted = true;
             video.playsInline = true;
-            video.controls = false;
+            video.autoplay = true;
             video.style.width = '100%';
             video.style.height = '100%';
             video.style.objectFit = 'cover';
-            video.style.backgroundColor = '#000';
+            video.style.borderRadius = '4px';
+            video.style.border = '2px solid #10b981';
 
-            if (screenStream) {
-              console.log('Setting screen stream to PiP video:', screenStream);
-              video.srcObject = screenStream;
+            // Store ref
+            if (!pipWindow.pipVideos) pipWindow.pipVideos = [];
+            pipWindow.pipVideos.push(video);
+            pipVideosRef.current.push(video);
 
-              // Ensure video plays
-              const playPromise = video.play();
-              if (playPromise !== undefined) {
-                playPromise.then(() => {
-                  console.log('PiP screen share video playing successfully');
-                }).catch(error => {
-                  console.error('PiP screen share video play failed:', error);
-                  // Fallback: try to play on user interaction
-                  video.addEventListener('click', () => {
-                    video.play().catch(e => console.error('Fallback play failed:', e));
-                  });
-                });
-              }
-            } else {
-              console.log('No screen stream available for PiP');
-            }
             tile.appendChild(video);
           } else {
             // Show avatar for other participants
@@ -1313,11 +1290,12 @@ export const VideoRoom: React.FC = () => {
   const ctxValue = useMemo<MeetingContextType>(() => ({
     addToast,
     participants,
+    screenStream,
     updateParticipant: (id: string, updates: Partial<Participant>) => setParticipants((prev) => prev.map((p) => p.id === id ? { ...p, ...updates } : p)),
     layoutMode: layoutMode as LayoutMode,
     setLayoutMode,
     activeSpeakerId,
-  }), [addToast, participants, layoutMode, activeSpeakerId]);
+  }), [addToast, participants, screenStream, layoutMode, activeSpeakerId]);
 
   // Show pre-join screen before entering room
   if (isPreJoin) {
@@ -1488,3 +1466,7 @@ export const VideoRoom: React.FC = () => {
 };
 
 export default VideoRoom;
+
+function playVideo(current: HTMLVideoElement) {
+  throw new Error('Function not implemented.');
+}
