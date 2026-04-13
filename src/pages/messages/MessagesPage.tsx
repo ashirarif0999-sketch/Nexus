@@ -259,7 +259,7 @@ export const MessagesPage: React.FC = () => {
     const remainingMessagesInConversation = messages.filter(m =>
       m.id !== messageId &&
       ((m.senderId === currentUser.id && m.receiverId === selectedContact) ||
-       (m.senderId === selectedContact && m.receiverId === currentUser.id))
+        (m.senderId === selectedContact && m.receiverId === currentUser.id))
     ).sort((a, b) => new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime());
 
     const newLastMessage = remainingMessagesInConversation.length > 0
@@ -574,8 +574,8 @@ export const MessagesPage: React.FC = () => {
 
   if (!currentUser) {
     return (
-<div className="loading-screen messages-loading-container flex items-center justify-center min-h-screen">
-<div className="spinner messages-loading-spinner animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+      <div className="loading-screen messages-loading-container flex items-center justify-center min-h-screen">
+        <div className="spinner messages-loading-spinner animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
       </div>
     );
   }
@@ -663,9 +663,8 @@ export const MessagesPage: React.FC = () => {
                 <div
                   key={conversation.id}
                   onClick={() => handleContactSelect(partnerId)}
-                  className={`conversation-item h-[72px] flex items-center px-3 gap-3 cursor-pointer transition-colors border-b border-[#F0F2F5] last:border-0 ${
-                    isActive ? 'bg-[#F0F2F5]' : 'hover:bg-[#F5F6F6]'
-                  }`}
+                  className={`conversation-item h-[72px] flex items-center px-3 gap-3 cursor-pointer transition-colors border-b border-[#F0F2F5] last:border-0 ${isActive ? 'bg-[#F0F2F5]' : 'hover:bg-[#F5F6F6]'
+                    }`}
                 >
                   <div className="conversation-avatar-container relative shrink-0">
                     <div className="avatar-wrapper w-[49px] h-[49px] rounded-full">
@@ -708,7 +707,7 @@ export const MessagesPage: React.FC = () => {
                     </div>
                   </div>
                 </div>
-               );
+              );
             })}
             {!isLoading && conversations.length === 0 && (
               <div className="empty-conversations flex-1 flex flex-col items-center justify-center p-8 text-center">
@@ -772,8 +771,8 @@ export const MessagesPage: React.FC = () => {
             )}
             <div className="chat-header-actions flex items-center gap-4 text-[#54656F]">
               {/* Sidebar Toggle - Only show on mobile */}
-              <button 
-                onClick={() => setIsSidebarOpen(!isSidebarOpen)} 
+              <button
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
                 className="p-2 hover:bg-[#F0F2F5] rounded-full transition-colors hover:text-[#111B21] lg:hidden"
               >
                 {isSidebarOpen ? <PanelLeftClose size={20} /> : <PanelLeftOpen size={20} />}
@@ -810,15 +809,14 @@ export const MessagesPage: React.FC = () => {
                             day: 'numeric',
                             month: 'long',
                             year: 'numeric'
-                })}
+                          })}
 
-</div>
+                        </div>
                       )}
 
                       <div className={`message-wrapper flex w-full group relative ${index === 0 ? 'mt-2' : 'mt-2'}`}>
-                        <div className={`absolute opacity-0 group-hover:opacity-100 transition-opacity z-10 ${
-                          isOwn ? 'right-[100%]' : 'left-[100%]'
-                        }`} style={{ top: '50%', transform: 'translateY(-50%)' }}>
+                        <div className={`absolute opacity-0 group-hover:opacity-100 transition-opacity z-10 ${isOwn ? 'right-[100%]' : 'left-[100%]'
+                          }`} style={{ top: '50%', transform: 'translateY(-50%)' }}>
                           <button
                             className="context-menu-button p-1 rounded-full hover:bg-[#E9EDEF] transition-colors"
                             onClick={(e) => {
@@ -834,11 +832,10 @@ export const MessagesPage: React.FC = () => {
                             </svg>
                           </button>
                         </div>
-                        <div className={`message-bubble relative px-3 py-2 shadow-sm max-w-[65%] rounded-[8px] text-[#111B21] text-[14.2px] leading-[19px] ${
-                          isOwn
-                            ? 'bg-[#D9FDD3] rounded-tr-[0px] ml-auto'
-                            : 'bg-[#FFFFFF] rounded-tl-[0px] mr-auto'
-                        }`}>
+                        <div className={`message-bubble relative px-3 py-2 shadow-sm max-w-[65%] rounded-[8px] text-[#111B21] text-[14.2px] leading-[19px] ${isOwn
+                          ? 'bg-[#D9FDD3] rounded-tr-[0px] ml-auto'
+                          : 'bg-[#FFFFFF] rounded-tl-[0px] mr-auto'
+                          }`}>
                           {/* Reply indicator */}
                           {message.replyTo && message.replyContent && (
                             <div className="reply-indicator bg-gray-50 border-l-4 border-gray-300 pl-3 py-2 mb-2 rounded">
@@ -1076,8 +1073,8 @@ export const MessagesPage: React.FC = () => {
                   <Mic size={24} />
                 </button>
               )}
-                
-              
+
+
             </div>
           </div>
 
@@ -1305,17 +1302,15 @@ export const MessagesPage: React.FC = () => {
 
       {/* Toast Notification */}
       {toast && (
-        <div className={`toast-notification fixed bottom-4 right-4 z-50 px-4 py-2 rounded-lg shadow-lg transition-all duration-300 ${
-          toast.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
-        }`}>
+        <div className={`toast-notification fixed bottom-4 right-4 z-50 px-4 py-2 rounded-lg shadow-lg transition-all duration-300 ${toast.type === 'success' ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+          }`}>
           {toast.message}
         </div>
       )}
 
       {callState.status !== 'idle' && selectedContact && (
-        <div className={`meet-call-overlay fixed inset-0 z-[500] flex flex-col items-center justify-center transition-all duration-500 ${
-          callState.status === 'ended' ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
-        } bg-[#202124]`}>
+        <div className={`meet-call-overlay fixed inset-0 z-[500] flex flex-col items-center justify-center transition-all duration-500 ${callState.status === 'ended' ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
+          } bg-[#202124]`}>
 
           {/* Video Scene */}
           {callState.type === 'video' && callState.status === 'active' && (
@@ -1379,8 +1374,8 @@ export const MessagesPage: React.FC = () => {
                   </span>
                   {callState.status === 'active' && (
                     <div className="meet-timer-pill bg-white/10 px-3 py-1 rounded-full flex items-center gap-2">
-                       <span className="w-2 h-2 bg-green-500 rounded-full" />
-                       <span className="text-white font-mono text-sm">{formatDuration(callDuration)}</span>
+                      <span className="w-2 h-2 bg-green-500 rounded-full" />
+                      <span className="text-white font-mono text-sm">{formatDuration(callDuration)}</span>
                     </div>
                   )}
                 </div>
@@ -1391,7 +1386,7 @@ export const MessagesPage: React.FC = () => {
           {/* Bottom Control Bar */}
           <div className="meet-call-controls fixed bottom-8 left-0 right-0 flex justify-center z-[501]">
             <div className="meet-controls-pill flex items-center gap-4 bg-[#3c4043]/90 backdrop-blur-xl px-6 py-4 rounded-full border border-white/10 shadow-2xl">
-              
+
               <button
                 onClick={toggleMute}
                 className={`meet-control-btn group ${callState.isMuted ? 'bg-red-500 text-white' : 'bg-[#e8eaed]/10 text-white hover:bg-[#e8eaed]/20'}`}
@@ -1432,11 +1427,11 @@ export const MessagesPage: React.FC = () => {
 
           {/* Status Notifications */}
           <div className="absolute top-10 left-10 flex flex-col gap-3">
-             {callState.isMuted && (
-               <div className="bg-red-500/20 border border-red-500/30 text-red-100 text-[10px] uppercase font-bold tracking-widest px-3 py-1 rounded-full backdrop-blur-md">
-                 Microphone Muted
-               </div>
-             )}
+            {callState.isMuted && (
+              <div className="bg-red-500/20 border border-red-500/30 text-red-100 text-[10px] uppercase font-bold tracking-widest px-3 py-1 rounded-full backdrop-blur-md">
+                Microphone Muted
+              </div>
+            )}
           </div>
         </div>
       )}

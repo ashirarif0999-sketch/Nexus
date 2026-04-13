@@ -461,8 +461,8 @@ const SidePanel = ({
                 onClick={() => onTabChange(tab)}
                 className={cn(
                   'px-4 py-1.5 text-[13px] font-medium rounded-full transition-all capitalize',
-                  activeTab === tab 
-                    ? 'bg-[#8ab4f8] text-[#202124] shadow-sm' 
+                  activeTab === tab
+                    ? 'bg-[#8ab4f8] text-[#202124] shadow-sm'
                     : 'text-[#9aa0a6] hover:text-white hover:bg-white/5'
                 )}
               >
@@ -487,7 +487,7 @@ const SidePanel = ({
               ))}
             </div>
           )}
-          
+
           {activeTab === 'chat' && (
             <div className="flex-1 flex flex-col min-h-0">
               <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin">
@@ -503,7 +503,7 @@ const SidePanel = ({
                   messages.map((m: ChatMessage) => <ChatBubble key={m.id} message={m} />)
                 )}
               </div>
-              
+
               {/* Chat Input Bar - Always visible at bottom of tab */}
               <div className="p-4 border-t border-white/5 bg-[#1a1b1e]">
                 <div className="flex items-center gap-2 bg-[#202124] rounded-full pl-4 pr-1 py-1 group focus-within:ring-1 focus-within:ring-[#8ab4f8]">
@@ -530,7 +530,7 @@ const SidePanel = ({
               </div>
             </div>
           )}
-          
+
           {activeTab === 'activities' && (
             <div className="flex-1 overflow-y-auto p-4 space-y-6">
               <div className="bg-[#202124] p-5 rounded-2xl border border-white/5">
@@ -540,8 +540,8 @@ const SidePanel = ({
                 </div>
                 <div className="grid grid-cols-4 gap-3">
                   {REACTION_EMOJIS.filter(e => e).map((emoji) => (
-                    <button 
-                      key={emoji} 
+                    <button
+                      key={emoji}
                       onClick={() => onTriggerReaction(emoji)}
                       className="text-3xl p-2 hover:bg-white/5 rounded-xl transition-all active:scale-90"
                     >
@@ -557,12 +557,12 @@ const SidePanel = ({
                   <h4 className="text-[15px] font-medium text-white">Raise Hand</h4>
                 </div>
                 <p className="text-[13px] text-[#9aa0a6] mb-5">Notify others that you'd like to speak.</p>
-                <button 
+                <button
                   onClick={onToggleHand}
                   className={cn(
                     "flex items-center gap-3 px-6 py-3.5 rounded-full w-full justify-center font-medium transition-all",
-                    isHandRaised 
-                      ? "bg-[#8ab4f8] text-[#202124] shadow-lg shadow-[#8ab4f8]/20" 
+                    isHandRaised
+                      ? "bg-[#8ab4f8] text-[#202124] shadow-lg shadow-[#8ab4f8]/20"
                       : "bg-[#3c4043] hover:bg-[#4a4d51] text-white"
                   )}
                 >
@@ -659,8 +659,8 @@ const ParticipantCarousel = ({
         )}
       >
         {participants.map((p) => (
-          <div 
-            key={p.id} 
+          <div
+            key={p.id}
             className={cn(
               "flex-shrink-0 transition-all duration-300",
               orientation === 'horizontal' ? "w-64" : "w-full"
@@ -763,7 +763,7 @@ const EndCallModal = ({
             <p className="text-[#9aa0a6] text-[15px] leading-relaxed mb-10 px-4">
               {isHost ? 'Are you sure you want to end the meeting for all participants, or just leave?' : 'You will disconnect from this meeting.'}
             </p>
-            
+
             <div className="flex flex-col gap-3.5">
               {isHost && (
                 <button
@@ -779,9 +779,9 @@ const EndCallModal = ({
               >
                 Leave meeting
               </button>
-              
-              <button 
-                onClick={onClose} 
+
+              <button
+                onClick={onClose}
                 className="mt-4 text-[14px] text-[#9aa0a6] hover:text-white transition-colors font-medium"
               >
                 Cancel
@@ -810,9 +810,9 @@ const PostCallSummary = ({ duration, onRedirect }: { duration: number; onRedirec
           <Check className="w-8 h-8 text-white stroke-[3px]" />
         </div>
       </div>
-      
+
       <h2 className="text-[40px] font-bold text-white mb-4 tracking-tight">Meeting Ended</h2>
-      
+
       <div className="flex items-center justify-center gap-2 text-[#9aa0a6] mb-12">
         <Clock className="w-4 h-4 opacity-70" />
         <span className="text-sm font-medium opacity-80">{formatDuration(duration)}</span>
@@ -1198,17 +1198,16 @@ export const VideoRoom: React.FC = () => {
       <div className="video-room-container">
         <main className="video-stage-area meet-scrollbar">
           {!screenSharing ? (
-            <div 
+            <div
               className="video-grid-adaptive"
               style={{
-                gridTemplateColumns: `repeat(${
-                  participants.length + 1 <= 1 ? 1 : 
-                  participants.length + 1 <= 2 ? 2 : 
-                  participants.length + 1 <= 4 ? 2 : 
-                  participants.length + 1 <= 6 ? 3 : 
-                  participants.length + 1 <= 9 ? 3 : 
-                  participants.length + 1 <= 12 ? 4 : 5
-                }, minmax(0, 1fr))`,
+                gridTemplateColumns: `repeat(${participants.length + 1 <= 1 ? 1 :
+                    participants.length + 1 <= 2 ? 2 :
+                      participants.length + 1 <= 4 ? 2 :
+                        participants.length + 1 <= 6 ? 3 :
+                          participants.length + 1 <= 9 ? 3 :
+                            participants.length + 1 <= 12 ? 4 : 5
+                  }, minmax(0, 1fr))`,
               }}
             >
               <VideoTile
