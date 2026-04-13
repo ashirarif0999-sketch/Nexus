@@ -1202,11 +1202,11 @@ export const VideoRoom: React.FC = () => {
               className="video-grid-adaptive"
               style={{
                 gridTemplateColumns: `repeat(${participants.length + 1 <= 1 ? 1 :
-                    participants.length + 1 <= 2 ? 2 :
-                      participants.length + 1 <= 4 ? 2 :
-                        participants.length + 1 <= 6 ? 3 :
-                          participants.length + 1 <= 9 ? 3 :
-                            participants.length + 1 <= 12 ? 4 : 5
+                  participants.length + 1 <= 2 ? 2 :
+                    participants.length + 1 <= 4 ? 2 :
+                      participants.length + 1 <= 6 ? 3 :
+                        participants.length + 1 <= 9 ? 3 :
+                          participants.length + 1 <= 12 ? 4 : 5
                   }, minmax(0, 1fr))`,
               }}
             >
