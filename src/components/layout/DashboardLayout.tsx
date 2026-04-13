@@ -42,14 +42,14 @@ export const DashboardLayout: React.FC = memo(() => {
   }
   
   return (
-    <div className="dashboard-layout min-h-screen bg-gray-50 flex">
+    <div className="dashboard-layout min-h-screen bg-gray-50 flex overflow-y-auto">
       <Sidebar isExpanded={sidebarExpanded} onExpandChange={setSidebarExpanded} />
 
       <div className="dashboard-content flex-1 flex flex-col">
         <Navbar onToggleDock={handleToggleDock} />
 
-        <main className={`dashboard-main flex-1 ${sidebarExpanded ? 'dock-expanded' : ''} ${location.pathname === ROUTES.CALENDAR ? (sidebarExpanded ? 'calendar-expanded' : 'no-padding') : 'p-6 overflow-y-auto'}`}>
-          <div className="dashboard-main-content max-w-7xl mx-auto">
+        <main className={`dashboard-main flex-1 ${sidebarExpanded ? 'dock-expanded' : ''} ${location.pathname === ROUTES.CALENDAR ? (sidebarExpanded ? 'calendar-expanded' : 'no-padding') : 'p-6'}`}>
+          <div className={`dashboard-main-content ${location.pathname === ROUTES.CALENDAR ? 'w-full' : 'max-w-7xl mx-auto'}`}>
             <Outlet />
           </div>
         </main>

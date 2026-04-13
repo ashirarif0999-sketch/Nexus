@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useCallback, Suspense, lazy } from 'react';
 import { Link } from 'react-router-dom';
-import { Users, PieChart, Search, PlusCircle, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Users, PieChart, Search, PlusCircle, ChevronLeft, ChevronRight, SlidersHorizontal } from 'lucide-react';
 import { clsx } from 'clsx';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
@@ -19,6 +19,30 @@ const Card = lazy(() => import('../../components/ui/Card').then(module => ({ def
 const CardBody = lazy(() => import('../../components/ui/Card').then(module => ({ default: module.CardBody })));
 const CardHeader = lazy(() => import('../../components/ui/Card').then(module => ({ default: module.CardHeader })));
 const EntrepreneurCard = lazy(() => import('../../components/entrepreneur/EntrepreneurCard').then(module => ({ default: module.EntrepreneurCard })));
+
+// Custom stat card component
+const StatCard: React.FC<{
+  children: React.ReactNode;
+  style?: React.CSSProperties;
+  className?: string;
+}> = ({ children, style, className }) => (
+  <div
+    className={`rounded-lg shadow-md overflow-hidden flex flex-col border relative ${className || ''}`}
+    style={style}
+  >
+    {children}
+  </div>
+);
+
+// Custom stat body component
+const StatBody: React.FC<{
+  children: React.ReactNode;
+  className?: string;
+}> = ({ children, className }) => (
+  <div className={`px-6 py-4 flex-1 ${className || ''}`}>
+    {children}
+  </div>
+);
 
 const ITEMS_PER_PAGE = 6;
 
@@ -125,8 +149,12 @@ const InvestorDashboardComponent: React.FC = () => {
         </section>
         
         {/* Filters and search */}
-        <div className="investor-filters flex flex-col md:flex-row gap-4">
+        
+        <div className="investor-filters flex flex-col md:flex-row gap-2">
+          
+
           <div className="investor-search-wrapper w-full md:w-2/3">
+          
             <Input
               className="investor-search-input"
               placeholder="Search startups, industries, or keywords..."
@@ -141,16 +169,29 @@ const InvestorDashboardComponent: React.FC = () => {
               fullWidth
               startAdornment={<Search size={18} />}
             />
+            <button
+              onClick={() => setIsIndustryModalOpen(true)}
+              className={clsx(
+                'filter-button-icon flex items-center gap-2 px-2 py-1 border transition-colors rounded-[8px]',
+                selectedIndustries.length > 0
+                  ? 'bg-[#405CFF] text-white'
+                  : 'border-gray-300 bg-white text-gray-700 '
+              )}
+            >
+              <SlidersHorizontal size={18} />
+              <span className={clsx(
+                "filter-button-count text-xs px-2 py-0.5 rounded-full",
+                selectedIndustries.length > 0
+                  ? 'bg-[white] text-black'
+                  : ' bg-white text-gray-700'
+              )}>
+                {selectedIndustries.length > 0 ? selectedIndustries.length : industries.length}
+              </span>
+            </button>
           </div>
 
           <div className="investor-filter-actions w-full md:w-1/3 flex gap-2 items-center">
-            <FilterButton
-              label="Industry"
-              count={industries.length}
-              selectedCount={selectedIndustries.length}
-              onClick={() => setIsIndustryModalOpen(true)}
-            />
-
+            
             <Link to={ROUTES.ENTREPRENEURS} className="investor-view-all-link">
               <Button
                 className="investor-view-all-btn"
@@ -178,8 +219,28 @@ const InvestorDashboardComponent: React.FC = () => {
       {/* Stats summary */}
       <div className="investor-stats-summary dashboard-stats page-stats grid grid-cols-1 md:grid-cols-3 gap-4">
         <Suspense fallback={<SkeletonCard />}>
-          <Card className="investor-total-startups-card bg-primary-50 border border-primary-100">
-            <CardBody className="investor-total-startups-body">
+          <StatCard className="investor-total-startups-card border-primary-100">
+            <svg style={{ position: 'absolute', top: 0, left: 0, zIndex: -1, filter: 'blur(25px)', opacity: '20%', transform: 'scaleX(-1)' }} viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" version="1.1">
+              <defs>
+                <linearGradient id="grad1_0" x1="33.3%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="20%" stopColor="#ffffff" stopOpacity="1"></stop>
+                  <stop offset="80%" stopColor="#ffffff" stopOpacity="1"></stop>
+                </linearGradient>
+              </defs>
+              <defs>
+                <linearGradient id="grad2_0" x1="0%" y1="0%" x2="66.7%" y2="100%">
+                  <stop offset="20%" stopColor="#ffffff" stopOpacity="1"></stop>
+                  <stop offset="80%" stopColor="#ffffff" stopOpacity="1"></stop>
+                </linearGradient>
+              </defs>
+              <g transform="translate(900, 0)">
+                <path d="M0 432.7C-32.7 374.6 -65.5 316.4 -126.7 305.8C-187.9 295.2 -277.6 332 -305.9 305.9C-334.3 279.9 -301.4 190.8 -312.3 129.3C-323.2 67.9 -377.9 33.9 -432.7 0L0 0Z" fill="#3ca9fa"></path>
+              </g>
+              <g transform="translate(0, 600)">
+                <path d="M0 -432.7C67.6 -438.6 135.3 -444.5 165.6 -399.7C195.9 -354.9 188.9 -259.4 211.4 -211.4C234 -163.5 286.2 -163.2 328 -135.9C369.8 -108.6 401.2 -54.3 432.7 0L0 0Z" fill="#3ca9fa"></path>
+              </g>
+            </svg>
+            <StatBody className="investor-total-startups-body">
               <div className="investor-total-startups-content flex items-center">
                 <div className="investor-total-startups-icon p-3 bg-primary-100 rounded-full mr-4">
                   <Users size={20} className="text-primary-700" />
@@ -189,13 +250,34 @@ const InvestorDashboardComponent: React.FC = () => {
                   <h3 className="investor-total-startups-count text-xl font-semibold text-primary-900">{entrepreneurs.length}</h3>
                 </div>
               </div>
-            </CardBody>
-          </Card>
+            </StatBody>
+          </StatCard>
         </Suspense>
 
         <Suspense fallback={<SkeletonCard />}>
-          <Card className="investor-industries-card bg-secondary-50 border border-secondary-100">
-            <CardBody className="investor-industries-body">
+          <StatCard className="investor-industries-card border-secondary-100">
+            <svg style={{ position: 'absolute', top: 0, left: 0, zIndex: -1, filter: 'blur(25px)', opacity: '20%', transform: 'scaleX(-1)' }} viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" version="1.1">
+              <defs>
+                <linearGradient id="grad1_0" x1="33.3%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="20%" stopColor="#ffffff" stopOpacity="1"></stop>
+                  <stop offset="80%" stopColor="#ffffff" stopOpacity="1"></stop>
+                </linearGradient>
+              </defs>
+              <defs>
+                <linearGradient id="grad2_0" x1="0%" y1="0%" x2="66.7%" y2="100%">
+                  <stop offset="20%" stopColor="#ffffff" stopOpacity="1"></stop>
+                  <stop offset="80%" stopColor="#ffffff" stopOpacity="1"></stop>
+                </linearGradient>
+              </defs>
+              <g transform="translate(900, 0)">
+                <path d="M0 486.7C-45.8 437.6 -91.6 388.5 -154.2 372.3C-216.9 356.1 -296.3 372.8 -344.2 344.2C-392.1 315.6 -408.3 241.7 -426.8 176.8C-445.3 111.9 -466 55.9 -486.7 0L0 0Z" fill="#3cfad2"></path>
+              </g>
+              <g transform="translate(0, 600)">
+                <path d="M0 -486.7C54.2 -448.2 108.4 -409.6 157.7 -380.6C207 -351.7 251.3 -332.4 304.1 -304.1C356.8 -275.7 417.9 -238.4 449.7 -186.3C481.5 -134.1 484.1 -67 486.7 0L0 0Z" fill="#3cfad2"></path>
+              </g>
+            </svg>
+            
+            <StatBody className="investor-industries-body">
               <div className="investor-industries-content flex items-center">
                 <div className="investor-industries-icon p-3 bg-secondary-100 rounded-full mr-4">
                   <PieChart size={20} className="text-secondary-700" />
@@ -205,13 +287,33 @@ const InvestorDashboardComponent: React.FC = () => {
                   <h3 className="investor-industries-count text-xl font-semibold text-secondary-900">{industries.length}</h3>
                 </div>
               </div>
-            </CardBody>
-          </Card>
+            </StatBody>
+          </StatCard>
         </Suspense>
 
         <Suspense fallback={<SkeletonCard />}>
-          <Card className="investor-connections-card bg-accent-50 border border-accent-100">
-            <CardBody className="investor-connections-body">
+          <StatCard className="investor-connections-card border-accent-100">
+            <svg style={{ position: 'absolute', top: 0, left: 0, zIndex: -1, filter: 'blur(25px)', opacity: '30%', transform: 'scaleX(-1)' }} viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" version="1.1">
+              <defs>
+                <linearGradient id="grad1_0" x1="33.3%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="20%" stopColor="#ffffff" stopOpacity="1"></stop>
+                  <stop offset="80%" stopColor="#ffffff" stopOpacity="1"></stop>
+                </linearGradient>
+              </defs>
+              <defs>
+                <linearGradient id="grad2_0" x1="0%" y1="0%" x2="66.7%" y2="100%">
+                  <stop offset="20%" stopColor="#ffffff" stopOpacity="1"></stop>
+                  <stop offset="80%" stopColor="#ffffff" stopOpacity="1"></stop>
+                </linearGradient>
+              </defs>
+              <g transform="translate(900, 0)">
+                <path d="M0 432.7C-32.7 374.6 -65.5 316.4 -126.7 305.8C-187.9 295.2 -277.6 332 -305.9 305.9C-334.3 279.9 -301.4 190.8 -312.3 129.3C-323.2 67.9 -377.9 33.9 -432.7 0L0 0Z" fill="#fabb3c"></path>
+              </g>
+              <g transform="translate(0, 600)">
+                <path d="M0 -432.7C67.6 -438.6 135.3 -444.5 165.6 -399.7C195.9 -354.9 188.9 -259.4 211.4 -211.4C234 -163.5 286.2 -163.2 328 -135.9C369.8 -108.6 401.2 -54.3 432.7 0L0 0Z" fill="#fabb3c"></path>
+              </g>
+            </svg>
+            <StatBody className="investor-connections-body">
               <div className="investor-connections-content flex items-center">
                 <div className="investor-connections-icon p-3 bg-accent-100 rounded-full mr-4">
                   <Users size={20} className="text-accent-700" />
@@ -223,8 +325,8 @@ const InvestorDashboardComponent: React.FC = () => {
                   </h3>
                 </div>
               </div>
-            </CardBody>
-          </Card>
+            </StatBody>
+          </StatCard>
         </Suspense>
       </div>
       

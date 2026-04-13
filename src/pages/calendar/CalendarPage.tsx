@@ -44,6 +44,11 @@ interface AddAvailabilityModalProps {
   onClose: () => void;
   onSubmit: (slot: AvailabilitySlot) => void;
   selectedDate?: string;
+  modalTrigger: 'calendar' | 'button';
+  referencePoint: { x: number; y: number } | null;
+  isDocked: boolean;
+  onDockToggle: (docked: boolean) => void;
+  innerZ?: number;
 }
 
 const AddAvailabilityModal: React.FC<AddAvailabilityModalProps> = memo(({
@@ -51,6 +56,11 @@ const AddAvailabilityModal: React.FC<AddAvailabilityModalProps> = memo(({
   onClose,
   onSubmit,
   selectedDate,
+  modalTrigger,
+  referencePoint,
+  isDocked,
+  onDockToggle,
+  innerZ = 1000,
 }) => {
   const [title, setTitle] = useState('');
   const [date, setDate] = useState(selectedDate || '');
@@ -60,8 +70,6 @@ const AddAvailabilityModal: React.FC<AddAvailabilityModalProps> = memo(({
   const [meetingLink, setMeetingLink] = useState('');
 
   // Modal positioning state
-  const [modalTrigger, setModalTrigger] = useState<'calendar' | 'button'>('button');
-  const [referencePoint, setReferencePoint] = useState<{ x: number; y: number } | null>(null);
   const [contextualContent, setContextualContent] = useState<any>(null);
 
   // Drag functionality
@@ -70,7 +78,9 @@ const AddAvailabilityModal: React.FC<AddAvailabilityModalProps> = memo(({
   const [modalPosition, setModalPosition] = useState({ x: 0, y: 0 });
   const [modalHeight, setModalHeight] = useState<number | null>(null); // For squeezing behavior
   const [hasBeenDragged, setHasBeenDragged] = useState(false);
+  const [isIdle, setIsIdle] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
+  const idleTimeoutRef = useRef<number | null>(null);
   const modalRef = useRef<HTMLDivElement>(null);
 
   // Calculate smart modal position based on cursor coordinates
@@ -212,6 +222,28 @@ const AddAvailabilityModal: React.FC<AddAvailabilityModalProps> = memo(({
     return null;
   }, []);
 
+  // Generate contextual content based on trigger and date
+  useEffect(() => {
+    const content = generateContextualContent(modalTrigger, selectedDate);
+    setContextualContent(content);
+  }, [modalTrigger, selectedDate, generateContextualContent]);
+
+  // Idle timer management
+  const startIdleTimer = useCallback(() => {
+    if (idleTimeoutRef.current) clearTimeout(idleTimeoutRef.current);
+    idleTimeoutRef.current = window.setTimeout(() => {
+      setIsIdle(true);
+    }, 200);
+  }, []);
+
+  const clearIdleTimer = useCallback(() => {
+    if (idleTimeoutRef.current) {
+      clearTimeout(idleTimeoutRef.current);
+      idleTimeoutRef.current = null;
+    }
+    setIsIdle(false);
+  }, []);
+
   // Reset modal position when closed or mobile state changes
   useEffect(() => {
     if (!isOpen || isMobile) {
@@ -219,11 +251,12 @@ const AddAvailabilityModal: React.FC<AddAvailabilityModalProps> = memo(({
       setModalHeight(null); // Reset squeezed height
       setIsDragging(false);
       setHasBeenDragged(false);
-      setModalTrigger('button');
-      setReferencePoint(null);
       setContextualContent(null);
+      onDockToggle(false);
+      clearIdleTimer();
+
     }
-  }, [isOpen, isMobile]);
+  }, [isOpen, isMobile, modalTrigger, smartPosition, clearIdleTimer]);
 
   // Ensure modal actions stay within viewport and manage height expansion
   useEffect(() => {
@@ -234,9 +267,9 @@ const AddAvailabilityModal: React.FC<AddAvailabilityModalProps> = memo(({
       const modalBottom = modalPosition.y + currentModalHeight;
 
       // If actions would be below viewport, adjust position upward
-      if (modalBottom > viewportHeight - 20) {
-        const newY = viewportHeight - currentModalHeight - 20;
-        setModalPosition(prev => ({ ...prev, y: Math.max(20, newY) }));
+      if (modalBottom > viewportHeight - 10) {
+        const newY = viewportHeight - currentModalHeight - 10;
+        setModalPosition(prev => ({ ...prev, y: Math.max(10, newY) }));
       }
 
       // If modal has been squeezed but now has enough space, expand it back
@@ -273,6 +306,8 @@ const AddAvailabilityModal: React.FC<AddAvailabilityModalProps> = memo(({
 
     e.preventDefault();
     setIsDragging(true);
+    onDockToggle(false);
+    clearIdleTimer();
 
     // Get the modal's current position relative to viewport
     const rect = modalRef.current.getBoundingClientRect();
@@ -288,7 +323,7 @@ const AddAvailabilityModal: React.FC<AddAvailabilityModalProps> = memo(({
       x: rect.left,
       y: rect.top,
     });
-  }, [isMobile]);
+  }, [isMobile, clearIdleTimer]);
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!isDragging || !modalRef.current) return;
@@ -297,7 +332,7 @@ const AddAvailabilityModal: React.FC<AddAvailabilityModalProps> = memo(({
     const viewportHeight = window.innerHeight;
 
     // Get modal dimensions
-    const modalWidth = modalRef.current.offsetWidth;
+    const modalWidth = modalRef.current.getBoundingClientRect().width;
     const naturalModalHeight = modalRef.current.scrollHeight || 600; // Natural height of content
 
     // Calculate new position
@@ -329,6 +364,7 @@ const AddAvailabilityModal: React.FC<AddAvailabilityModalProps> = memo(({
   const handleMouseUp = useCallback(() => {
     setIsDragging(false);
     setHasBeenDragged(true);
+    startIdleTimer();
 
     // When drag ends, check if modal needs repositioning to keep actions visible
     // Keep the squeezed height instead of resetting it
@@ -337,14 +373,14 @@ const AddAvailabilityModal: React.FC<AddAvailabilityModalProps> = memo(({
     const modalBottom = modalPosition.y + currentModalHeight;
 
     // If actions would be below viewport, adjust position
-    if (modalBottom > viewportHeight - 20) {
-      const newY = viewportHeight - currentModalHeight - 20;
-      setModalPosition(prev => ({ ...prev, y: Math.max(20, newY) }));
+    if (modalBottom > viewportHeight - 10) {
+      const newY = viewportHeight - currentModalHeight - 10;
+      setModalPosition(prev => ({ ...prev, y: Math.max(10, newY) }));
     }
 
     // Keep the squeezed height - don't reset it
     // The height will only be reset when modal is closed or repositioned
-  }, [modalPosition, modalHeight]);
+  }, [modalPosition, modalHeight, startIdleTimer]);
 
   // Add/remove global mouse event listeners
   useEffect(() => {
@@ -405,19 +441,22 @@ const AddAvailabilityModal: React.FC<AddAvailabilityModalProps> = memo(({
                 height: modalHeight || 'auto'
               }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className={`schedule-meeting-panel modal-panel bg-white rounded-2xl text-left shadow-2xl ${isMobile ? 'px-4 pt-4 pb-4 mx-2' : 'px-6 pt-6 pb-6'}`}
+              className={`schedule-meeting-panel modal-panel bg-white rounded-2xl text-left shadow-2xl ${isMobile ? 'px-4 pt-4 pb-4 mx-2' : 'px-6 pt-6 pb-6'} ${isDocked ? 'DOCK' : ''}`}
               style={{
-                zIndex: 1000,
+                zIndex: innerZ,
                 maxWidth: isMobile ? 'none' : '28rem',
                 width: isMobile ? 'calc(100vw - 1rem)' : '100%',
                 display: 'flex',
                 flexDirection: 'column',
                 position: 'relative', // For absolute positioning of actions
-                // Use smart positioning for calendar-triggered modals
-                ...(modalTrigger === 'calendar' && smartPosition && !isDragging && !hasBeenDragged ? {
+                // Use smart positioning for calendar-triggered modals (applies when idle for 0.2s)
+                ...(modalTrigger === 'calendar' && smartPosition && (!isDragging || isIdle) && !hasBeenDragged ? {
                   position: 'fixed',
                   left: `${smartPosition.x}px`,
-                  top: `${Math.min(smartPosition.y, window.innerHeight - 600)}px`, // Ensure actions stay in viewport
+                  top: `${smartPosition.y}px`,
+                  bottom: '10px',
+                  width: '28rem',
+                  maxWidth: '28rem',
                 } : {}),
                 // Override with drag positioning if actively dragged
                 ...((isDragging || hasBeenDragged) && !isMobile ? {
@@ -427,210 +466,229 @@ const AddAvailabilityModal: React.FC<AddAvailabilityModalProps> = memo(({
                 } : {}),
                 cursor: isDragging && !isMobile ? 'grabbing' : hasBeenDragged && !isMobile ? 'grab' : 'default',
               }}>
-          {/* Header - fixed at top */}
-          <div
-            className={`schedule-meeting-header modal-header flex items-center justify-between ${isMobile ? 'px-0 pt-0 pb-4' : 'px-0 pt-0 pb-6'} ${isMobile ? '' : 'cursor-grab active:cursor-grabbing'}`}
-            onMouseDown={handleMouseDown}
-          >
-            <div>
-              <h3 className="modal-title text-xl font-semibold text-gray-900 flex items-center">
-                <CalendarIcon className="w-5 h-5 mr-2 text-primary-600" />
-                {contextualContent?.title || "Schedule Meeting"}
-              </h3>
-              {contextualContent?.subtitle && (
-                <p className="modal-subtitle text-sm text-gray-600 mt-1">{contextualContent.subtitle}</p>
-              )}
-            </div>
-            <button
-              onClick={(e) => {
-                e.stopPropagation(); // Prevent drag when clicking close button
-                onClose();
-              }}
-              className="modal-close-button text-gray-400 hover:text-gray-500 transition-colors p-1"
-            >
-              <X className="w-5 h-5" />
-            </button>
-          </div>
+              {/* Header - fixed at top */}
+              <div
+                className={`schedule-meeting-header modal-header flex items-center justify-between ${isMobile ? 'px-0 pt-0 pb-4' : 'px-0 pt-0 pb-6'} ${isMobile || isDocked ? '' : 'cursor-grab active:cursor-grabbing'}`}
+                onMouseDown={isMobile || isDocked ? undefined : handleMouseDown}
+              >
+                <div>
+                  <h3 className="modal-title text-xl font-semibold text-gray-900 flex items-center">
+                    <button
+                      className={`dock-button ${isMobile ? 'hidden' : ''}`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        if (!isDocked) {
+                          setModalPosition({ x: window.innerWidth - 448, y: 0 });
+                          setHasBeenDragged(true);
+                          setIsDragging(false);
+                          onDockToggle(true);
+                        } else {
+                          onDockToggle(false);
+                        }
+                      }}
+                      onMouseDown={(e) => e.stopPropagation()}
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" height="24px" viewBox="0 -960 960 960" width="24px" fill="#e3e3e3" className="w-5 h-5">
+                        <path d="M160-280v-120h640v120H160Zm0-280v-120h640v120H160Z" />
+                      </svg>
+                    </button>
+                    <CalendarIcon className="w-5 h-5 mr-2 text-primary-600" />
+                    {contextualContent?.title || "Schedule Meeting"}
+                  </h3>
+                  {contextualContent?.subtitle && (
+                    <p className="modal-subtitle text-sm text-gray-600 mt-1">{contextualContent.subtitle}</p>
+                  )}
+                </div>
+                <button
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent drag when clicking close button
+                    onClose();
+                  }}
+                  className="modal-close-button text-gray-400 hover:text-gray-500 transition-colors p-1"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
 
-          {/* Scrollable Content Area */}
-          <div className="modal-content flex-1 overflow-y-auto" style={{ paddingBottom: '5rem' }}>
-            {/* Contextual Content Section */}
-            {contextualContent && modalTrigger === 'calendar' && (
-              <div className="contextual-content bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 mb-6 border border-blue-100">
-                <div className="contextual-content-layout flex items-start space-x-3">
-                  <div className="contextual-content-icon-container flex-shrink-0">
-                    <div className="contextual-content-icon w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <CalendarIcon className="w-4 h-4 text-blue-600" />
+              {/* Scrollable Content Area */}
+              <div className="modal-content flex-1 overflow-y-auto" style={{ paddingBottom: '5rem' }}>
+                {/* Contextual Content Section */}
+                {contextualContent && modalTrigger === 'calendar' && (
+                  <div className="contextual-content bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 mb-6 border border-blue-100">
+                    <div className="contextual-content-layout flex items-start space-x-3">
+                      <div className="contextual-content-icon-container flex-shrink-0">
+                        <div className="contextual-content-icon w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                          <CalendarIcon className="w-4 h-4 text-blue-600" />
+                        </div>
+                      </div>
+                      <div className="contextual-content-text flex-1">
+                        <h4 className="contextual-content-title text-sm font-semibold text-blue-900 mb-2">
+                          Productivity Tips for {contextualContent.dayOfWeek}
+                        </h4>
+                        <ul className="contextual-content-tips space-y-1">
+                          {contextualContent.tips.slice(0, 3).map((tip: string, index: number) => (
+                            <li key={index} className="contextual-content-tip-item text-xs text-blue-800 flex items-start">
+                              <span className="contextual-content-tip-bullet mr-2">•</span>
+                              <span>{tip}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
                   </div>
-                  <div className="contextual-content-text flex-1">
-                    <h4 className="contextual-content-title text-sm font-semibold text-blue-900 mb-2">
-                      Productivity Tips for {contextualContent.dayOfWeek}
-                    </h4>
-                    <ul className="contextual-content-tips space-y-1">
-                      {contextualContent.tips.slice(0, 3).map((tip: string, index: number) => (
-                        <li key={index} className="contextual-content-tip-item text-xs text-blue-800 flex items-start">
-                          <span className="contextual-content-tip-bullet mr-2">•</span>
-                          <span>{tip}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-              </div>
-            )}
+                )}
 
-            {contextualContent && modalTrigger === 'button' && (
-              <div className="contextual-content bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 mb-6 border border-green-100">
-                <div className="contextual-content-layout flex items-start space-x-3">
-                  <div className="contextual-content-icon-container flex-shrink-0">
-                    <div className="contextual-content-icon w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                      <Video className="w-4 h-4 text-green-600" />
+                {contextualContent && modalTrigger === 'button' && (
+                  <div className="contextual-content bg-gradient-to-r from-green-50 to-emerald-50 rounded-xl p-4 mb-6 border border-green-100">
+                    <div className="contextual-content-layout flex items-start space-x-3">
+                      <div className="contextual-content-icon-container flex-shrink-0">
+                        <div className="contextual-content-icon w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                          <Video className="w-4 h-4 text-green-600" />
+                        </div>
+                      </div>
+                      <div className="contextual-content-text flex-1">
+                        <h4 className="contextual-content-title text-sm font-semibold text-green-900 mb-2">
+                          Scheduling Best Practices
+                        </h4>
+                        <ul className="contextual-content-tips space-y-1">
+                          {contextualContent.tips.slice(0, 3).map((tip: string, index: number) => (
+                            <li key={index} className="contextual-content-tip-item text-xs text-green-800 flex items-start">
+                              <span className="contextual-content-tip-bullet mr-2">•</span>
+                              <span>{tip}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
                     </div>
                   </div>
-                  <div className="contextual-content-text flex-1">
-                    <h4 className="contextual-content-title text-sm font-semibold text-green-900 mb-2">
-                      Scheduling Best Practices
-                    </h4>
-                    <ul className="contextual-content-tips space-y-1">
-                      {contextualContent.tips.slice(0, 3).map((tip: string, index: number) => (
-                        <li key={index} className="contextual-content-tip-item text-xs text-green-800 flex items-start">
-                          <span className="contextual-content-tip-bullet mr-2">•</span>
-                          <span>{tip}</span>
-                        </li>
-                      ))}
-                    </ul>
+                )}
+
+                <form onSubmit={handleSubmit} className="schedule-meeting-form modal-form space-y-5">
+                  <div className="form-field meeting-title-field">
+                    <label htmlFor="title" className="form-label block text-sm font-semibold text-gray-700">
+                      Meeting Title
+                    </label>
+                    <input
+                      type="text"
+                      id="title"
+                      value={title}
+                      onChange={(e) => setTitle(e.target.value)}
+                      placeholder="e.g., Investor Pitch Session"
+                      className="form-input mt-2 block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                      required
+                    />
                   </div>
+
+                  <div className="form-field meeting-date-field">
+                    <label htmlFor="date" className="form-label block text-sm font-semibold text-gray-700">
+                      Date
+                    </label>
+                    <input
+                      type="date"
+                      id="date"
+                      value={date}
+                      onChange={(e) => setDate(e.target.value)}
+                      className="form-input mt-2 block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white/80 backdrop-blur-sm hover:border-gray-300"
+                      required
+                    />
+                  </div>
+
+                  <div className="time-fields-grid grid grid-cols-2 gap-4">
+                    <div className="form-field meeting-start-time-field">
+                      <label htmlFor="startTime" className="form-label block text-sm font-semibold text-gray-700">
+                        Start Time
+                      </label>
+                      <input
+                        type="time"
+                        id="startTime"
+                        value={startTime}
+                        onChange={(e) => setStartTime(e.target.value)}
+                        className="form-input mt-2 block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                        required
+                      />
+                    </div>
+                    <div className="form-field meeting-end-time-field">
+                      <label htmlFor="endTime" className="form-label block text-sm font-semibold text-gray-700">
+                        End Time
+                      </label>
+                      <input
+                        type="time"
+                        id="endTime"
+                        value={endTime}
+                        onChange={(e) => setEndTime(e.target.value)}
+                        className="form-input mt-2 block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-field meeting-description-field">
+                    <label htmlFor="description" className="form-label block text-sm font-semibold text-gray-700">
+                      Description (Optional)
+                    </label>
+                    <textarea
+                      id="description"
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      rows={2}
+                      placeholder="Add meeting notes..."
+                      className="form-input mt-2 block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                    />
+                  </div>
+
+                  <div className="form-field meeting-link-field">
+                    <label htmlFor="meetingLink" className="form-label block text-sm font-semibold text-gray-700">
+                      Google Meet Link (Optional)
+                    </label>
+                    <input
+                      type="url"
+                      id="meetingLink"
+                      value={meetingLink}
+                      onChange={(e) => setMeetingLink(e.target.value)}
+                      placeholder="https://meet.google.com/abc-defg-hij"
+                      className="form-input mt-2 block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
+                    />
+                  </div>
+
+                  {/* Meeting Link Preview */}
+                  {meetingLink && (
+                    <div className="meeting-link-display p-4 bg-blue-50 border-2 border-blue-200 rounded-xl">
+                      <p className="meeting-link-label text-xs font-semibold text-blue-700 mb-1">Google Meet Link</p>
+                      <p className="meeting-link-url text-sm text-blue-800 font-mono truncate">{meetingLink}</p>
+                    </div>
+                  )}
+                </form>
+              </div>
+
+              {/* Form Actions - Fixed at bottom of modal */}
+              <div className="form-actions absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-6 py-4" >
+                <div className="form-actions-buttons flex gap-3">
+                  <button
+                    type="button"
+                    onClick={onClose}
+                    className="cancel-button flex-1 px-4 py-3 text-sm font-semibold text-gray-700 bg-gray-100 border border-gray-200 rounded-xl hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      // Create a synthetic event for form submission
+                      const syntheticEvent = {
+                        preventDefault: () => { },
+                        target: document.createElement('form')
+                      } as unknown as React.FormEvent<HTMLFormElement>;
+                      handleSubmit(syntheticEvent);
+                    }}
+                    className="submit-button flex-1 px-4 py-3 text-sm font-semibold text-white bg-[#405CFF] border border-transparent rounded-xl hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 shadow-lg shadow-primary-200"
+                  >
+                    Confirm
+                  </button>
                 </div>
               </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="schedule-meeting-form modal-form space-y-5">
-            <div className="form-field meeting-title-field">
-              <label htmlFor="title" className="form-label block text-sm font-semibold text-gray-700">
-                Meeting Title
-              </label>
-              <input
-                type="text"
-                id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="e.g., Investor Pitch Session"
-                className="form-input mt-2 block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                required
-              />
-            </div>
-
-            <div className="form-field meeting-date-field">
-              <label htmlFor="date" className="form-label block text-sm font-semibold text-gray-700">
-                Date
-              </label>
-               <input
-                type="date"
-                id="date"
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-                className="form-input mt-2 block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm bg-white/80 backdrop-blur-sm hover:border-gray-300"
-                required
-              />
-            </div>
-
-            <div className="time-fields-grid grid grid-cols-2 gap-4">
-              <div className="form-field meeting-start-time-field">
-                <label htmlFor="startTime" className="form-label block text-sm font-semibold text-gray-700">
-                  Start Time
-                </label>
-                <input
-                  type="time"
-                  id="startTime"
-                  value={startTime}
-                  onChange={(e) => setStartTime(e.target.value)}
-                  className="form-input mt-2 block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                  required
-                />
-              </div>
-              <div className="form-field meeting-end-time-field">
-                <label htmlFor="endTime" className="form-label block text-sm font-semibold text-gray-700">
-                  End Time
-                </label>
-                <input
-                  type="time"
-                  id="endTime"
-                  value={endTime}
-                  onChange={(e) => setEndTime(e.target.value)}
-                  className="form-input mt-2 block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="form-field meeting-description-field">
-              <label htmlFor="description" className="form-label block text-sm font-semibold text-gray-700">
-                Description (Optional)
-              </label>
-              <textarea
-                id="description"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                rows={2}
-                placeholder="Add meeting notes..."
-                className="form-input mt-2 block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-              />
-            </div>
-
-            <div className="form-field meeting-link-field">
-              <label htmlFor="meetingLink" className="form-label block text-sm font-semibold text-gray-700">
-                Google Meet Link (Optional)
-              </label>
-              <input
-                type="url"
-                id="meetingLink"
-                value={meetingLink}
-                onChange={(e) => setMeetingLink(e.target.value)}
-                placeholder="https://meet.google.com/abc-defg-hij"
-                className="form-input mt-2 block w-full px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500 sm:text-sm"
-              />
-            </div>
-
-            {/* Meeting Link Preview */}
-            {meetingLink && (
-              <div className="meeting-link-display p-4 bg-blue-50 border-2 border-blue-200 rounded-xl">
-                <p className="meeting-link-label text-xs font-semibold text-blue-700 mb-1">Google Meet Link</p>
-                <p className="meeting-link-url text-sm text-blue-800 font-mono truncate">{meetingLink}</p>
-              </div>
-            )}
-          </form>
+            </motion.div>
           </div>
-
-          {/* Form Actions - Fixed at bottom of modal */}
-          <div className="form-actions absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-6 py-4" >
-            <div className="form-actions-buttons flex gap-3">
-              <button
-                type="button"
-                onClick={onClose}
-                className="cancel-button flex-1 px-4 py-3 text-sm font-semibold text-gray-700 bg-gray-100 border border-gray-200 rounded-xl hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-300 transition-colors"
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                onClick={() => {
-                  // Create a synthetic event for form submission
-                  const syntheticEvent = {
-                    preventDefault: () => { },
-                    target: document.createElement('form')
-                  } as unknown as React.FormEvent<HTMLFormElement>;
-                  handleSubmit(syntheticEvent);
-                }}
-                className="submit-button flex-1 px-4 py-3 text-sm font-semibold text-white bg-primary-600 border border-transparent rounded-xl hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 shadow-lg shadow-primary-200"
-              >
-                Confirm
-              </button>
-            </div>
-          </div>
-          </motion.div>
-       </div>
-      </motion.div>
+        </motion.div>
       )}
     </AnimatePresence>
   );
@@ -710,8 +768,9 @@ export const CalendarPage: React.FC = memo(() => {
   const [selectedDate, setSelectedDate] = useState<string | undefined>();
   const [modalTrigger, setModalTrigger] = useState<'calendar' | 'button'>('button');
   const [referencePoint, setReferencePoint] = useState<{ x: number; y: number } | null>(null);
-const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
+  const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const [contextualContent, setContextualContent] = useState<any>(null);
+  const [isModalDocked, setIsModalDocked] = useState(false);
 
   // Generate contextual content based on trigger and selected date
   const generateContextualContent = useCallback((trigger: 'calendar' | 'button', date?: string) => {
@@ -861,9 +920,9 @@ const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
   const memoizedEvents = useMemo(() => events, [events]);
 
   return (
-    <div className="calendar-page page-main-content min-h-screen bg-gray-50">
+    <div className={`calendar-page page-main-content min-h-screen bg-gray-50 ${isModalDocked ? 'right-panel-docked' : ''}`}>
       {/* Mobile Header */}
-      
+
 
       {/* Main Content */}
       <div className="calendar-content flex flex-col md:flex-row">
@@ -895,7 +954,7 @@ const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
                   setContextualContent(content);
                   setIsModalOpen(true);
                 }}
-                className="schedule-meeting-button inline-flex items-center px-4 py-2.5 text-sm font-semibold text-white bg-primary-600 border border-transparent rounded-[8px] hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 shadow-lg shadow-primary-200 transform"
+                className="schedule-meeting-button inline-flex items-center px-4 py-2.5 text-sm font-semibold text-white bg-[#405CFF] border border-transparent rounded-[8px] hover:bg-primary-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500 shadow-lg shadow-primary-200 transform"
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Schedule Meeting
@@ -907,11 +966,11 @@ const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
           {/* Legend */}
           <div className="calendar-legend flex flex-wrap items-center space-x-4 md:space-x-6 mb-6">
             <div className="legend-item legend-item-meetings flex items-center">
-              <span className="legend-color legend-color-meetings w-3 h-3 bg-primary-600 rounded-full mr-2" />
+              <span className="legend-color legend-color-meetings w-3 h-3 bg-[#405CFF] rounded-full mr-2" />
               <span className="legend-label legend-label-meetings text-sm text-gray-600">Meetings</span>
             </div>
             <div className="legend-item legend-item-scheduled flex items-center">
-              <span className="legend-color legend-color-scheduled w-3 h-3 bg-purple-600 rounded-full mr-2" />
+              <span className="legend-color legend-color-scheduled w-3 h-3 bg-[#8B5CF6] rounded-full mr-2" />
               <span className="legend-label legend-label-scheduled text-sm text-gray-600">Scheduled</span>
             </div>
             <div className="legend-item legend-item-availability flex items-center">
@@ -921,47 +980,47 @@ const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
           </div>
 
           {/* Calendar Card - Premium Nexus Styling */}
-          <div className="calendar-card bg-white/95 backdrop-blur-sm p-4 md:p-6 rounded-3xl shadow-lg border border-gray-200/60 overflow-hidden hover:shadow-xl transition-shadow duration-300">
+          <div className="calendar-card bg-white/95 backdrop-blur-sm p-4 md:p-6 rounded-3xl shadow-lg border border-gray-200/60 overflow-hidden hover:shadow-xl">
             <Suspense fallback={<div className="calendar-loading flex items-center justify-center h-96"><div className="calendar-spinner animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div></div>}>
               <FullCalendar
-               plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
-               initialView={initialView}
-               headerToolbar={{
-                 left: 'prev,next today',
-                 center: 'title',
-                 right: isMobile ? 'listWeek' : 'dayGridMonth,timeGridWeek,listWeek',
-               }}
+                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
+                initialView={initialView}
+                headerToolbar={{
+                  left: 'prev,next today',
+                  center: 'title',
+                  right: isMobile ? 'listWeek' : 'dayGridMonth,timeGridWeek,listWeek',
+                }}
                 events={memoizedEvents}
-               dateClick={handleDateClick}
-               eventClick={handleEventClick}
-               height="auto"
-               dayMaxEvents={isMobile ? 999 : 3}
-               eventDisplay="block"
-               eventTimeFormat={{
-                 hour: '2-digit',
-                 minute: '2-digit',
-                 meridiem: 'short',
-               }}
-               slotMinTime="06:00:00"
-               slotMaxTime="22:00:00"
-               allDaySlot={false}
-               nowIndicator={true}
-               selectable={true}
-               selectMirror={true}
-               editable={true}
-               // Premium Nexus Styling
-               eventBackgroundColor="#2563EB"
-               eventBorderColor="#1D4ED8"
-               eventClassNames="rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 cursor-pointer"
-               dayHeaderClassNames="text-gray-600 uppercase text-xs font-bold tracking-wider py-3 bg-gray-50/50"
-               dayCellClassNames="hover:bg-blue-50/30 transition-colors duration-200"
-               buttonText={{
-                 today: 'Today',
-                 month: 'Month',
-                 week: 'Week',
-                 day: 'Day',
-                 list: 'List',
-               }}
+                dateClick={handleDateClick}
+                eventClick={handleEventClick}
+                height="auto"
+                dayMaxEvents={isMobile ? 999 : 3}
+                eventDisplay="block"
+                eventTimeFormat={{
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  meridiem: 'short',
+                }}
+                slotMinTime="06:00:00"
+                slotMaxTime="22:00:00"
+                allDaySlot={false}
+                nowIndicator={true}
+                selectable={true}
+                selectMirror={true}
+                editable={true}
+                // Premium Nexus Styling
+                eventBackgroundColor="#2563EB"
+                eventBorderColor="#1D4ED8"
+                eventClassNames="rounded-lg shadow-sm hover:shadow-md cursor-pointer"
+                dayHeaderClassNames="text-gray-600 uppercase text-xs font-bold tracking-wider py-3 bg-gray-50/50"
+                dayCellClassNames="hover:bg-blue-50/30 transition-colors duration-200"
+                buttonText={{
+                  today: 'Today',
+                  month: 'Month',
+                  week: 'Week',
+                  day: 'Day',
+                  list: 'List',
+                }}
               />
             </Suspense>
           </div>
@@ -982,7 +1041,7 @@ const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
                     key={event.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3, delay: index * 0.1 }}
+                    transition={{}}
                     className="meeting-card group bg-white rounded-2xl border border-gray-100 p-5 shadow-sm hover:shadow-xl hover:ring-2 hover:ring-primary-500 hover:border-transparent duration-300 cursor-pointer transform hover:-translate-y-1"
                   >
                     <div className="meeting-card-header flex items-start justify-between mb-3">
@@ -1021,7 +1080,7 @@ const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
                     {event.extendedProps?.meetingLink && (
                       <button
                         onClick={() => handleJoinMeeting(event.extendedProps!.meetingLink!)}
-                        className="join-meeting-button w-full mt-2 inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white bg-primary-600 rounded-lg hover:bg-primary-700 transition-colors"
+                        className="join-meeting-button w-full mt-2 inline-flex items-center justify-center px-4 py-2 text-sm font-semibold text-white bg-[#405CFF] rounded-lg hover:bg-primary-700 transition-colors"
                       >
                         <ExternalLink className="w-4 h-4 mr-2" />
                         Join Google Meet
@@ -1040,6 +1099,11 @@ const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
         onClose={() => setIsModalOpen(false)}
         onSubmit={handleAddAvailability}
         selectedDate={selectedDate}
+        modalTrigger={modalTrigger}
+        referencePoint={referencePoint}
+        isDocked={isModalDocked}
+        onDockToggle={setIsModalDocked}
+        innerZ={1000}
       />
 
       {/* Event Detail Modal */}
@@ -1050,67 +1114,67 @@ const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0 }}
-            className="event-detail-modal modal-overlay fixed inset-0 z-50 overflow-y-auto"
+            className="event-detail-modal modal-overlay fixed inset-0 z-60"
           >
             <div className="event-detail-container modal-container fixed inset-0 flex items-center justify-center px-4 pt-4 pb-20">
               <motion.div
                 initial={{ opacity: 0, scale: 0.95 }}
                 animate={{ opacity: 1, scale: 1 }}
                 exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.0, type: "spring", stiffness: 300, damping: 30 }}
+                transition={{}}
                 className="event-detail-panel modal-panel bg-white rounded-2xl px-6 pt-6 pb-6 text-left overflow-hidden shadow-2xl"
                 style={{
-                  zIndex: 1000,
+                  zIndex: 1100,
                   maxWidth: '28rem',
                   width: '100%'
                 }}>
-              <div className="event-detail-header modal-header flex items-center justify-between mb-4">
-                <h3 className="event-detail-title text-xl font-semibold text-gray-900">{selectedEvent.title}</h3>
-                <button
-                  onClick={closeEventModal}
-                  className="modal-close-button text-gray-400 hover:text-gray-500 p-1"
-                >
-                  <X className="w-5 h-5" />
-                </button>
-              </div>
-              <div className="event-detail-content space-y-3">
-                <div className="event-detail-time flex items-center text-gray-600">
-                  <Clock className="w-5 h-5 mr-3" />
-                  <span>
-                    {new Date(selectedEvent.start).toLocaleDateString('en-US', {
-                      weekday: 'long',
-                      month: 'long',
-                      day: 'numeric',
-                    })} •{' '}
-                    {new Date(selectedEvent.start).toLocaleTimeString('en-US', {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}{' '}
-                    -{' '}
-                    {new Date(selectedEvent.end!).toLocaleTimeString('en-US', {
-                      hour: '2-digit',
-                      minute: '2-digit',
-                    })}
-                  </span>
-                </div>
-                {selectedEvent.extendedProps?.description && (
-                  <p className="event-detail-description text-gray-500 text-sm">{selectedEvent.extendedProps.description}</p>
-                )}
-                {selectedEvent.extendedProps?.meetingLink && (
+                <div className="event-detail-header modal-header flex items-center justify-between mb-4">
+                  <h3 className="event-detail-title text-xl font-semibold text-gray-900">{selectedEvent.title}</h3>
                   <button
-                    onClick={() => handleJoinMeeting(selectedEvent.extendedProps!.meetingLink!)}
-                    className="join-meeting-button w-full mt-4 inline-flex items-center justify-center px-4 py-3 text-sm font-semibold text-white bg-primary-600 rounded-xl hover:bg-primary-700 transition-colors"
+                    onClick={closeEventModal}
+                    className="modal-close-button text-gray-400 hover:text-gray-500 p-1"
                   >
-                    <Video className="w-4 h-4 mr-2" />
-                    Join Google Meet
+                    <X className="w-5 h-5" />
                   </button>
-                 )}
-               </div>
-             </motion.div>
-           </div>
+                </div>
+                <div className="event-detail-content space-y-3">
+                  <div className="event-detail-time flex items-center text-gray-600">
+                    <Clock className="w-5 h-5 mr-3" />
+                    <span>
+                      {new Date(selectedEvent.start).toLocaleDateString('en-US', {
+                        weekday: 'long',
+                        month: 'long',
+                        day: 'numeric',
+                      })} •{' '}
+                      {new Date(selectedEvent.start).toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}{' '}
+                      -{' '}
+                      {new Date(selectedEvent.end!).toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </span>
+                  </div>
+                  {selectedEvent.extendedProps?.description && (
+                    <p className="event-detail-description text-gray-500 text-sm">{selectedEvent.extendedProps.description}</p>
+                  )}
+                  {selectedEvent.extendedProps?.meetingLink && (
+                    <button
+                      onClick={() => handleJoinMeeting(selectedEvent.extendedProps!.meetingLink!)}
+                      className="join-meeting-button w-full mt-4 inline-flex items-center justify-center px-4 py-3 text-sm font-semibold text-white bg-[#405CFF] rounded-xl hover:bg-primary-700 transition-colors"
+                    >
+                      <Video className="w-4 h-4 mr-2" />
+                      Join Google Meet
+                    </button>
+                  )}
+                </div>
+              </motion.div>
+            </div>
           </motion.div>
-          )}
-        </AnimatePresence>
+        )}
+      </AnimatePresence>
     </div>
   );
 });
@@ -1118,3 +1182,7 @@ const [selectedEvent, setSelectedEvent] = useState<CalendarEvent | null>(null);
 CalendarPage.displayName = 'CalendarPage';
 
 export default CalendarPage;
+function setIsDocked(arg0: boolean) {
+  throw new Error('Function not implemented.');
+}
+

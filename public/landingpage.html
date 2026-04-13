@@ -362,43 +362,34 @@
            POWER SAVING MODE BUTTON
            ============================================ */
         .power-saving-btn {
-            position: fixed;
-            bottom: 32px;
-            right: 32px;
-            z-index: 999;
-            width: 56px;
-            height: 56px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #405CFF 0%, #364EDF 100%);
-            border: 2px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            font-size: 24px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: all 300ms var(--ease-out-expo);
-            backdrop-filter: blur(10px);
-            box-shadow: 0 8px 32px rgba(64, 92, 255, 0.3);
+position: fixed;
+    bottom: 12px;
+    right: 12px;
+    z-index: 999;
+    width: 57px;
+    height: 38px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, #405CFF 0%, #364EDF 100%);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 300ms cubic-bezier(0.04, 0.64, 0.25, 1);
         }
         
-        .power-saving-btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 12px 48px rgba(64, 92, 255, 0.5);
-        }
+       
         
         .power-saving-btn:active {
             transform: scale(0.95);
+
         }
         
         .power-saving-btn.active {
             background: linear-gradient(135deg, #6a6a6a 0%, #4a4a4a 100%);
-            box-shadow: 0 8px 32px rgba(106, 106, 106, 0.3);
+            
         }
         
-        .power-saving-btn.active:hover {
-            box-shadow: 0 12px 48px rgba(106, 106, 106, 0.5);
-        }
         
         .power-saving-icon {
             width: 28px;
@@ -961,6 +952,7 @@ font-family: 'DM Sans', sans-serif;
         .navbar-hamburger {
             display: none;
             width: 20px;
+            cursor: pointer;
             height: 20px;
             color: white;
         }
@@ -999,16 +991,21 @@ font-family: 'DM Sans', sans-serif;
         .mobile-nav-links {
             display: flex;
             flex-direction: column;
-            gap: 32px;
+            gap: 5px;
             margin-top: 80px;
         }
-        
+        .mobile-nav-links a:last-child{
+            border-bottom: none;
+        }
         .mobile-nav-link {
-            font-family: 'DM Sans', sans-serif;
-            font-size: 24px;
-            font-weight: 400;
-            color: var(--text-tertiary);
-            transition: color var(--transition-fast);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 24px;
+    font-weight: 400;
+    border-bottom: 1px solid #232429;
+    padding: 14px;
+    outline-offset: 15px;
+    color: var(--text-tertiary);
+    transition: color var(--transition-fast);
         }
         
         .mobile-nav-link:hover {
@@ -2860,7 +2857,7 @@ border-left: 2px solid var(--primary-500);
 <body>
 
         <!-- Power Saving Mode Button -->
-        <button class="power-saving-btn" id="powerSavingBtn" title="Toggle Power Saving Mode">
+        <button class="power-saving-btn" id="powerSavingBtn">
             <img src="images/battery-saver.svg" alt="Battery Saver" class="power-saving-icon">
             <span class="power-saving-tooltip" id="powerSavingTooltip">Power Saving Mode</span>
         </button>
@@ -3067,6 +3064,7 @@ border-left: 2px solid var(--primary-500);
         <div class="mobile-nav-links">
             <a href="#" class="mobile-nav-link">Products</a>
             <a href="#" class="mobile-nav-link">Solutions</a>
+            <a href="funds-administration.html" class="mobile-nav-link">Funds Administration</a>
             <a href="pricing.html" class="mobile-nav-link">Pricing</a>
             <a href="#" class="mobile-nav-link">Resources</a>
             <a href="/login" class="mobile-nav-link">Sign in</a>

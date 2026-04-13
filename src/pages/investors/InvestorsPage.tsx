@@ -1,8 +1,8 @@
-import React, { useState, useEffect, lazy, Suspense } from 'react';
+import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { Search, Filter, ChevronLeft, ChevronRight } from 'lucide-react';
 import { clsx } from 'clsx';
+import Sticky from 'react-stickynode';
 import { Input } from '../../components/ui/Input';
-import { Card, CardHeader, CardBody } from '../../components/ui/Card';
 import { SkeletonCard } from '../../components/ui/Skeleton';
 import { FilterModal, FilterButton } from '../../components/ui/FilterModal';
 import { InvestorCard } from '../../components/investor/InvestorCard';
@@ -17,71 +17,160 @@ export const InvestorsPage: React.FC = () => {
   const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  
+  const [isSmallScreen, setIsSmallScreen] = useState(window.innerWidth < 950);
+
   // Modal states
   const [showStageModal, setShowStageModal] = useState(false);
   const [showInterestModal, setShowInterestModal] = useState(false);
+
+  // Pending filter states for modal
+  const [pendingStages, setPendingStages] = useState<string[]>([]);
+  const [pendingInterests, setPendingInterests] = useState<string[]>([]);
+
+  // Ref to store loading timeout
+  const loadingTimeoutRef = useRef<number | null>(null);
   
   // Get unique investment stages and interests
-  const allStages = Array.from(new Set(investors.flatMap(i => i.investmentStage)));
-  const allInterests = Array.from(new Set(investors.flatMap(i => i.investmentInterests)));
+  const allStages = useMemo(() => Array.from(new Set(investors.flatMap(i => i.investmentStage))), []);
+  const allInterests = useMemo(() => Array.from(new Set(investors.flatMap(i => i.investmentInterests))), []);
   
   // Filter investors based on search and filters
-  const filteredInvestors = investors.filter(investor => {
-    const matchesSearch = appliedSearchQuery === '' ||
-      investor.name.toLowerCase().includes(appliedSearchQuery.toLowerCase()) ||
-      investor.bio.toLowerCase().includes(appliedSearchQuery.toLowerCase()) ||
-      investor.investmentInterests.some(interest =>
-        interest.toLowerCase().includes(appliedSearchQuery.toLowerCase())
-      );
-    
-    const matchesStages = selectedStages.length === 0 ||
-      investor.investmentStage.some(stage => selectedStages.includes(stage));
-    
-    const matchesInterests = selectedInterests.length === 0 ||
-      investor.investmentInterests.some(interest => selectedInterests.includes(interest));
-    
-    return matchesSearch && matchesStages && matchesInterests;
-  });
+  const filteredInvestors = useMemo(() => {
+    return investors.filter(investor => {
+      const matchesSearch = appliedSearchQuery === '' ||
+        investor.name.toLowerCase().includes(appliedSearchQuery.toLowerCase()) ||
+        investor.bio.toLowerCase().includes(appliedSearchQuery.toLowerCase()) ||
+        investor.investmentInterests.some(interest =>
+          interest.toLowerCase().includes(appliedSearchQuery.toLowerCase())
+        );
+
+      const matchesStages = selectedStages.length === 0 ||
+        investor.investmentStage.some(stage => selectedStages.includes(stage));
+
+      const matchesInterests = selectedInterests.length === 0 ||
+        investor.investmentInterests.some(interest => selectedInterests.includes(interest));
+
+      return matchesSearch && matchesStages && matchesInterests;
+    });
+  }, [appliedSearchQuery, selectedStages, selectedInterests]);
 
   // Pagination calculations
-  const totalPages = Math.ceil(filteredInvestors.length / ITEMS_PER_PAGE);
-  const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-  const paginatedInvestors = filteredInvestors.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  const totalPages = useMemo(() => Math.ceil(filteredInvestors.length / ITEMS_PER_PAGE), [filteredInvestors.length]);
+  const paginatedInvestors = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    return filteredInvestors.slice(startIndex, startIndex + ITEMS_PER_PAGE);
+  }, [filteredInvestors, currentPage]);
 
   // Simulate loading when page changes
-  const handlePageChange = (page: number) => {
+  const handlePageChange = useCallback((page: number) => {
     if (page >= 1 && page <= totalPages) {
+      // Clear any existing timeout
+      if (loadingTimeoutRef.current !== null) {
+        clearTimeout(loadingTimeoutRef.current);
+      }
       setIsLoading(true);
       setCurrentPage(page);
       // Simulate network delay for loading skeletons
-      setTimeout(() => {
+      loadingTimeoutRef.current = window.setTimeout(() => {
         setIsLoading(false);
+        loadingTimeoutRef.current = null;
       }, 500);
     }
-  };
+  }, [totalPages]);
 
   // Reset to page 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
   }, [appliedSearchQuery, selectedStages, selectedInterests]);
 
-  const toggleStage = (stage: string) => {
-    setSelectedStages(prev => 
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (loadingTimeoutRef.current !== null) {
+        clearTimeout(loadingTimeoutRef.current);
+      }
+    };
+  }, []);
+
+  // Handle screen size changes with debouncing
+  useEffect(() => {
+    let timeoutId: number;
+    const handleResize = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(() => {
+        setIsSmallScreen(window.innerWidth < 950);
+      }, 100); // Debounce by 100ms
+    };
+    window.addEventListener('resize', handleResize);
+    return () => {
+      clearTimeout(timeoutId);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  // Handle opening modals with pending state
+  const openStageModal = useCallback(() => {
+    setPendingStages([...selectedStages]);
+    setShowStageModal(true);
+  }, [selectedStages]);
+
+  const openInterestModal = useCallback(() => {
+    setPendingInterests([...selectedInterests]);
+    setShowInterestModal(true);
+  }, [selectedInterests]);
+
+  // Toggle pending filters
+  const togglePendingStage = useCallback((stage: string) => {
+    setPendingStages(prev =>
       prev.includes(stage)
         ? prev.filter(s => s !== stage)
         : [...prev, stage]
     );
-  };
-  
-  const toggleInterest = (interest: string) => {
-    setSelectedInterests(prev => 
+  }, []);
+
+  const togglePendingInterest = useCallback((interest: string) => {
+    setPendingInterests(prev =>
       prev.includes(interest)
         ? prev.filter(i => i !== interest)
         : [...prev, interest]
     );
-  };
-  
+  }, []);
+
+  // Apply filters with loading
+  const applyStageFilters = useCallback(() => {
+    if (loadingTimeoutRef.current !== null) {
+      clearTimeout(loadingTimeoutRef.current);
+    }
+    setIsLoading(true);
+    setSelectedStages(pendingStages);
+    loadingTimeoutRef.current = window.setTimeout(() => {
+      setIsLoading(false);
+      loadingTimeoutRef.current = null;
+    }, 300);
+    setShowStageModal(false);
+  }, [pendingStages]);
+
+  const applyInterestFilters = useCallback(() => {
+    if (loadingTimeoutRef.current !== null) {
+      clearTimeout(loadingTimeoutRef.current);
+    }
+    setIsLoading(true);
+    setSelectedInterests(pendingInterests);
+    loadingTimeoutRef.current = window.setTimeout(() => {
+      setIsLoading(false);
+      loadingTimeoutRef.current = null;
+    }, 300);
+    setShowInterestModal(false);
+  }, [pendingInterests]);
+
+  // Memoize options for modals to prevent unnecessary re-renders
+  const stageOptions = useMemo(() =>
+    allStages.map(stage => ({ id: stage, label: stage })), [allStages]
+  );
+  const interestOptions = useMemo(() =>
+    allInterests.map(interest => ({ id: interest, label: interest })), [allInterests]
+  );
+
   return (
     <div className="investors-page page-main-content space-y-6 animate-fade-in">
       <div className="investors-header page-header">
@@ -96,19 +185,20 @@ export const InvestorsPage: React.FC = () => {
             label="Investment Stage"
             count={allStages.length}
             selectedCount={selectedStages.length}
-            onClick={() => setShowStageModal(true)}
+            onClick={openStageModal}
           />
           <FilterButton
             label="Investment Interests"
             count={allInterests.length}
             selectedCount={selectedInterests.length}
-            onClick={() => setShowInterestModal(true)}
+            onClick={openInterestModal}
           />
         </div>
         
         {/* Main content */}
         <div className="investors-main page-main">
-          <div className="investors-search-section page-search flex items-center gap-4 mb-6">
+          <Sticky top={isSmallScreen ? 63 :0} innerZ={1000}>
+            <div className="investors-search-section page-search flex items-center gap-4 mb-6">
             <Input
               className="investors-search-input flex-1"
               placeholder="Search investors by name, interests, or keywords..."
@@ -122,14 +212,16 @@ export const InvestorsPage: React.FC = () => {
               startAdornment={<Search size={18} />}
             />
             
+            
             <div className="investors-results-count flex items-center gap-2 whitespace-nowrap">
               <Filter size={18} className="text-gray-500" />
               <span className="investors-results-text text-sm text-gray-600">
                 {filteredInvestors.length} results
               </span>
             </div>
-          </div>
-          
+            </div>
+          </Sticky>
+
           <div className="investors-grid page-grid grid grid-cols-1 md:grid-cols-2 gap-6">
             {isLoading ? (
               // Show skeleton cards while loading
@@ -188,20 +280,22 @@ export const InvestorsPage: React.FC = () => {
       <FilterModal
         isOpen={showStageModal}
         onClose={() => setShowStageModal(false)}
+        onApply={applyStageFilters}
         title="Investment Stage"
-        options={allStages.map(stage => ({ id: stage, label: stage }))}
-        selectedOptions={selectedStages}
-        onToggle={toggleStage}
+        options={stageOptions}
+        selectedOptions={pendingStages}
+        onToggle={togglePendingStage}
         type="checkbox"
       />
-      
+
       <FilterModal
         isOpen={showInterestModal}
         onClose={() => setShowInterestModal(false)}
+        onApply={applyInterestFilters}
         title="Investment Interests"
-        options={allInterests.map(interest => ({ id: interest, label: interest }))}
-        selectedOptions={selectedInterests}
-        onToggle={toggleInterest}
+        options={interestOptions}
+        selectedOptions={pendingInterests}
+        onToggle={togglePendingInterest}
         type="badge"
       />
     </div>

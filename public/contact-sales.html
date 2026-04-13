@@ -1005,13 +1005,18 @@ font-family: 'DM Sans', sans-serif;
             gap: 32px;
             margin-top: 80px;
         }
-        
+        .mobile-nav-link a:last-child{
+            border-bottom: none;
+        }
         .mobile-nav-link {
-            font-family: 'DM Sans', sans-serif;
-            font-size: 24px;
-            font-weight: 400;
-            color: var(--text-tertiary);
-            transition: color var(--transition-fast);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 24px;
+    font-weight: 400;
+    border-bottom: 1px solid #232429;
+    padding: 14px;
+    outline-offset: 15px;
+    color: var(--text-tertiary);
+    transition: color var(--transition-fast);
         }
         
         .mobile-nav-link:hover {
@@ -2438,27 +2443,15 @@ font-family: 'DM Sans', sans-serif;
         <div class="mobile-nav-links">
             <a href="#" class="mobile-nav-link">Products</a>
             <a href="#" class="mobile-nav-link">Solutions</a>
+            <a href="funds-administration.html" class="mobile-nav-link">Funds Administration</a>
             <a href="pricing.html" class="mobile-nav-link">Pricing</a>
             <a href="#" class="mobile-nav-link">Resources</a>
             <a href="/login" class="mobile-nav-link">Sign in</a>
-            <a href="contact-sales.html" class="mobile-nav-link">Contact sales</a>
+            <a href="contact-sales.html" class="mobile-nav-link" style="color: var(--text-white);">Contact sales</a>
         </div>
     </div>
     
-    <!-- Mobile Navigation Overlay -->
-    <div class="mobile-nav-overlay" id="mobile-nav-overlay">
-        <button class="mobile-nav-close" id="mobile-nav-close" aria-label="Close menu">
-            <i data-lucide="x"></i>
-        </button>
-        <div class="mobile-nav-links">
-            <a href="#" class="mobile-nav-link">Products</a>
-            <a href="#" class="mobile-nav-link">Solutions</a>
-            <a href="pricing.html" class="mobile-nav-link">Pricing</a>
-            <a href="#" class="mobile-nav-link">Resources</a>
-            <a href="/login" class="mobile-nav-link">Sign in</a>
-            <a href="contact-sales.html" class="mobile-nav-link">Contact sales</a>
-        </div>
-    </div>
+  
 
     <!-- ============================================
          SECTION 2 - HERO

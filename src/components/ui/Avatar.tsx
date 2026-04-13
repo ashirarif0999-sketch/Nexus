@@ -47,6 +47,7 @@ export const Avatar: React.FC<AvatarProps> = ({
         <img
           src={src}
           alt={alt}
+          loading="lazy"
           className={clsx('avatar-image rounded-full object-cover h-12 w-12', sizeClasses[size])}
           onError={(e) => {
             // Fallback to initials if image fails to load

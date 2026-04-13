@@ -4,6 +4,7 @@ import { clsx } from 'clsx';
 interface CardProps {
   children: React.ReactNode;
   className?: string;
+  style?: React.CSSProperties;
   onClick?: () => void;
   hoverable?: boolean;
 }
@@ -11,6 +12,7 @@ interface CardProps {
 export const Card: React.FC<CardProps> = ({
   children,
   className = '',
+  style,
   onClick,
   hoverable = false,
 }) => {
@@ -22,6 +24,7 @@ export const Card: React.FC<CardProps> = ({
         onClick && 'card-clickable cursor-pointer',
         className
       )}
+      style={style}
       onClick={onClick}
     >
       {children}
@@ -48,14 +51,16 @@ export const CardHeader: React.FC<CardHeaderProps> = ({
 interface CardBodyProps {
   children: React.ReactNode;
   className?: string;
+  style?: React.CSSProperties;
 }
 
 export const CardBody: React.FC<CardBodyProps> = ({
   children,
   className = '',
+  style,
 }) => {
   return (
-    <div className={clsx('card-body px-6 py-4 flex-1', className)}>
+    <div className={clsx('card-body px-6 py-4 flex-1', className)} style={style}>
       {children}
     </div>
   );

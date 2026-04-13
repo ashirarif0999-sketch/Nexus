@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { SendHorizontal, Mic, MicOff, Video, VideoOff, Volume2, X, PanelLeftClose, PanelLeftOpen, Phone, Search, MoreVertical } from 'lucide-react';
+import { SendHorizontal, Mic, MicOff, Video, VideoOff, Volume2, X, PanelLeftClose, PanelLeftOpen, Phone, Search, MoreVertical, User, Maximize2 } from 'lucide-react';
 import Picker from '@emoji-mart/react';
 import data from '@emoji-mart/data';
 import { useDropzone } from 'react-dropzone';
@@ -1312,181 +1312,132 @@ export const MessagesPage: React.FC = () => {
         </div>
       )}
 
-      {/* ===== CALL OVERLAY MOCKUP ===== */}
       {callState.status !== 'idle' && selectedContact && (
-        <div className={`call-overlay fixed inset-0 z-[400] flex flex-col items-center justify-center transition-all duration-300 ${
-          callState.status === 'ended' ? 'opacity-0 pointer-events-none' : 'opacity-100'
-        } ${callState.type === 'video' ? 'bg-black' : 'bg-gradient-to-br from-slate-900 to-slate-800'}`}>
+        <div className={`meet-call-overlay fixed inset-0 z-[500] flex flex-col items-center justify-center transition-all duration-500 ${
+          callState.status === 'ended' ? 'opacity-0 scale-95' : 'opacity-100 scale-100'
+        } bg-[#202124]`}>
 
-          {/* Background pattern for audio calls */}
-          {callState.type === 'audio' && (
-            <div className="call-background-pattern absolute inset-0 opacity-10"
-                 style={{ backgroundImage: 'radial-gradient(circle, #405CFF 1px, transparent 1px)', backgroundSize: '30px 30px' }} />
-          )}
-
-          {/* Connecting State */}
-          {callState.status === 'connecting' && (
-            <div className="call-connecting text-center z-10">
-              <div className="call-avatar-container relative mb-6">
-                <div className="call-avatar-wrapper w-24 h-24 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center animate-pulse">
-                  <img
-                    src={findUserById(selectedContact)?.avatarUrl || ''}
-                    alt="Contact"
-                    className="w-20 h-20 rounded-full object-cover border-4 border-white/20"
-                  />
+          {/* Video Scene */}
+          {callState.type === 'video' && callState.status === 'active' && (
+            <div className="absolute inset-0 w-full h-full overflow-hidden">
+              <div className="meet-remote-video-wrap w-full h-full relative">
+                {/* Mock remote video */}
+                <div className="w-full h-full bg-[#3c4043] flex items-center justify-center">
+                  <div className="text-center">
+                    <img
+                      src={findUserById(selectedContact)?.avatarUrl || ''}
+                      alt="Remote"
+                      className="w-32 h-32 rounded-full mx-auto mb-6 border-4 border-white/10"
+                    />
+                    <p className="text-white/60 text-lg font-medium">{findUserById(selectedContact)?.name}</p>
+                  </div>
                 </div>
-                <div className="call-ping-ring absolute inset-0 rounded-full border-4 border-blue-400/50 animate-ping" />
+
+                {/* Local Preview Tile */}
+                {!callState.isCameraOff && (
+                  <div className="meet-local-preview absolute bottom-24 right-6 w-48 h-32 md:w-64 md:h-44 bg-[#3c4043] rounded-2xl overflow-hidden shadow-2xl border border-white/20 z-20 group transition-all hover:scale-[1.02]">
+                    <video
+                      ref={localVideoRef}
+                      autoPlay
+                      muted
+                      playsInline
+                      className="w-full h-full object-cover"
+                    />
+                    {!localVideoRef.current?.srcObject && (
+                      <div className="absolute inset-0 flex items-center justify-center bg-slate-800/50">
+                        <User className="w-8 h-8 text-white/30" />
+                      </div>
+                    )}
+                    <div className="absolute bottom-3 left-3 bg-black/40 backdrop-blur-md px-2 py-1 rounded text-[10px] text-white">You</div>
+                  </div>
+                )}
               </div>
-              <h3 className="call-title text-white text-xl font-medium mb-2">
-                Calling {findUserById(selectedContact)?.name}...
-              </h3>
-              <p className="call-subtitle text-white/70 text-sm">
-                {callState.type === 'video' ? 'Video call' : 'Voice call'} • {callState.isMuted ? 'Muted' : 'Speaking'}
-              </p>
             </div>
           )}
 
-          {/* Active Call State */}
-          {callState.status === 'active' && (
-            <>
-              {/* Remote video / avatar */}
-              <div className="call-remote-video-container relative z-10 mb-8">
-                {callState.type === 'video' ? (
-                  <div className="call-remote-video w-72 h-96 bg-slate-700 rounded-2xl overflow-hidden shadow-2xl border border-white/10">
-                    {/* Mock remote video - replace with <video> later */}
-                    <div className="call-remote-placeholder w-full h-full flex items-center justify-center bg-gradient-to-br from-slate-600 to-slate-800">
-                      <div className="text-center">
-                        <img
-                          src={findUserById(selectedContact)?.avatarUrl || ''}
-                          alt="Remote"
-                          className="w-24 h-24 rounded-full mx-auto mb-4 opacity-80"
-                        />
-                        <p className="text-white/80 text-sm">Remote video stream</p>
-                      </div>
-                    </div>
-                  </div>
-                ) : (
-                  // Audio call avatar
-                  <div className="call-audio-avatar w-32 h-32 rounded-full bg-gradient-to-r from-blue-500 to-purple-600 flex items-center justify-center shadow-xl">
-                    <img
-                      src={findUserById(selectedContact)?.avatarUrl || ''}
-                      alt="Contact"
-                      className="w-28 h-28 rounded-full object-cover border-4 border-white/30"
-                    />
-                  </div>
-                )}
-
-                {/* Online indicator */}
-                <div className="call-online-indicator absolute -bottom-1 -right-1 w-5 h-5 bg-green-500 rounded-full border-4 border-slate-900" />
-              </div>
-
-              {/* Caller name & timer */}
-              <div className="call-info text-center z-10 mb-8">
-                <h3 className="call-name text-white text-2xl font-semibold mb-1">
-                  {findUserById(selectedContact)?.name}
-                </h3>
-                <p className="call-type text-white/70 text-sm mb-3">
-                  {callState.type === 'video' ? 'Video call' : 'Voice call'}
-                </p>
-                <div className="call-timer inline-flex items-center gap-2 bg-white/10 px-4 py-2 rounded-full">
-                  <span className="text-white font-mono text-lg">{formatDuration(callDuration)}</span>
-                  <span className="w-2 h-2 bg-green-400 rounded-full animate-pulse" />
-                </div>
-              </div>
-
-              {/* Local video preview (video calls only) */}
-              {callState.type === 'video' && !callState.isCameraOff && (
-                <div className="call-local-video absolute bottom-24 right-6 w-32 h-24 bg-slate-700 rounded-xl overflow-hidden shadow-lg border border-white/20 z-20">
-                  <video
-                    ref={localVideoRef}
-                    autoPlay
-                    muted
-                    playsInline
-                    className="w-full h-full object-cover"
+          {/* Audio Scene / Connecting Scene */}
+          {(callState.type === 'audio' || callState.status === 'connecting') && (
+            <div className="meet-audio-scene flex flex-col items-center z-10">
+              <div className="meet-avatar-wrap mb-8 relative">
+                <div className={`w-40 h-40 rounded-full border-4 border-white/10 p-1 transition-all duration-1000 ${callState.status === 'connecting' ? 'animate-pulse' : ''}`}>
+                  <img
+                    src={findUserById(selectedContact)?.avatarUrl || ''}
+                    alt="Contact"
+                    className="w-full h-full rounded-full object-cover shadow-2xl"
                   />
-                  {/* Fallback for mock */}
-                  {!localVideoRef.current?.srcObject && (
-                    <div className="call-local-fallback absolute inset-0 flex items-center justify-center bg-slate-600/50">
-                      <span className="text-white/70 text-xs">Local preview</span>
+                </div>
+                {callState.status === 'connecting' && (
+                  <div className="absolute -inset-4 rounded-full border border-blue-400/30 animate-[ping_2s_infinite]" />
+                )}
+              </div>
+
+              <div className="text-center">
+                <h2 className="text-white text-3xl font-medium mb-2">{findUserById(selectedContact)?.name}</h2>
+                <div className="flex items-center justify-center gap-3">
+                  <span className="text-white/60 text-sm tracking-wide uppercase font-medium">
+                    {callState.status === 'connecting' ? 'Calling...' : 'Voice Call'}
+                  </span>
+                  {callState.status === 'active' && (
+                    <div className="meet-timer-pill bg-white/10 px-3 py-1 rounded-full flex items-center gap-2">
+                       <span className="w-2 h-2 bg-green-500 rounded-full" />
+                       <span className="text-white font-mono text-sm">{formatDuration(callDuration)}</span>
                     </div>
                   )}
                 </div>
-              )}
-
-              {/* Camera off indicator */}
-              {callState.type === 'video' && callState.isCameraOff && (
-                <div className="call-camera-off-indicator absolute bottom-24 right-6 w-32 h-24 bg-slate-800 rounded-xl flex items-center justify-center shadow-lg border border-white/20 z-20">
-                  <div className="text-center">
-<VideoOff className="w-8 h-8 text-white/50 mx-auto mb-1" />
-                    <span className="text-white/70 text-xs">Camera off</span>
-                  </div>
-                </div>
-              )}
-            </>
+              </div>
+            </div>
           )}
 
-          {/* Control Bar */}
-          <div className="call-controls fixed bottom-8 left-1/2 -translate-x-1/2 z-30">
-            <div className="call-controls-bar flex items-center gap-3 bg-black/60 backdrop-blur-sm px-4 py-3 rounded-full border border-white/10 shadow-xl">
-              {/* Mute Toggle */}
+          {/* Bottom Control Bar */}
+          <div className="meet-call-controls fixed bottom-8 left-0 right-0 flex justify-center z-[501]">
+            <div className="meet-controls-pill flex items-center gap-4 bg-[#3c4043]/90 backdrop-blur-xl px-6 py-4 rounded-full border border-white/10 shadow-2xl">
+              
               <button
                 onClick={toggleMute}
-                className={`call-mute-button p-3 rounded-full transition-all ${
-                  callState.isMuted
-                    ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
-                    : 'bg-white/10 text-white hover:bg-white/20'
-                }`}
+                className={`meet-control-btn group ${callState.isMuted ? 'bg-red-500 text-white' : 'bg-[#e8eaed]/10 text-white hover:bg-[#e8eaed]/20'}`}
                 title={callState.isMuted ? 'Unmute' : 'Mute'}
               >
                 {callState.isMuted ? <MicOff className="w-5 h-5" /> : <Mic className="w-5 h-5" />}
               </button>
 
-              {/* Camera Toggle (video only) */}
               {callState.type === 'video' && (
                 <button
                   onClick={toggleCamera}
-                  className={`call-camera-button p-3 rounded-full transition-all ${
-                    callState.isCameraOff
-                      ? 'bg-red-500/20 text-red-400 hover:bg-red-500/30'
-                      : 'bg-white/10 text-white hover:bg-white/20'
-                  }`}
+                  className={`meet-control-btn ${callState.isCameraOff ? 'bg-red-500 text-white' : 'bg-[#e8eaed]/10 text-white hover:bg-[#e8eaed]/20'}`}
                   title={callState.isCameraOff ? 'Turn on camera' : 'Turn off camera'}
                 >
                   {callState.isCameraOff ? <VideoOff className="w-5 h-5" /> : <Video className="w-5 h-5" />}
                 </button>
               )}
 
-              {/* Speaker Toggle (mock) */}
-              <button
-                className="call-speaker-button p-3 rounded-full bg-white/10 text-white hover:bg-white/20 transition-all"
-                title="Speaker"
-              >
-<Volume2 className="w-5 h-5" />
+              <button className="meet-control-btn bg-[#e8eaed]/10 text-white hover:bg-[#e8eaed]/20">
+                <Volume2 className="w-5 h-5" />
               </button>
 
-              {/* Divider */}
-              <div className="call-controls-divider w-px h-6 bg-white/20 mx-1" />
+              <button className="meet-control-btn bg-[#e8eaed]/10 text-white hover:bg-[#e8eaed]/20 lg:flex hidden">
+                <Maximize2 className="w-5 h-5" />
+              </button>
 
-              {/* Hang Up */}
+              <div className="w-[1px] h-8 bg-white/10 mx-1" />
+
               <button
                 onClick={endCall}
-                className="call-end-button p-4 bg-red-500 hover:bg-red-600 text-white rounded-full transition-all shadow-lg hover:shadow-red-500/25 active:scale-95"
+                className="meet-control-btn bg-[#ea4335] text-white hover:bg-[#d93025] shadow-lg hover:shadow-[#ea4335]/30 active:scale-90 w-14 h-14"
                 title="End call"
               >
-<X className="w-6 h-6" />
+                <X className="w-6 h-6 stroke-[3px]" />
               </button>
             </div>
           </div>
 
-          {/* Status Toast */}
-          {(callState.isMuted || callState.isCameraOff) && callState.status === 'active' && (
-            <div className="call-status-toast fixed top-6 left-1/2 -translate-x-1/2 z-30">
-              <div className="call-status-message bg-black/70 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm flex items-center gap-2">
-                {callState.isMuted && <span>Muted </span>}
-                {callState.isCameraOff && callState.type === 'video' && <span>| Camera off</span>}
-              </div>
-            </div>
-          )}
+          {/* Status Notifications */}
+          <div className="absolute top-10 left-10 flex flex-col gap-3">
+             {callState.isMuted && (
+               <div className="bg-red-500/20 border border-red-500/30 text-red-100 text-[10px] uppercase font-bold tracking-widest px-3 py-1 rounded-full backdrop-blur-md">
+                 Microphone Muted
+               </div>
+             )}
+          </div>
         </div>
       )}
     </div>

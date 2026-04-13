@@ -10,6 +10,7 @@ interface FilterOption {
 interface FilterModalProps {
   isOpen: boolean;
   onClose: () => void;
+  onApply?: () => void;
   title: string;
   options: FilterOption[];
   selectedOptions: string[];
@@ -20,6 +21,7 @@ interface FilterModalProps {
 export const FilterModal: React.FC<FilterModalProps> = ({
   isOpen,
   onClose,
+  onApply,
   title,
   options,
   selectedOptions,
@@ -61,7 +63,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                     className={clsx(
                       'filter-modal-badge px-4 py-2 rounded-full text-sm font-medium transition-colors',
                       selectedOptions.includes(option.id)
-                        ? 'filter-modal-badge-selected bg-primary-600 text-white'
+                        ? 'filter-modal-badge-selected bg-[#405CFF] text-white'
                         : 'filter-modal-badge-default bg-gray-100 text-gray-700 hover:bg-gray-200'
                     )}
                   >
@@ -78,7 +80,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                     className={clsx(
                       'filter-modal-badge px-4 py-2 rounded-full text-sm font-medium transition-colors',
                       selectedOptions.includes(option.id)
-                        ? 'filter-modal-badge-selected bg-primary-600 text-white'
+                        ? 'filter-modal-badge-selected bg-[#405CFF] text-white'
                         : 'filter-modal-badge-default bg-gray-100 text-gray-700 hover:bg-gray-200'
                     )}
                   >
@@ -96,8 +98,8 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                 {selectedOptions.length} selected
               </span>
               <button
-                onClick={onClose}
-                className="filter-modal-apply-btn px-6 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                onClick={onApply || onClose}
+                className="filter-modal-apply-btn px-6 py-2 bg-[#405CFF] text-white rounded-lg hover:bg-primary-700 transition-colors"
               >
                 Apply
               </button>
@@ -127,15 +129,15 @@ export const FilterButton: React.FC<FilterButtonProps> = ({
     <button
       onClick={onClick}
       className={clsx(
-        'filter-button flex items-center gap-2 px-4 py-2 rounded-lg border transition-colors',
+        'filter-button flex items-center gap-2 px-4 py-2 border transition-colors',
         selectedCount > 0
-          ? 'filter-button-active border-primary-300 bg-primary-50 text-primary-700'
-          : 'filter-button-default border-gray-300 bg-white text-gray-700 hover:bg-gray-50'
+          ? 'filter-button-active  bg-[#405CFF] text-white rounded-[8px]'
+          : 'filter-button-default border-gray-300 bg-white text-gray-700 hover:bg-gray-50 rounded-[30px]'
       )}
     >
       <span className="filter-button-label">{label}</span>
       {selectedCount > 0 ? (
-        <span className="filter-button-count px-2 py-0.5 bg-primary-600 text-white text-xs rounded-full">
+        <span className="filter-button-count px-2 py-0.5 bg-[white] text-black text-xs rounded-full">
           {selectedCount}
         </span>
       ) : (
