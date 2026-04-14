@@ -197,7 +197,7 @@ export const InvestorsPage: React.FC = () => {
         
         {/* Main content */}
         <div className="investors-main page-main">
-          <Sticky top={isSmallScreen ? 63 :0} innerZ={1000}>
+          <Sticky top={isSmallScreen ? 63 :0} innerZ={1}>
             <div className="investors-search-section page-search flex items-center gap-4 mb-6">
             <Input
               className="investors-search-input flex-1"

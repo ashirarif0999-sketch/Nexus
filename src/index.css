@@ -2,6 +2,68 @@
 @tailwind components;
 @tailwind utilities;
 
+@import '@react-pdf-viewer/core/lib/styles/index.css';
+@import '@react-pdf-viewer/default-layout/lib/styles/index.css';
+
+
+html {
+  interpolate-size: allow-keywords;
+}
+
+body {
+  background: url('/images/stacked-waves-haikei (1).svg') no-repeat center center fixed;
+  background-size: cover;
+}
+
+@keyframes fadeOut {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+.documents-content {
+  height: calc(100vh - 250px);
+  overflow: hidden;
+}
+
+.documents-storage-card {
+  position: sticky;
+  top: 0;
+}
+.investors-title, .entrepreneurs-title, .documents-title, .video-meetings-header .page-title{
+  font-family: 'oldschool-grotesk-regular', sans-serif;
+    font-size: 2.75rem !important;
+    padding-bottom: 8px;
+}
+.documents-list-header {
+  position: sticky !important;
+  top: 0 !important;
+  background: white !important;
+  z-index: 1 !important;
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+.excel-container{
+      overflow-x: auto !;
+    overflow-y: auto;
+    max-height: 400px;
+    border: 1px solid #ccc;
+    max-width: none !important;
+    width: stretch !important;
+    aspect-ratio: 1/1;
+}
+.excel-table { border-collapse: collapse; font-family: 'Calibri', sans-serif; font-size: 10pt; margin: 0; }
+                  .excel-table td, .excel-table th { border: 1px solid #ccc; padding: 2px 4px; text-align: left; vertical-align: top; background-color: #fff; min-width: 60px; max-width: 120px; overflow: hidden; white-space: nowrap; }
+                  .excel-table th { font-weight: bold; background-color: #f0f0f0; border-bottom: 2px solid #000; border-right: 2px solid #000; position: sticky; top: 0; z-index: 2; }
+                  .excel-table th:first-child { background-color: #e6e6e6; border-right: 2px solid #000; position: sticky; left: 0; z-index: 3; }
+                  .excel-table tr:nth-child(even) td { background-color: #f9f9f9; }
+                  .excel-table tr:hover td { background-color: #e6f3ff; }
+                  .excel-table .number { text-align: right; font-family: 'Consolas', monospace; color: #0066cc; }
+                  .excel-table .date { text-align: center; color: #008000; }
+                  .excel-table .boolean { text-align: center; font-weight: bold; color: #800080; }
+                  
 /* Premium FullCalendar Styling */
 .fc {
   @apply font-sans;
@@ -94,7 +156,6 @@
 .fc .fc-now-indicator {
   @apply bg-red-500 border-red-500;
 }
-
 /* Custom Font - Mileast */
 @font-face {
   font-family: 'Mileast';
@@ -111,7 +172,9 @@
   font-style: normal;
   font-display: swap;
 }
-
+.dock-item__text{
+  display: block !important;
+}
 .investors-search-section,
 .entrepreneurs-search-section {
   background: white;
@@ -123,7 +186,11 @@
   box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow);
   transform: translateZ(0);
 }
-
+.investor-entrepreneurs-section .card-header{
+  display: flex;
+  justify-content: space-between;
+  align-content: center;
+}
 .investors-main,
 .entrepreneurs-main {
   overflow: hidden;
@@ -490,8 +557,8 @@
   --tw-ring-color: rgb(59 130 246 / var(--tw-ring-opacity));
 }
 
-.entrepreneur-profile-page .card-body {
-  text-align: center;
+.entrepreneur-profile-page .card-body, .investor-profile-page .card-body{
+ 
 
   .avatar-container {
     width: max-content;
@@ -546,6 +613,7 @@
 /* Adjust padding when dock is expanded - using CSS class set by JS */
 .dashboard-main.dock-expanded {
   padding-left: calc(220px + 0.5rem);
+  transition: all 0.3s;
 }
 
 .video-meetings-action-bar {
@@ -559,6 +627,7 @@
     padding-right: 0.5rem;
     position: relative;
     z-index: 10;
+    transition: all 0.3s;
   }
 }
 
@@ -714,6 +783,23 @@
 
 .card-buttons-parent.constrained-space>*:last-child {
   margin-bottom: 0;
+}
+
+/* Loading Spinner Animation Styles */
+.loading-spinner-container {
+  transition: opacity 0.5s ease-out;
+}
+
+.loading-spinner-dot {
+  fill: grey;
+  transition: cx 0.5s cubic-bezier(0.3, 1.4, 0.4, 1),
+    cy 0.5s cubic-bezier(0.3, 1.4, 0.4, 1),
+    r 0.5s cubic-bezier(0.3, 1.4, 0.4, 1);
+}
+
+.loading-spinner-gooey {
+  transform-origin: 100px 100px;
+  transition: transform 0.5s linear;
 }
 
 @media(max-width:480px) {
@@ -1136,6 +1222,7 @@
 
   .dock--expanded {
     display: flex !important;
+    transition: all 0.3s;
     width: -webkit-fill-available !important;
   }
 }
@@ -1204,41 +1291,156 @@
   align-items: center;
   padding: 16px 5px;
   z-index: 40;
-  transition: transform 0.25s ease, opacity 0.25s ease;
+  transition: all 0.3s ease;
+  isolation: isolate;
+  anchor-name: --hovered-link;
+}
+.dock-item--active{
+  anchor-name:--active-link;
+}
+.dock:has(.dock-item)::before, .dock:has(.dock-item)::after{
+  position-anchor: --active-link;
+  top: calc(anchor(top));
+  left: calc(anchor(left));
+  right: calc(anchor(right));
+  bottom: calc(anchor(bottom));
+}
+
+
+
+
+.dock > * {
+  transition: all 0.3s;
+}
+
+.dock::before,
+.dock::after {
+  content: '';
+  position: absolute;
+  top: calc(anchor(top) + 1rem);
+  left: calc(anchor(right) + 10px);
+  right: calc(anchor(right) + 20px);
+  bottom: calc(anchor(bottom) - 1rem);
+  border-radius: 10px;
+  z-index: 1;
+  transition: top 1000ms linear(0, 0.029 1.6%, 0.123 3.5%, 0.651 10.6%, 0.862 14.1%, 1.002 17.7%, 1.046 19.6%, 1.074 21.6%, 1.087 23.9%, 1.086 26.6%, 1.014 38.5%, 0.994 46.3%, 1), left 1000ms linear(0, 0.029 1.6%, 0.123 3.5%, 0.651 10.6%, 0.862 14.1%, 1.002 17.7%, 1.046 19.6%, 1.074 21.6%, 1.087 23.9%, 1.086 26.6%, 1.014 38.5%, 0.994 46.3%, 1), right 1000ms linear(0, 0.029 1.6%, 0.123 3.5%, 0.651 10.6%, 0.862 14.1%, 1.002 17.7%, 1.046 19.6%, 1.074 21.6%, 1.087 23.9%, 1.086 26.6%, 1.014 38.5%, 0.994 46.3%, 1), bottom 1000ms linear(0, 0.029 1.6%, 0.123 3.5%, 0.651 10.6%, 0.862 14.1%, 1.002 17.7%, 1.046 19.6%, 1.074 21.6%, 1.087 23.9%, 1.086 26.6%, 1.014 38.5%, 0.994 46.3%, 1);
+}
+
+.dock:not(:has(.dock-item:hover)):has(.dock-item--active) ::before,
+.dock:not(:has(.dock-item:hover)):has(.dock-item--active) ::after {
+  position-anchor: --active-link;
+  background: #ffffff !important;
+}
+.dock:not(:has(.dock-item:hover)) ::after {
+  opacity: 1;
+}
+
+.dock:not(:has(.dock-item:hover)):not(:has(.dock-item--active)) ::before,
+.dock:not(:has(.dock-item:hover)):not(:has(.dock-item--active)) ::after {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  right: auto;
+  bottom: auto;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+}
+
+.dock:not(:has(.dock-item:hover)):not(:has(.dock-item--active)) ::after {
+  background: #2e2e2e;
+}
+
+.dock:has(.dock-item:hover)::before,
+.dock:has(.dock-item:hover)::after {
+  position-anchor: --hovered-link;
+}
+.dock__bottom {
+  gap: 0px;
+}
+
+.dock::before {
+  z-index: -1;
+  background: rgba(0, 0, 0, 0);
+  backdrop-filter: blur(2px);
+  border-radius: 10px;
+}
+
+.dock::after {
+  z-index: -2;
+  background: #2e2e2e;
+  background-attachment: fixed;
+  opacity:1;
+}
+
+.dock:has(.dock-item:hover)::before,
+.dock:has(.dock-item:hover)::after {
+  top: anchor(top);
+  left: anchor(left);
+  right: anchor(right);
+  bottom: anchor(bottom);
+}
+
+.dock:has(.dock-item:first-child:hover)::before,
+.dock:has(.dock-item:first-child:hover)::after {
+  border-radius: 10px;
+}
+
+.dock:has(.dock-item:last-child:hover)::before,
+.dock:has(.dock-item:last-child:hover)::after {
+  border-radius: 10px;
+}
+
+.dock:not(:has(.dock-item:hover)) ::before,
+.dock:not(:has(.dock-item:hover)) ::after {
+  opacity: 1;
+}
+
+.dock:has(.dock-item:hover)::before,
+.dock:has(.dock-item:hover)::after {
+  opacity: 1;
+  transition: all 0.3s;
 }
 
 .dock--hidden {
   transform: translateX(-100%);
-  opacity: 0;
-  pointer-events: none;
+  opacity: 1;
+  transition: all 0.3s;
 }
 
 .dock.dock--expanded {
   width: 220px;
+  transition: all 0.3s;
 }
 
 /* ─── Top / Bottom sections ───────────────────────────────── */
-
+.button-base{
+  white-space: nowrap;
+}
 .dock__top,
 .dock__bottom {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  transition: all 0.3s;
   width: 100%;
 }
-
+.filter-modal-badge-selected{
+  border-radius: 8px;
+}
 .dock__bottom {
 
   bottom: 16px;
+  transition: all 0.3s;
   position: absolute;
 }
 
 .dock__nav {
   display: flex;
+  transition: all 0.3s;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
   width: 100%;
 }
 
@@ -1249,27 +1451,29 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 44px;
+  width: 57px;
   height: 57px;
   gap: 3px;
-  border-radius: 10px;
+  transition: all 0.3s;
+  border-radius: 8px;
   color: #6b7280;
   background: transparent;
   border: none;
   cursor: pointer;
-  transition: color 0.15s cubic-bezier(0, 0.92, 0.25, 1), background 0.15s cubic-bezier(0, 0.94, 0.25, 1);
+  transition: color 0.15s ease, background 0.15s ease;
   text-decoration: none;
 }
 
 .dock-item:hover {
-  color: #e5e7eb;
-  background: rgba(255, 255, 255, 0.07);
+  anchor-name: --hovered-link;
 }
 
 /* Active state — left accent bar */
 .dock-item--active {
-  color: #ffffff;
-  background: rgba(255, 255, 255, 0.1);
+  color: #353535;
+  transition: all 0.3s;
+  background: #ffffffd4;
+  anchor-name: --active-link;
 }
 
 .dock-item--active::before {
@@ -1279,6 +1483,7 @@
   top: 50%;
   transform: translateY(-50%);
   width: 4px;
+  transition: all 0.3s;
   height: 32px;
   background: #6366f1;
   border-radius: 0 3px 3px 0;
@@ -1287,6 +1492,7 @@
 .dock-item__icon {
   position: relative;
   display: flex;
+  transition: all 0.3s;
 }
 
 /* Notification badge */
@@ -1303,6 +1509,7 @@
   font-weight: 700;
   border-radius: 99px;
   display: flex;
+  transition: all 0.3s;
   align-items: center;
   justify-content: center;
   line-height: 1;
@@ -1311,6 +1518,7 @@
 /* ─── Expanded sidebar styles ────────────────────────────── */
 .dock--expanded .dock__header {
   justify-content: flex-start;
+  transition: all 0.3s;
 }
 
 .dock__header {
@@ -1318,22 +1526,26 @@
   display: flex;
   justify-content: center;
   margin-bottom: 8px;
+  transition: all 0.3s;
 }
 
 .dock-logo-image {
   display: none;
+  transition: all 0.3s;
 }
 
 .dock--expanded .dock-logo-image {
   display: block;
+  transition: all 0.3s;
 }
 
 .dock .dock-toggle {
   padding: 12px;
+  transition: all 0.3s;
 }
 
 .dock--expanded .dock-toggle {
-
+  transition: all 0.3s;
   padding: 7px 16px 7px 10px;
 }
 
@@ -1342,6 +1554,7 @@
   align-items: center;
   height: 58px;
   gap: 8px;
+  transition: all 0.3s;
   width: max-content;
   border-radius: 10px;
   color: #6b7280;
@@ -1375,19 +1588,21 @@
     background: #ffffff;
     border: 1px solid #e5e7eb;
     border-radius: 10px;
+    transition: all 0.3s;
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12), 0 2px 8px rgba(0, 0, 0, 0.08);
     overflow: hidden;
-    opacity: 0;
+    opacity: 1;
     padding: 0px 0px 20px 0px;
     transform: translateX(0px) translateY(-8px) scale(1) !important;
     pointer-events: none;
-    transition: opacity 0.15s ease, transform 0.15s ease;
+    transition: 1S ALL EASE;
     z-index: 200;
   }
 }
 
 .dock-toggle:hover {
   color: #e5e7eb;
+  transition: all 0.3s;
   background: rgba(255, 255, 255, 0.07);
 }
 
@@ -1395,11 +1610,13 @@
   justify-content: flex-start;
   padding-left: 12px;
   width: 100%;
+  transition: all 0.3s;
   max-width: 98%;
 }
 
 .dock-account {
   width: -webkit-fill-available;
+  transition: all 0.3s;
 }
 
 .dock-item__text {
@@ -1407,12 +1624,14 @@
   font-size: 16px;
   white-space: nowrap;
   overflow: hidden;
+  transition: all 0.3s;
   text-overflow: ellipsis;
 }
 
 @media (max-width:480px) {
   .dock-item__text {
     font-size: 20px;
+    transition: all 0.3s;
     margin-left: 12px;
   }
 
@@ -1423,6 +1642,7 @@
 .dock__divider {
   width: 28px;
   height: 1px;
+  transition: all 0.3s;
   background: rgba(255, 255, 255, 0.08);
   margin: 8px 0;
 }
@@ -1431,7 +1651,7 @@
 
 .dock-tooltip-wrapper {
   position: relative;
-  display: flex;
+  display: flex;transition: all 0.3s;
   align-items: center;
   justify-content: center;
 }
@@ -1444,7 +1664,7 @@
   background: #1c1c21;
   color: #e5e7eb;
   font-size: 12px;
-  font-weight: 500;
+  font-weight: 500;transition: all 0.3s;
   white-space: nowrap;
   padding: 5px 10px;
   border-radius: 6px;
@@ -1457,7 +1677,7 @@
 }
 
 .dock-tooltip--visible {
-  opacity: 1;
+  opacity: 1;transition: all 0.3s;
   transform: translateY(-50%) translateX(0);
 }
 
@@ -1465,7 +1685,7 @@
 
 .dock-avatar-btn {
   width: 44px;
-  height: 44px;
+  height: 44px;transition: all 0.3s;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1477,13 +1697,13 @@
 }
 
 .dock-avatar-btn:hover {
-  background: rgba(255, 255, 255, 0.07);
+  background: rgba(255, 255, 255, 0.07);transition: all 0.3s;
 }
 
 /* ─── Account Dropdown ────────────────────────────────────── */
 
 .dock-account {
-  position: relative;
+  position: relative;transition: all 0.3s;
 }
 
 .dock-account__menu {
@@ -1737,7 +1957,7 @@ span {
 }
 
 .calendar-main {
-  padding-top: 180px !important;
+  padding-top: 70px !important;
 }
 
 /* Calendar padding fix */
@@ -2216,10 +2436,6 @@ span {
   border-radius: 8px;
 }
 
-.filter-modal-content {
-  box-shadow: 0px 3px 20px rgb(0 0 0 / 26%), 0px 3px 22px 20px white;
-}
-
 .filter-modal-header,
 .filter-modal-footer {
   border-bottom: none;
@@ -2234,6 +2450,14 @@ span {
   scale: 208%;
   z-index: -1;
   right: 11px;
+}
+.entrepreneur-profile-views-icon, .entrepreneur-upcoming-meetings-icon, .entrepreneur-total-connections-icon ,.entrepreneur-pending-requests-icon {
+  position: relative;
+  padding: 15px 6px 15px 25px;
+  scale: 208%;
+  z-index: -1;
+  right: 11px;
+
 }
 
 .investor-card-header,
@@ -2785,8 +3009,6 @@ span {
   background-color: var(--meet-bg);
   color: var(--meet-text);
   font-family: 'Plus Jakarta Sans', 'Outfit', 'Google Sans', system-ui, sans-serif;
-  height: 100vh;
-  width: 100vw;
   overflow: hidden;
   display: flex;
   flex-direction: column;
@@ -2794,15 +3016,15 @@ span {
 
 /* Video Stage & Grid Area */
 .video-stage-area {
-  flex: 1;
-  width: 100%;
-  padding: 16px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-  margin-bottom: 80px;
+flex: 1;
+    width: stretch;
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+    margin-bottom: 80px;
   /* Space for fixed control bar if not using flex */
 }
 
@@ -2981,8 +3203,8 @@ span {
   border: none !important;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 3px 1px rgba(0, 0, 0, 0.15) !important;
   overflow: hidden;
-  height: 100% !important;
-  width: 100% !important;
+  height: stretch !important;
+  width: stretch !important;
 }
 
 /* Sidebar Refinement */
@@ -3272,7 +3494,6 @@ span {
   z-index: 5;
 }
 
-
 .meet-bottom-bar {
   background-color: #202124 !important;
   height: 80px !important;
@@ -3292,4 +3513,12 @@ span {
 .meeting-ended-screen {
   background-color: #040b14 !important;
   /* Deep deep navy/black */
+}
+
+.documents-storage-card{
+  position: sticky;
+  align-self: flex-start;
+}
+.button-content{
+  display: flex;
 }

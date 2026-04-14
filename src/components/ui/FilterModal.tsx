@@ -63,7 +63,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                     className={clsx(
                       'filter-modal-badge px-4 py-2 rounded-full text-sm font-medium transition-colors',
                       selectedOptions.includes(option.id)
-                        ? 'filter-modal-badge-selected bg-[#405CFF] text-white'
+                        ? 'filter-modal-badge-selected bg-[#405CFF] text-white rounded-[8px]'
                         : 'filter-modal-badge-default bg-gray-100 text-gray-700 hover:bg-gray-200'
                     )}
                   >
@@ -80,7 +80,7 @@ export const FilterModal: React.FC<FilterModalProps> = ({
                     className={clsx(
                       'filter-modal-badge px-4 py-2 rounded-full text-sm font-medium transition-colors',
                       selectedOptions.includes(option.id)
-                        ? 'filter-modal-badge-selected bg-[#405CFF] text-white'
+                        ? 'filter-modal-badge-selected bg-[#405CFF] text-white rounded-[8px]'
                         : 'filter-modal-badge-default bg-gray-100 text-gray-700 hover:bg-gray-200'
                     )}
                   >

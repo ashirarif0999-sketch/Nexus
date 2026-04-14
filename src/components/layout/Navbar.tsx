@@ -32,8 +32,10 @@ export const Navbar: React.FC<NavbarProps> = memo(({ onToggleDock }) => {
     : ROUTES.DASHBOARD.INVESTOR;
   
   // User profile route based on role and ID
-  const profileRoute = user 
-    ? `/profile/${user.role}/${user.id}` 
+  const profileRoute = user
+    ? (user.role === 'entrepreneur'
+        ? ROUTES.PROFILE.ENTREPRENEUR(user.id)
+        : ROUTES.PROFILE.INVESTOR(user.id))
     : ROUTES.AUTH.LOGIN;
   
   const navLinks = [

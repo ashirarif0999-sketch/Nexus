@@ -1230,8 +1230,8 @@ export const VideoRoom: React.FC = () => {
               "flex w-full h-full gap-4 transition-all duration-500",
               windowWidth > 850 ? "flex-row" : "flex-col"
             )}>
-              <div className="relative w-[300px] h-[200px] rounded-2xl overflow-hidden shadow-2xl border border-white/5 animate-in fade-in zoom-in duration-300">
-                <video ref={screenVideoRef} className="w-full h-full object-cover" autoPlay playsInline />
+              <div className="relative w-[stretch] h-[stretch] rounded-2xl overflow-hidden shadow-2xl border border-white/5 animate-in fade-in zoom-in duration-300">
+                <video ref={screenVideoRef} className="w-full h-full object-contain bg-[black]" autoPlay playsInline />
                 <div className="absolute bottom-4 left-4 bg-black/80 px-3 py-1.5 rounded-lg flex items-center gap-2 border border-white/10">
                   <Monitor className="w-4 h-4 text-[#8ab4f8]" />
                   <span className="text-sm font-medium text-white">Your presentation</span>

@@ -12,10 +12,27 @@ const MAX_TRANSACTION_RETRIES = 3;
 const TRANSACTION_TIMEOUT = 5000; // 5 seconds
 const BATCH_SIZE = 50; // Process messages in batches for performance
 
+// Check if IndexedDB is available
+const isIndexedDBAvailable = (): boolean => {
+  try {
+    return typeof window !== 'undefined' &&
+           typeof window.indexedDB !== 'undefined' &&
+           window.indexedDB !== null;
+  } catch (error) {
+    return false;
+  }
+};
+
 class MessagesDB {
   private db: IDBDatabase | null = null;
 
   private async openDB(): Promise<IDBDatabase> {
+    // Check if IndexedDB is supported
+    if (!isIndexedDBAvailable()) {
+      const error = new Error('IndexedDB is not supported in this browser');
+      console.error('❌ IndexedDB not available:', error.message);
+      throw error;
+    }
     if (this.db) return this.db;
 
     return new Promise((resolve, reject) => {
@@ -304,20 +321,171 @@ class MessagesDB {
     });
   }
 
-  async getConversationsForUser(userId: string): Promise<string[]> {
-    const messages = await this.getAllMessages();
-    const partners = new Set<string>();
-    
-    messages.forEach(message => {
-      if (message.senderId === userId) {
-        partners.add(message.receiverId);
-      }
-      if (message.receiverId === userId) {
-        partners.add(message.senderId);
+  async getConversationsForUser(userId: string): Promise<ChatConversation[]> {
+    const db = await this.openDB();
+
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(CONVERSATIONS_STORE, 'readonly');
+
+      const timeoutId = setTimeout(() => {
+        transaction.abort();
+        reject(new Error('Transaction timeout'));
+      }, TRANSACTION_TIMEOUT);
+
+      transaction.oncomplete = () => clearTimeout(timeoutId);
+      transaction.onerror = () => {
+        clearTimeout(timeoutId);
+        reject(transaction.error);
+      };
+
+      try {
+        const store = transaction.objectStore(CONVERSATIONS_STORE);
+        const request = store.getAll();
+
+        request.onerror = () => {
+          console.error('❌ Failed to get conversations:', request.error);
+          reject(request.error);
+        };
+
+        request.onsuccess = () => {
+          const allConversations = request.result || [];
+          const userConversations = allConversations.filter(conv =>
+            conv.participants.includes(userId)
+          );
+          console.log(`📚 Retrieved ${userConversations.length} conversations from IndexedDB for user ${userId}`);
+          resolve(userConversations);
+        };
+      } catch (error) {
+        clearTimeout(timeoutId);
+        console.error('❌ Error in getConversationsForUser:', error);
+        reject(error);
       }
     });
+  }
 
-    return Array.from(partners);
+  async saveConversation(conversation: ChatConversation): Promise<void> {
+    const db = await this.openDB();
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(CONVERSATIONS_STORE, 'readwrite');
+
+      const timeoutId = setTimeout(() => {
+        transaction.abort();
+        reject(new Error('Transaction timeout'));
+      }, TRANSACTION_TIMEOUT);
+
+      transaction.oncomplete = () => {
+        clearTimeout(timeoutId);
+        console.log('✅ Conversation saved:', conversation.id);
+        resolve();
+      };
+
+      transaction.onerror = () => {
+        clearTimeout(timeoutId);
+        console.error('❌ Transaction failed for saveConversation:', transaction.error);
+        reject(transaction.error);
+      };
+
+      try {
+        const store = transaction.objectStore(CONVERSATIONS_STORE);
+        const request = store.put(conversation);
+
+        request.onerror = () => {
+          console.error('❌ Put request failed for conversation:', request.error);
+          reject(request.error);
+        };
+      } catch (error) {
+        clearTimeout(timeoutId);
+        console.error('❌ Error in saveConversation:', error);
+        reject(error);
+      }
+    });
+  }
+
+  async updateConversationLastMessage(conversationId: string, lastMessage: Message): Promise<void> {
+    const db = await this.openDB();
+
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(CONVERSATIONS_STORE, 'readwrite');
+
+      const timeoutId = setTimeout(() => {
+        transaction.abort();
+        reject(new Error('Transaction timeout'));
+      }, TRANSACTION_TIMEOUT);
+
+      transaction.oncomplete = () => clearTimeout(timeoutId);
+      transaction.onerror = () => {
+        clearTimeout(timeoutId);
+        reject(transaction.error);
+      };
+
+      try {
+        const store = transaction.objectStore(CONVERSATIONS_STORE);
+        const request = store.get(conversationId);
+
+        request.onerror = () => {
+          console.error('❌ Failed to get conversation for update:', request.error);
+          reject(request.error);
+        };
+
+        request.onsuccess = () => {
+          const conversation = request.result;
+          if (conversation) {
+            conversation.lastMessage = lastMessage;
+            conversation.updatedAt = lastMessage.timestamp;
+            store.put(conversation);
+            console.log('✅ Conversation updated with last message:', conversationId);
+          }
+          resolve();
+        };
+      } catch (error) {
+        clearTimeout(timeoutId);
+        console.error('❌ Error in updateConversationLastMessage:', error);
+        reject(error);
+      }
+    });
+  }
+
+  async updateConversationUnreadCount(conversationId: string, unreadCount: number): Promise<void> {
+    const db = await this.openDB();
+
+    return new Promise((resolve, reject) => {
+      const transaction = db.transaction(CONVERSATIONS_STORE, 'readwrite');
+
+      const timeoutId = setTimeout(() => {
+        transaction.abort();
+        reject(new Error('Transaction timeout'));
+      }, TRANSACTION_TIMEOUT);
+
+      transaction.oncomplete = () => clearTimeout(timeoutId);
+      transaction.onerror = () => {
+        clearTimeout(timeoutId);
+        reject(transaction.error);
+      };
+
+      try {
+        const store = transaction.objectStore(CONVERSATIONS_STORE);
+        const request = store.get(conversationId);
+
+        request.onerror = () => {
+          console.error('❌ Failed to get conversation for unread count update:', request.error);
+          reject(request.error);
+        };
+
+        request.onsuccess = () => {
+          const conversation = request.result;
+          if (conversation) {
+            conversation.unreadCount = unreadCount;
+            store.put(conversation);
+            console.log('✅ Conversation unread count updated:', conversationId, unreadCount);
+          }
+          resolve();
+        };
+      } catch (error) {
+        clearTimeout(timeoutId);
+        console.error('❌ Error in updateConversationUnreadCount:', error);
+        reject(error);
+      }
+    });
   }
   async markMessagesAsRead(user1Id: string, user2Id: string): Promise<void> {
     const messages = await this.getAllMessages();
@@ -405,6 +573,19 @@ export const sendMessageCustom = async (newMessage: Omit<Message, 'id' | 'timest
   try {
     await messagesDB.saveMessage(message);
     console.log('Message saved to IndexedDB:', message.id);
+
+    // Create or update conversation
+    const conversationId = getConversationId(message.senderId, message.receiverId);
+    const conversation: ChatConversation = {
+      id: conversationId,
+      participants: [message.senderId, message.receiverId],
+      lastMessage: message,
+      updatedAt: message.timestamp,
+    };
+
+    await messagesDB.saveConversation(conversation);
+    console.log('Conversation saved/updated in IndexedDB:', conversationId);
+
   } catch (error) {
     console.error('Failed to save to IndexedDB, falling back to localStorage:', error);
     // Fallback to localStorage if IndexedDB fails
@@ -415,47 +596,56 @@ export const sendMessageCustom = async (newMessage: Omit<Message, 'id' | 'timest
   return message;
 };
 
-// Get conversations for a user (from IndexedDB with localStorage fallback)
+// Get conversations for a user (from IndexedDB with localStorage fallback and migration)
 export const getConversationsForUserCustom = async (userId: string): Promise<ChatConversation[]> => {
   // Always try IndexedDB first
-  let partnerIds: string[] = [];
   try {
-    partnerIds = await messagesDB.getConversationsForUser(userId);
-    console.log('Conversations loaded from IndexedDB for user:', userId, partnerIds);
+    const conversations = await messagesDB.getConversationsForUser(userId);
+    if (conversations.length > 0) {
+      console.log('Conversations loaded from IndexedDB for user:', userId, conversations.length, 'conversations');
+      return conversations.sort((a, b) =>
+        new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+      );
+    }
   } catch (error) {
     console.warn('Error getting conversations from IndexedDB:', error);
   }
 
-  // If no conversations in IndexedDB, try localStorage as fallback
-  if (partnerIds.length === 0) {
-    console.log('No conversations in IndexedDB, trying localStorage fallback');
+  // If no conversations in IndexedDB, try localStorage as fallback and migrate
+  console.log('No conversations in IndexedDB, trying localStorage fallback and migrating');
+  try {
     const { getConversationsForUser } = await import('./messageStorage');
-    return getConversationsForUser(userId);
-  }
+    const localConversations = await getConversationsForUser(userId);
 
-  // Convert partner IDs to ChatConversation objects
-  const conversations: ChatConversation[] = [];
-  for (const partnerId of partnerIds) {
-    const messages = await messagesDB.getMessagesBetweenUsers(userId, partnerId);
-    const lastMessage = messages.length > 0 ? messages[messages.length - 1] : undefined;
-    conversations.push({
-      id: getConversationId(userId, partnerId),
-      participants: [userId, partnerId],
-      lastMessage,
-      updatedAt: lastMessage?.timestamp || new Date().toISOString(),
-    });
-  }
+    // Migrate localStorage conversations to IndexedDB
+    for (const conv of localConversations) {
+      try {
+        await messagesDB.saveConversation(conv);
+        console.log('Migrated conversation to IndexedDB:', conv.id);
+      } catch (migrationError) {
+        console.warn('Failed to migrate conversation:', conv.id, migrationError);
+      }
+    }
 
-  return conversations.sort((a, b) =>
-    new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
-  );
+    return localConversations.sort((a, b) =>
+      new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime()
+    );
+  } catch (fallbackError) {
+    console.warn('Error with localStorage fallback:', fallbackError);
+    return [];
+  }
 };
 
 // Mark messages as read (prioritize IndexedDB)
 export const markMessagesAsReadCustom = async (userId: string, partnerId: string): Promise<void> => {
   try {
     await messagesDB.markMessagesAsRead(userId, partnerId);
-    console.log('Messages marked as read in IndexedDB');
+
+    // Update conversation unreadCount to 0
+    const conversationId = getConversationId(userId, partnerId);
+    await messagesDB.updateConversationUnreadCount(conversationId, 0);
+
+    console.log('Messages marked as read in IndexedDB and conversation updated');
   } catch (error) {
     console.warn('Error marking messages as read in IndexedDB, trying localStorage:', error);
     // Fallback to localStorage

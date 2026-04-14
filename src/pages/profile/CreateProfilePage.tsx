@@ -388,9 +388,9 @@ export const CreateProfilePage: React.FC = () => {
       await updateProfile(currentUser.id, updates);
       
       // Navigate to the appropriate profile page
-      const targetPath = userRole === 'entrepreneur' 
-        ? `/profile/entrepreneur/${currentUser.id}`
-        : `/profile/investor/${currentUser.id}`;
+      const targetPath = userRole === 'entrepreneur'
+        ? ROUTES.PROFILE.ENTREPRENEUR(currentUser.id)
+        : ROUTES.PROFILE.INVESTOR(currentUser.id);
       
       navigate(targetPath);
     } catch (err) {

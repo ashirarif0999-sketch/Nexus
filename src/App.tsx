@@ -1,12 +1,30 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Suspense, lazy, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import toast from 'react-hot-toast';
 
 // Import centralized routes
 import { ROUTES, ROOT_REDIRECT } from './config/routes';
 
 // Layouts - Keep DashboardLayout eagerly loaded (required for most routes)
 import { DashboardLayout } from './components/layout/DashboardLayout';
+
+// Loading Spinner
+import LoadingSpinner from './components/ui/LoadingSpinner';
+
+// Check browser capabilities
+const checkBrowserCapabilities = () => {
+  const capabilities = {
+    indexedDB: typeof window !== 'undefined' && !!window.indexedDB,
+    localStorage: typeof window !== 'undefined' && !!window.localStorage,
+  };
+
+  if (!capabilities.indexedDB) {
+    console.warn('⚠️ IndexedDB not available - data persistence will be limited to localStorage');
+  }
+
+  return capabilities;
+};
 
 // Auth Pages - Lazy load (heavy - 56KB with GSAP/OGL)
 const AuthenticationPage = lazy(() => import('./pages/auth/AuthenticationPage').then(m => ({ default: m.AuthenticationPage })));
@@ -30,8 +48,7 @@ const SettingsPage = lazy(() => import('./pages/settings/SettingsPage').then(m =
 const HelpPage = lazy(() => import('./pages/help/HelpPage').then(m => ({ default: m.HelpPage })));
 const DealsPage = lazy(() => import('./pages/deals/DealsPage').then(m => ({ default: m.DealsPage })));
 
-// Chat Pages - Lazy load (heavy - emoji-picker)
-const ChatPage = lazy(() => import('./pages/chat/ChatPage').then(m => ({ default: m.ChatPage })));
+
 
 // Calendar Pages - Lazy load (heavy - FullCalendar)
 const CalendarPage = lazy(() => import('./pages/calendar/CalendarPage').then(m => ({ default: m.CalendarPage })));
@@ -48,18 +65,32 @@ const ExternalRedirect: React.FC<{ to: string }> = ({ to }) => {
   return null;
 };
 
-// Loading spinner for lazy-loaded routes
-const PageLoader: React.FC = () => (
-  <div className="flex items-center justify-center min-h-screen">
-    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-  </div>
-);
+
 
 function App() {
+  const [showInitialLoader, setShowInitialLoader] = useState(true);
+
+  // Check browser capabilities on mount
+  useEffect(() => {
+    const capabilities = checkBrowserCapabilities();
+    if (!capabilities.indexedDB) {
+      // Show warning toast after a delay to not interfere with loading
+      setTimeout(() => {
+        toast.error('Browser storage limited - some features may not persist between sessions', {
+          duration: 5000,
+        });
+      }, 2000);
+    }
+  }, []);
+
+  if (showInitialLoader) {
+    return <LoadingSpinner onComplete={() => setShowInitialLoader(false)} />;
+  }
+
   return (
     <AuthProvider>
       <Router>
-        <Suspense fallback={<PageLoader />}>
+        <Suspense fallback={null}>
           <Routes>
             {/* Landing Page - External HTML - using window.location to prevent infinite loop */}
             <Route path={ROUTES.LANDING} element={<ExternalRedirect to="/landingpage.html" />} />
@@ -68,13 +99,13 @@ function App() {
             <Route path={ROUTES.AUTH.REGISTER} element={<AuthenticationPage />} />
             <Route path={ROUTES.AUTH.FORGOT_PASSWORD} element={<AuthenticationPage />} />
             <Route path={ROUTES.AUTH.RESET_PASSWORD} element={<AuthenticationPage />} />
-            
+
             {/* Dashboard Routes */}
             <Route path={ROUTES.DASHBOARD.ROOT} element={<DashboardLayout />}>
               <Route path="entrepreneur" element={<EntrepreneurDashboard />} />
               <Route path="investor" element={<InvestorDashboard />} />
             </Route>
-            
+
             {/* Profile Routes */}
             <Route path={ROUTES.PROFILE.ROOT} element={<DashboardLayout />}>
               <Route path="entrepreneur/:id" element={<EntrepreneurProfile />} />
@@ -82,61 +113,62 @@ function App() {
               <Route path="create/entrepreneur" element={<CreateProfilePage />} />
               <Route path="create/investor" element={<CreateProfilePage />} />
             </Route>
-            
+
             {/* Feature Routes */}
             <Route path={ROUTES.INVESTORS} element={<DashboardLayout />}>
               <Route index element={<InvestorsPage />} />
             </Route>
-            
+
             <Route path={ROUTES.ENTREPRENEURS} element={<DashboardLayout />}>
               <Route index element={<EntrepreneursPage />} />
             </Route>
-            
+
             <Route path={ROUTES.MESSAGES} element={<DashboardLayout />}>
               <Route index element={<MessagesPage />} />
+              <Route path=":contactId" element={<MessagesPage />} />
             </Route>
-            
+
             <Route path={ROUTES.NOTIFICATIONS} element={<DashboardLayout />}>
               <Route index element={<NotificationsPage />} />
             </Route>
-            
+
             <Route path={ROUTES.DOCUMENTS} element={<DashboardLayout />}>
               <Route index element={<DocumentsPage />} />
             </Route>
-            
+
             <Route path={ROUTES.SETTINGS} element={<DashboardLayout />}>
               <Route index element={<SettingsPage />} />
             </Route>
-            
+
             <Route path={ROUTES.HELP} element={<DashboardLayout />}>
               <Route index element={<HelpPage />} />
             </Route>
-            
+
             <Route path={ROUTES.DEALS} element={<DashboardLayout />}>
               <Route index element={<DealsPage />} />
             </Route>
-            
+
             {/* Calendar Routes */}
             <Route path={ROUTES.CALENDAR} element={<DashboardLayout />}>
               <Route index element={<CalendarPage />} />
             </Route>
-            
+
             {/* Video Meetings Page - With dashboard layout */}
             <Route path={ROUTES.VIDEO.ROOT} element={<DashboardLayout />}>
               <Route index element={<VideoMeetingsPage />} />
             </Route>
             {/* Video Call Route - Full screen, no layout */}
             <Route path="/video/:roomId" element={<VideoRoom />} />
-            
+
             {/* Chat Routes */}
             <Route path={ROUTES.CHAT.ROOT} element={<DashboardLayout />}>
-              <Route index element={<ChatPage />} />
-              <Route path=":userId" element={<ChatPage />} />
+              <Route index element={<MessagesPage />} />
+              <Route path=":userId" element={<MessagesPage />} />
             </Route>
-            
+
             {/* Redirect root to login */}
             <Route path={ROUTES.ROOT} element={<Navigate to={ROOT_REDIRECT} replace />} />
-            
+
             {/* Catch all other routes and redirect to login */}
             <Route path="*" element={<Navigate to={ROOT_REDIRECT} replace />} />
           </Routes>

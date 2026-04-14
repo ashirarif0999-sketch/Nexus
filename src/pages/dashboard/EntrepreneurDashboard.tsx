@@ -21,6 +21,31 @@ const CardBody = lazy(() => import('../../components/ui/Card').then(module => ({
 const CardHeader = lazy(() => import('../../components/ui/Card').then(module => ({ default: module.CardHeader })));
 const CollaborationRequestCard = lazy(() => import('../../components/collaboration/CollaborationRequestCard').then(module => ({ default: module.CollaborationRequestCard })));
 const InvestorCard = lazy(() => import('../../components/investor/InvestorCard').then(module => ({ default: module.InvestorCard })));
+
+// Custom stat card component
+const StatCard: React.FC<{
+  children: React.ReactNode;
+  style?: React.CSSProperties;
+  className?: string;
+}> = ({ children, style, className }) => (
+  <div
+    className={`rounded-lg shadow-md overflow-hidden flex flex-col border relative ${className || ''}`}
+    style={style}
+  >
+    {children}
+  </div>
+);
+
+// Custom stat body component
+const StatBody: React.FC<{
+  children: React.ReactNode;
+  className?: string;
+}> = ({ children, className }) => (
+  <div className={`px-6 py-4 flex-1 ${className || ''}`}>
+    {children}
+  </div>
+);
+
 const ITEMS_PER_PAGE = 6;
 
 const EntrepreneurDashboardComponent: React.FC = () => {
@@ -167,8 +192,28 @@ const EntrepreneurDashboardComponent: React.FC = () => {
       {/* Summary cards */}
       <div className="entrepreneur-summary-cards dashboard-stats page-stats grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Suspense fallback={<SkeletonCard />}>
-          <Card className="entrepreneur-pending-requests-card bg-primary-50 border border-primary-100">
-            <CardBody className="entrepreneur-pending-requests-body">
+          <StatCard className="entrepreneur-pending-requests-card border-primary-100">
+            <svg style={{ position: 'absolute', top: 0, left: 0, zIndex: -1, filter: 'blur(25px)', opacity: '20%', transform: 'scaleX(-1)' }} viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" version="1.1">
+              <defs>
+                <linearGradient id="grad1_0" x1="33.3%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="20%" stopColor="#ffffff" stopOpacity="1"></stop>
+                  <stop offset="80%" stopColor="#ffffff" stopOpacity="1"></stop>
+                </linearGradient>
+              </defs>
+              <defs>
+                <linearGradient id="grad2_0" x1="0%" y1="0%" x2="66.7%" y2="100%">
+                  <stop offset="20%" stopColor="#ffffff" stopOpacity="1"></stop>
+                  <stop offset="80%" stopColor="#ffffff" stopOpacity="1"></stop>
+                </linearGradient>
+              </defs>
+              <g transform="translate(900, 0)">
+                <path d="M0 432.7C-32.7 374.6 -65.5 316.4 -126.7 305.8C-187.9 295.2 -277.6 332 -305.9 305.9C-334.3 279.9 -301.4 190.8 -312.3 129.3C-323.2 67.9 -377.9 33.9 -432.7 0L0 0Z" fill="#3ca9fa"></path>
+              </g>
+              <g transform="translate(0, 600)">
+                <path d="M0 -432.7C67.6 -438.6 135.3 -444.5 165.6 -399.7C195.9 -354.9 188.9 -259.4 211.4 -211.4C234 -163.5 286.2 -163.2 328 -135.9C369.8 -108.6 401.2 -54.3 432.7 0L0 0Z" fill="#3ca9fa"></path>
+              </g>
+            </svg>
+            <StatBody className="entrepreneur-pending-requests-body">
               <div className="entrepreneur-pending-requests-content flex items-center">
                 <div className="entrepreneur-pending-requests-icon p-3 bg-primary-100 rounded-full mr-4">
                   <Bell size={20} className="text-primary-700" />
@@ -178,13 +223,33 @@ const EntrepreneurDashboardComponent: React.FC = () => {
                   <h3 className="entrepreneur-pending-requests-count text-xl font-semibold text-primary-900">{pendingRequests.length}</h3>
                 </div>
               </div>
-            </CardBody>
-          </Card>
+            </StatBody>
+          </StatCard>
         </Suspense>
 
         <Suspense fallback={<SkeletonCard />}>
-          <Card className="entrepreneur-total-connections-card bg-secondary-50 border border-secondary-100">
-            <CardBody className="entrepreneur-total-connections-body">
+          <StatCard className="entrepreneur-total-connections-card border-secondary-100">
+            <svg style={{ position: 'absolute', top: 0, left: 0, zIndex: -1, filter: 'blur(25px)', opacity: '20%', transform: 'scaleX(-1)' }} viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" version="1.1">
+              <defs>
+                <linearGradient id="grad1_1" x1="33.3%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="20%" stopColor="#ffffff" stopOpacity="1"></stop>
+                  <stop offset="80%" stopColor="#ffffff" stopOpacity="1"></stop>
+                </linearGradient>
+              </defs>
+              <defs>
+                <linearGradient id="grad2_1" x1="0%" y1="0%" x2="66.7%" y2="100%">
+                  <stop offset="20%" stopColor="#ffffff" stopOpacity="1"></stop>
+                  <stop offset="80%" stopColor="#ffffff" stopOpacity="1"></stop>
+                </linearGradient>
+              </defs>
+              <g transform="translate(900, 0)">
+                <path d="M0 486.7C-45.8 437.6 -91.6 388.5 -154.2 372.3C-216.9 356.1 -296.3 372.8 -344.2 344.2C-392.1 315.6 -408.3 241.7 -426.8 176.8C-445.3 111.9 -466 55.9 -486.7 0L0 0Z" fill="#3cfad2"></path>
+              </g>
+              <g transform="translate(0, 600)">
+                <path d="M0 -486.7C54.2 -448.2 108.4 -409.6 157.7 -380.6C207 -351.7 251.3 -332.4 304.1 -304.1C356.8 -275.7 417.9 -238.4 449.7 -186.3C481.5 -134.1 484.1 -67 486.7 0L0 0Z" fill="#3cfad2"></path>
+              </g>
+            </svg>
+            <StatBody className="entrepreneur-total-connections-body">
               <div className="entrepreneur-total-connections-content flex items-center">
                 <div className="entrepreneur-total-connections-icon p-3 bg-secondary-100 rounded-full mr-4">
                   <Users size={20} className="text-secondary-700" />
@@ -196,13 +261,33 @@ const EntrepreneurDashboardComponent: React.FC = () => {
                   </h3>
                 </div>
               </div>
-            </CardBody>
-          </Card>
+            </StatBody>
+          </StatCard>
         </Suspense>
 
         <Suspense fallback={<SkeletonCard />}>
-          <Card className="entrepreneur-upcoming-meetings-card bg-accent-50 border border-accent-100">
-            <CardBody className="entrepreneur-upcoming-meetings-body">
+          <StatCard className="entrepreneur-upcoming-meetings-card border-accent-100">
+            <svg style={{ position: 'absolute', top: 0, left: 0, zIndex: -1, filter: 'blur(25px)', opacity: '20%', transform: 'scaleX(-1)' }} viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" version="1.1">
+              <defs>
+                <linearGradient id="grad1_2" x1="33.3%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="20%" stopColor="#ffffff" stopOpacity="1"></stop>
+                  <stop offset="80%" stopColor="#ffffff" stopOpacity="1"></stop>
+                </linearGradient>
+              </defs>
+              <defs>
+                <linearGradient id="grad2_2" x1="0%" y1="0%" x2="66.7%" y2="100%">
+                  <stop offset="20%" stopColor="#ffffff" stopOpacity="1"></stop>
+                  <stop offset="80%" stopColor="#ffffff" stopOpacity="1"></stop>
+                </linearGradient>
+              </defs>
+              <g transform="translate(900, 0)">
+                <path d="M0 432.7C-32.7 374.6 -65.5 316.4 -126.7 305.8C-187.9 295.2 -277.6 332 -305.9 305.9C-334.3 279.9 -301.4 190.8 -312.3 129.3C-323.2 67.9 -377.9 33.9 -432.7 0L0 0Z" fill="#fabb3c"></path>
+              </g>
+              <g transform="translate(0, 600)">
+                <path d="M0 -432.7C67.6 -438.6 135.3 -444.5 165.6 -399.7C195.9 -354.9 188.9 -259.4 211.4 -211.4C234 -163.5 286.2 -163.2 328 -135.9C369.8 -108.6 401.2 -54.3 432.7 0L0 0Z" fill="#fabb3c"></path>
+              </g>
+            </svg>
+            <StatBody className="entrepreneur-upcoming-meetings-body">
               <div className="entrepreneur-upcoming-meetings-content flex items-center">
                 <div className="entrepreneur-upcoming-meetings-icon p-3 bg-accent-100 rounded-full mr-4">
                   <Calendar size={20} className="text-accent-700" />
@@ -212,13 +297,33 @@ const EntrepreneurDashboardComponent: React.FC = () => {
                   <h3 className="entrepreneur-upcoming-meetings-count text-xl font-semibold text-accent-900">2</h3>
                 </div>
               </div>
-            </CardBody>
-          </Card>
+            </StatBody>
+          </StatCard>
         </Suspense>
 
         <Suspense fallback={<SkeletonCard />}>
-          <Card className="entrepreneur-profile-views-card bg-success-50 border border-success-100">
-            <CardBody className="entrepreneur-profile-views-body">
+          <StatCard className="entrepreneur-profile-views-card border-success-100">
+            <svg style={{ position: 'absolute', top: 0, left: 0, zIndex: -1, filter: 'blur(25px)', opacity: '20%', transform: 'scaleX(-1)' }} viewBox="0 0 900 600" xmlns="http://www.w3.org/2000/svg" xmlnsXlink="http://www.w3.org/1999/xlink" version="1.1">
+              <defs>
+                <linearGradient id="grad1_3" x1="33.3%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="20%" stopColor="#ffffff" stopOpacity="1"></stop>
+                  <stop offset="80%" stopColor="#ffffff" stopOpacity="1"></stop>
+                </linearGradient>
+              </defs>
+              <defs>
+                <linearGradient id="grad2_3" x1="0%" y1="0%" x2="66.7%" y2="100%">
+                  <stop offset="20%" stopColor="#ffffff" stopOpacity="1"></stop>
+                  <stop offset="80%" stopColor="#ffffff" stopOpacity="1"></stop>
+                </linearGradient>
+              </defs>
+              <g transform="translate(900, 0)">
+                <path d="M0 432.7C-32.7 374.6 -65.5 316.4 -126.7 305.8C-187.9 295.2 -277.6 332 -305.9 305.9C-334.3 279.9 -301.4 190.8 -312.3 129.3C-323.2 67.9 -377.9 33.9 -432.7 0L0 0Z" fill="#4dff8a"></path>
+              </g>
+              <g transform="translate(0, 600)">
+                <path d="M0 -432.7C67.6 -438.6 135.3 -444.5 165.6 -399.7C195.9 -354.9 188.9 -259.4 211.4 -211.4C234 -163.5 286.2 -163.2 328 -135.9C369.8 -108.6 401.2 -54.3 432.7 0L0 0Z" fill="#4dff8a"></path>
+              </g>
+            </svg>
+            <StatBody className="entrepreneur-profile-views-body">
               <div className="entrepreneur-profile-views-content flex items-center">
                 <div className="entrepreneur-profile-views-icon p-3 bg-green-100 rounded-full mr-4">
                   <TrendingUp size={20} className="text-success-700" />
@@ -228,8 +333,8 @@ const EntrepreneurDashboardComponent: React.FC = () => {
                   <h3 className="entrepreneur-profile-views-count text-xl font-semibold text-success-900">24</h3>
                 </div>
               </div>
-            </CardBody>
-          </Card>
+            </StatBody>
+          </StatCard>
         </Suspense>
       </div>
       

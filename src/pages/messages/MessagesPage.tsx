@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useParams } from 'react-router-dom';
 import { SendHorizontal, Mic, MicOff, Video, VideoOff, Volume2, X, PanelLeftClose, PanelLeftOpen, Phone, Search, MoreVertical, User, Maximize2 } from 'lucide-react';
 import Picker from '@emoji-mart/react';
 import data from '@emoji-mart/data';
@@ -17,6 +18,7 @@ import {
 
 export const MessagesPage: React.FC = () => {
   const { user: currentUser } = useAuth();
+  const { contactId } = useParams<{ contactId: string }>();
   const [showContactInfo, setShowContactInfo] = useState(false);
   const [activeMessageId, setActiveMessageId] = useState<string | null>(null);
   const [contextMenuPos, setContextMenuPos] = useState({ x: 0, y: 0 });
@@ -130,8 +132,10 @@ export const MessagesPage: React.FC = () => {
         const userConversations = await getConversationsForUserCustom(currentUser.id);
         setConversations(userConversations);
 
-        // Auto-select first conversation if available
-        if (userConversations.length > 0) {
+        // Auto-select conversation based on URL param or first available
+        if (contactId) {
+          setSelectedContact(contactId);
+        } else if (userConversations.length > 0) {
           const firstPartner = userConversations[0].participants.find(p => p !== currentUser.id);
           if (firstPartner) {
             setSelectedContact(firstPartner);
@@ -573,11 +577,7 @@ export const MessagesPage: React.FC = () => {
   }, [activeMessageId]);
 
   if (!currentUser) {
-    return (
-      <div className="loading-screen messages-loading-container flex items-center justify-center min-h-screen">
-        <div className="spinner messages-loading-spinner animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
-      </div>
-    );
+    return null;
   }
 
   if (error) {

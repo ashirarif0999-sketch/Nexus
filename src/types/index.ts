@@ -111,6 +111,7 @@ export interface ChatConversation {
   participants: string[];
   lastMessage?: Message;
   updatedAt: string;
+  unreadCount?: number;
 }
 
 export interface CollaborationRequest {

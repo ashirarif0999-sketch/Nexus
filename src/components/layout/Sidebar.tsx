@@ -106,7 +106,7 @@ const AccountMenu: React.FC<AccountMenuProps> = memo(({ user, onLogout, isExpand
   }, []);
 
   return (
-    <div ref={ref} className="dock-account">
+    <div ref={ref} className="dock-account dock-item">
       {isExpanded ? (
         <button className="dock-item dock-item--expanded" onClick={() => setOpen(o => !o)}>
           <span className="dock-item__icon">

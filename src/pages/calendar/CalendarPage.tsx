@@ -981,7 +981,7 @@ export const CalendarPage: React.FC = memo(() => {
 
           {/* Calendar Card - Premium Nexus Styling */}
           <div className="calendar-card bg-white/95 backdrop-blur-sm p-4 md:p-6 rounded-3xl shadow-lg border border-gray-200/60 overflow-hidden hover:shadow-xl">
-            <Suspense fallback={<div className="calendar-loading flex items-center justify-center h-96"><div className="calendar-spinner animate-spin rounded-full h-8 w-8 border-b-2 border-primary-600"></div></div>}>
+            <Suspense fallback={null}>
               <FullCalendar
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin, listPlugin]}
                 initialView={initialView}

@@ -139,14 +139,14 @@ export const EntrepreneurProfile: React.FC = () => {
           <div className="card-buttons-parent mt-6 sm:mt-0 flex flex-col sm:flex-row gap-2 justify-center sm:justify-end">
             {!isCurrentUser && (
               <>
-                <Link to={ROUTES.CHAT.CONVERSATION(entrepreneur.id)}>
-                  <Button
-                    variant="outline"
-                    leftIcon={<MessageCircle size={18} />}
-                  >
-                    Message
-                  </Button>
-                </Link>
+                 <Link to={ROUTES.MESSAGES_CONVERSATION(entrepreneur.id)}>
+                   <Button
+                     variant="outline"
+                     leftIcon={<MessageCircle size={18} />}
+                   >
+                     Message
+                   </Button>
+                 </Link>
                 
                 {isInvestor && (
                   <>

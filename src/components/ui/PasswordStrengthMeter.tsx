@@ -32,7 +32,6 @@ export const PasswordStrengthMeter: React.FC<PasswordStrengthMeterProps> = ({ pa
   return (
     <div className="password-strength-meter mt-2">
       <div className="password-strength-meter-header flex items-center justify-between mb-1">
-        <span className="password-strength-meter-label text-xs text-gray-600">Password Strength</span>
         <span className={clsx(
           'password-strength-meter-value text-xs font-medium',
           strength.level === 1 && 'password-strength-weak text-red-600',

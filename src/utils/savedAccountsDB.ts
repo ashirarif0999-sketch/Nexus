@@ -13,10 +13,27 @@ export interface SavedAccount {
   lastLogin: number;
 }
 
+// Check if IndexedDB is available
+const isIndexedDBAvailable = (): boolean => {
+  try {
+    return typeof window !== 'undefined' &&
+           typeof window.indexedDB !== 'undefined' &&
+           window.indexedDB !== null;
+  } catch (error) {
+    return false;
+  }
+};
+
 class SavedAccountsDB {
   private db: IDBDatabase | null = null;
 
   private async openDB(retries = 3): Promise<IDBDatabase> {
+    // Check if IndexedDB is supported
+    if (!isIndexedDBAvailable()) {
+      const error = new Error('IndexedDB is not supported in this browser');
+      console.error('❌ IndexedDB not available:', error.message);
+      throw error;
+    }
     if (this.db) return this.db;
 
     const attemptOpen = (): Promise<IDBDatabase> => {

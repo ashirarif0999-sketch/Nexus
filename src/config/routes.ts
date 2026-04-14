@@ -55,6 +55,7 @@ export const ROUTES = {
   
   // Feature Routes - Messages
   MESSAGES: '/messages',
+  MESSAGES_CONVERSATION: (contactId: string) => `/messages/${contactId}`,
   
   // Feature Routes - Notifications
   NOTIFICATIONS: '/notifications',

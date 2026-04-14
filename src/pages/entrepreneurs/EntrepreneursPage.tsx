@@ -220,7 +220,7 @@ export const EntrepreneursPage: React.FC = () => {
         
         {/* Main content */}
         <div className="entrepreneurs-main page-main lg:col-span-3 space-y-6">
-          <Sticky top={isSmallScreen ? 63 : 0} innerZ={10}>
+          <Sticky top={isSmallScreen ? 63 : 0} innerZ={1}>
             <div className="entrepreneurs-search-section page-search flex items-center gap-4">
             <Input
               className="entrepreneurs-search-input flex-1"

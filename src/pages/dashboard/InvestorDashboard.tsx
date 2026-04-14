@@ -153,42 +153,7 @@ const InvestorDashboardComponent: React.FC = () => {
         <div className="investor-filters flex flex-col md:flex-row gap-2">
           
 
-          <div className="investor-search-wrapper w-full md:w-2/3">
           
-            <Input
-              className="investor-search-input"
-              placeholder="Search startups, industries, or keywords..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              onInput={(e) => setSearchQuery((e.target as HTMLInputElement).value)}
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  setAppliedSearchQuery(searchQuery);
-                }
-              }}
-              fullWidth
-              startAdornment={<Search size={18} />}
-            />
-            <button
-              onClick={() => setIsIndustryModalOpen(true)}
-              className={clsx(
-                'filter-button-icon flex items-center gap-2 px-2 py-1 border transition-colors rounded-[8px]',
-                selectedIndustries.length > 0
-                  ? 'bg-[#405CFF] text-white'
-                  : 'border-gray-300 bg-white text-gray-700 '
-              )}
-            >
-              <SlidersHorizontal size={18} />
-              <span className={clsx(
-                "filter-button-count text-xs px-2 py-0.5 rounded-full",
-                selectedIndustries.length > 0
-                  ? 'bg-[white] text-black'
-                  : ' bg-white text-gray-700'
-              )}>
-                {selectedIndustries.length > 0 ? selectedIndustries.length : industries.length}
-              </span>
-            </button>
-          </div>
 
           <div className="investor-filter-actions w-full md:w-1/3 flex gap-2 items-center">
             
@@ -333,9 +298,46 @@ const InvestorDashboardComponent: React.FC = () => {
       {/* Entrepreneurs grid */}
       <div className="investor-entrepreneurs-section dashboard-section page-section">
         <Suspense fallback={<SkeletonCard />}>
+        
           <Card className="investor-featured-startups-card dashboard-section page-section">
             <CardHeader className="investor-featured-startups-header">
               <h2 className="investor-featured-startups-title text-lg font-medium text-gray-900">Featured Startups</h2>
+              <div className="investor-search-wrapper w-full md:w-2/3">
+          
+            <Input
+              className="investor-search-input"
+              placeholder="Search startups, industries, or keywords..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onInput={(e) => setSearchQuery((e.target as HTMLInputElement).value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  setAppliedSearchQuery(searchQuery);
+                }
+              }}
+              fullWidth
+              startAdornment={<Search size={18} />}
+            />
+            <button
+              onClick={() => setIsIndustryModalOpen(true)}
+              className={clsx(
+                'filter-button-icon flex items-center gap-2 px-2 py-1 border transition-colors rounded-[8px]',
+                selectedIndustries.length > 0
+                  ? 'bg-[#405CFF] text-white'
+                  : 'border-gray-300 bg-white text-gray-700 '
+              )}
+            >
+              <SlidersHorizontal size={18} />
+              <span className={clsx(
+                "filter-button-count text-xs px-2 py-0.5 rounded-full",
+                selectedIndustries.length > 0
+                  ? 'bg-[white] text-black'
+                  : ' bg-white text-gray-700'
+              )}>
+                {selectedIndustries.length > 0 ? selectedIndustries.length : industries.length}
+              </span>
+            </button>
+          </div>
             </CardHeader>
 
             <CardBody className="investor-featured-startups-body">

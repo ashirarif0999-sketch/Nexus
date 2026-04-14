@@ -2921,18 +2921,20 @@ border-left: 2px solid var(--primary-500);
                             <div class="navbar-dropdown-column navbar-dropdown-showcase">
                                 <h4 class="navbar-dropdown-section-title">PRODUCT SUITES</h4>
                                 <div class="navbar-dropdown-showcase-list">
+                                    <a href="funds-administration.html" class="navbar-dropdown-link-inline">
                                     <div class="navbar-dropdown-showcase-card navbar-dropdown-showcase-card-g1">
                                         <div class="navbar-dropdown-showcase-image">
                                             <!-- Image placeholder - leave for user -->
                                              <video src="videos/Video Project 3.mp4" width="100%" height="100%" muted></video>
                                         </div>
                                         <div class="showcase-wrapper-group-1">
-                                        <a href="funds-administration.html" style="text-decoration: none; color: inherit;">
+                                        
                                         <h5 class="navbar-dropdown-showcase-title">Fund Administration</h5>
                                         <p class="navbar-dropdown-showcase-description">All-in-one partner to launch an investment vehicle</p>
-                                        </a>
+                                        
                                         </div>
                                     </div>
+                                    </a>
                                     <div class="navbar-dropdown-showcase-card navbar-dropdown-showcase-card-g1">
                                         <div class="navbar-dropdown-showcase-image">
                                             <!-- Image placeholder - leave for user -->
@@ -3646,116 +3648,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // ============================================
     // HERO STYLE APPLIER — Top-of-page trigger
-    // ============================================
-    (function applyHeroStylesAtTop() {
-        'use strict';
-
-        const target = document.body;
-
-        // Hardcoded hero styles to apply at top of page
-        const HERO_STYLES = {
-            backgroundColor: '#0D0E12',
-            color: '#FFFFFF'
-        };
-
-        let backup = null;
-        let isApplied = false;
-        let scrollTicking = false;
-
-        /**
-         * Backup current inline styles on target element
-         */
-        function backupTargetStyles() {
-            if (backup) return;
-            backup = {};
-            Object.keys(HERO_STYLES).forEach(prop => {
-                backup[prop] = target.style[prop] || '';
-            });
-        }
-
-        /**
-         * Apply hero styles to target element
-         */
-        function applyStyles() {
-            if (isApplied) return;
-
-            try {
-                backupTargetStyles();
-
-                Object.entries(HERO_STYLES).forEach(([prop, val]) => {
-                    target.style[prop] = val;
-                });
-
-                isApplied = true;
-            } catch (e) {
-                console.error('[HeroStyles] Failed to apply styles:', e);
-            }
-        }
-
-        /**
-         * Restore target element to its previous inline styles
-         */
-        function restoreStyles() {
-            if (!isApplied || !backup) return;
-
-            try {
-                Object.entries(backup).forEach(([prop, val]) => {
-                    target.style[prop] = val;
-                });
-
-                isApplied = false;
-            } catch (e) {
-                console.error('[HeroStyles] Failed to restore styles:', e);
-            }
-        }
-
-        /**
-         * Check if page is at the very top
-         * @returns {boolean}
-         */
-        function isAtTop() {
-            return (window.scrollY || document.documentElement.scrollTop) === 0;
-        }
-
-        // Scroll listener with rAF throttling
-        function onScroll() {
-            if (scrollTicking) return;
-            scrollTicking = true;
-
-            requestAnimationFrame(() => {
-                if (isAtTop()) {
-                    applyStyles();
-                } else if (isApplied) {
-                    restoreStyles();
-                }
-                scrollTicking = false;
-            });
-        }
-
-        // Public API for manual control
-        window.HeroStyleController = {
-            apply: applyStyles,
-            restore: restoreStyles,
-            isApplied: () => isApplied,
-            getBackup: () => ({ ...backup })
-        };
-
-        // Attach scroll listener
-        window.addEventListener('scroll', onScroll, { passive: true });
-
-        // Apply on load if already at top
-        if (isAtTop()) {
-            applyStyles();
-        }
-
-        // Cleanup on page unload
-        window.addEventListener('beforeunload', () => {
-            window.removeEventListener('scroll', onScroll);
-            if (isApplied) restoreStyles();
-        }, { once: true });
-    })();
-
-    // Striped Transition Animation - Scroll-triggered
+      // Striped Transition Animation - Scroll-triggered
     if (typeof gsap === 'undefined') {
         return;
     }

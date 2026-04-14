@@ -29,14 +29,11 @@ export const DashboardLayout: React.FC = memo(() => {
     localStorage.setItem('hasSeenGuidedTour', 'true');
   };
 
+  // Wait for authentication check to complete
   if (isLoading) {
-    return (
-      <div className="dashboard-loading min-h-screen flex items-center justify-center">
-        <div className="dashboard-spinner animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-primary-600"></div>
-      </div>
-    );
+    return null; // Return null while loading to prevent flash of login page
   }
-  
+
   if (!isAuthenticated) {
     return <Navigate to={ROUTES.AUTH.LOGIN} replace />;
   }

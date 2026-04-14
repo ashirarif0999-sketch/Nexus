@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
-import { Bell, MessageCircle, UserPlus, DollarSign, X, Calendar, Mail, Phone, ExternalLink } from 'lucide-react';
+import React, { useState, useMemo } from 'react';
+import { Bell, MessageCircle, UserPlus, DollarSign, X, Calendar, Mail, Phone } from 'lucide-react';
 import { clsx } from 'clsx';
 import { Card, CardBody } from '../../components/ui/Card';
 import { Avatar } from '../../components/ui/Avatar';
 import { Badge } from '../../components/ui/Badge';
 import { Button } from '../../components/ui/Button';
 import toast from 'react-hot-toast';
+import './notifications.css';
 
 interface NotificationDetail {
   message?: string;
@@ -41,7 +42,7 @@ const initialNotifications: Notification[] = [
     type: 'message',
     user: {
       name: 'Sarah Johnson',
-      avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg',
+      avatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?w=150&h=150&auto=format&fit=crop',
       role: 'Entrepreneur',
       company: 'TechWave AI',
       email: 'sarah@techwave.ai'
@@ -51,7 +52,7 @@ const initialNotifications: Notification[] = [
     unread: true,
     details: {
       message: "Hi! I came across your profile and I'm impressed by your work. I'm working on an AI-driven financial analytics platform and would love to discuss potential collaboration opportunities. Are you available for a call this week?",
-      actionUrl: '/chat/e1'
+      actionUrl: '/messages'
     }
   },
   {
@@ -59,7 +60,7 @@ const initialNotifications: Notification[] = [
     type: 'connection',
     user: {
       name: 'Michael Rodriguez',
-      avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg',
+      avatar: 'https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?w=150&h=150&auto=format&fit=crop',
       role: 'Investor',
       company: 'Venture Capital Partners',
       email: 'michael@vcpartners.com'
@@ -77,7 +78,7 @@ const initialNotifications: Notification[] = [
     type: 'investment',
     user: {
       name: 'Jennifer Lee',
-      avatar: 'https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg',
+      avatar: 'https://images.pexels.com/photos/1181686/pexels-photo-1181686.jpeg?w=150&h=150&auto=format&fit=crop',
       role: 'Investor',
       company: 'Green Ventures',
       email: 'jennifer@greenvc.com',
@@ -97,7 +98,7 @@ const initialNotifications: Notification[] = [
     type: 'message',
     user: {
       name: 'Robert Torres',
-      avatar: 'https://images.pexels.com/photos/834863/pexels-photo-834863.jpeg',
+      avatar: 'https://images.pexels.com/photos/834863/pexels-photo-834863.jpeg?w=150&h=150&auto=format&fit=crop',
       role: 'Investor',
       company: 'HealthTech Ventures'
     },
@@ -113,7 +114,7 @@ const initialNotifications: Notification[] = [
     type: 'connection',
     user: {
       name: 'Amanda Foster',
-      avatar: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg',
+      avatar: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?w=150&h=150&auto=format&fit=crop',
       role: 'Angel Investor',
       company: 'WomenFund Ventures',
       email: 'amanda@womenfund.vc'
@@ -131,7 +132,7 @@ const initialNotifications: Notification[] = [
     type: 'investment',
     user: {
       name: 'David Martinez',
-      avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg',
+      avatar: 'https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?w=150&h=150&auto=format&fit=crop',
       role: 'Investor',
       company: 'DevTools Capital',
       email: 'david@devtoolscapital.com'
@@ -150,7 +151,7 @@ const initialNotifications: Notification[] = [
     type: 'message',
     user: {
       name: 'Sarah Chen',
-      avatar: 'https://images.pexels.com/photos/3738088/pexels-photo-3738088.jpeg',
+      avatar: 'https://images.pexels.com/photos/3738088/pexels-photo-3738088.jpeg?w=150&h=150&auto=format&fit=crop',
       role: 'Entrepreneur',
       company: 'MarketPlace Inc'
     },
@@ -167,7 +168,7 @@ const initialNotifications: Notification[] = [
     type: 'connection',
     user: {
       name: 'Emily Watson',
-      avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg',
+      avatar: 'https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?w=150&h=150&auto=format&fit=crop',
       role: 'Marketing Director',
       company: 'GrowthHub'
     },
@@ -184,7 +185,7 @@ const initialNotifications: Notification[] = [
     type: 'investment',
     user: {
       name: 'James Wilson',
-      avatar: 'https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg',
+      avatar: 'https://images.pexels.com/photos/1681010/pexels-photo-1681010.jpeg?w=150&h=150&auto=format&fit=crop',
       role: 'Venture Partner',
       company: 'TechAccelerator',
       email: 'james@techaccelerator.com'
@@ -201,7 +202,7 @@ const initialNotifications: Notification[] = [
     type: 'message',
     user: {
       name: 'Lisa Thompson',
-      avatar: 'https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg',
+      avatar: 'https://images.pexels.com/photos/733872/pexels-photo-733872.jpeg?w=150&h=150&auto=format&fit=crop',
       role: 'Product Manager',
       company: 'InnovateTech'
     },
@@ -231,7 +232,7 @@ const initialNotifications: Notification[] = [
     type: 'investment',
     user: {
       name: 'Kevin Brown',
-      avatar: 'https://images.pexels.com/photos/936137/pexels-photo-936137.jpeg',
+      avatar: 'https://images.pexels.com/photos/936137/pexels-photo-936137.jpeg?w=150&h=150&auto=format&fit=crop',
       role: 'Private Equity',
       company: 'Brown Family Office'
     },
@@ -244,11 +245,285 @@ const initialNotifications: Notification[] = [
   }
 ];
 
+const getNotificationIcon = (type: string) => {
+  switch (type) {
+    case 'message':
+      return <MessageCircle size={16} />;
+    case 'connection':
+      return <UserPlus size={16} />;
+    case 'investment':
+      return <DollarSign size={16} />;
+    case 'system':
+      return <Bell size={16} />;
+    default:
+      return <Bell size={16} />;
+  }
+};
+
+const getNotificationTypeClass = (type: string) => {
+  switch (type) {
+    case 'message': return 'nx-tag-message';
+    case 'connection': return 'nx-tag-connection';
+    case 'investment': return 'nx-tag-investment';
+    case 'system': return 'nx-tag-system';
+    default: return '';
+  }
+};
+
+interface NotificationItemProps {
+  notification: Notification;
+  index: number;
+  onClick: (notification: Notification) => void;
+}
+
+const NotificationItem: React.FC<NotificationItemProps> = ({ notification, index, onClick }) => (
+  <Card
+    className={clsx(
+      'nx-notification-item',
+      notification.unread && 'nx-notification-item--unread'
+    )}
+    style={{ '--nx-index': index } as React.CSSProperties}
+    onClick={() => onClick(notification)}
+  >
+    <CardBody className="nx-notification-item-body">
+      <div className="nx-notification-avatar-container">
+        <Avatar
+          src={notification.user.avatar}
+          alt={notification.user.name}
+          size="md"
+          className="nx-notification-avatar"
+        />
+        {notification.unread && <div className="nx-notification-unread-dot" />}
+      </div>
+
+      <div className="nx-notification-content-wrapper">
+        <div className="nx-notification-header-row">
+          <span className="nx-notification-user-name">
+            {notification.user.name}
+          </span>
+          <div className="nx-notification-meta-top">
+            <span className="nx-notification-time">{notification.time}</span>
+            {notification.unread && (
+              <Badge variant="primary" size="sm" rounded className="nx-notification-new-badge">New</Badge>
+            )}
+          </div>
+        </div>
+
+        <p className="nx-notification-text">
+          {notification.content}
+        </p>
+
+        <div className="nx-notification-footer-row">
+          <div className={clsx('nx-notification-type-tag', getNotificationTypeClass(notification.type))}>
+            {getNotificationIcon(notification.type)}
+            <span className="nx-notification-type-label">{notification.type}</span>
+          </div>
+        </div>
+      </div>
+    </CardBody>
+  </Card>
+);
+
+interface NotificationModalProps {
+  notification: Notification | null;
+  onClose: () => void;
+}
+
+const NotificationModal: React.FC<NotificationModalProps> = ({ notification, onClose }) => {
+  if (!notification) return null;
+
+  return (
+    <div className="nx-notification-modal-overlay" onClick={onClose}>
+      <div
+        className="nx-notification-modal"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Modal Header */}
+        <div className="nx-notification-modal-header">
+          <div className="nx-notification-modal-user">
+            <Avatar
+              src={notification.user.avatar}
+              alt={notification.user.name}
+              size="lg"
+              className="nx-notification-modal-avatar"
+            />
+            <div className="nx-notification-modal-user-info">
+              <h3 className="nx-notification-modal-user-name">{notification.user.name}</h3>
+              {notification.user.role && (
+                <p className="nx-notification-modal-user-role">
+                  {notification.user.role}
+                  {notification.user.company && <span className="nx-notification-modal-user-company"> at {notification.user.company}</span>}
+                </p>
+              )}
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="nx-notification-modal-close"
+            aria-label="Close modal"
+          >
+            <X size={20} />
+          </button>
+        </div>
+
+        {/* Modal Body */}
+        <div className="nx-notification-modal-body">
+          {/* Status Bar */}
+          <div className="nx-notification-modal-status">
+            <div className="nx-notification-modal-type">
+              {getNotificationIcon(notification.type)}
+              <span className="nx-notification-modal-type-label">{notification.type}</span>
+            </div>
+            <span className="nx-notification-modal-time">{notification.time}</span>
+          </div>
+
+          {/* Main Message */}
+          <div className="nx-notification-modal-content">
+            <p className="nx-notification-modal-main-text">{notification.content}</p>
+          </div>
+
+          {/* Details Section */}
+          <div className="nx-notification-modal-details">
+            {notification.type === 'message' && notification.details?.message && (
+              <div className="nx-notification-detail-card nx-notification-detail-card--message">
+                <Mail size={16} className="nx-notification-detail-icon" />
+                <p className="nx-notification-detail-text">{notification.details.message}</p>
+              </div>
+            )}
+
+            {notification.type === 'connection' && notification.details && (
+              <div className="nx-notification-detail-group">
+                {notification.details.connectionStatus && (
+                  <div className="nx-notification-detail-item">
+                    <span className="nx-notification-detail-label">Status</span>
+                    <Badge
+                      variant={notification.details.connectionStatus === 'accepted' ? 'success' : notification.details.connectionStatus === 'pending' ? 'warning' : 'secondary'}
+                      size="sm"
+                      className="nx-notification-detail-badge"
+                    >
+                      {notification.details.connectionStatus === 'accepted' ? 'Accepted' : notification.details.connectionStatus === 'pending' ? 'Pending' : 'Declined'}
+                    </Badge>
+                  </div>
+                )}
+                {notification.details.additionalInfo && (
+                  <div className="nx-notification-detail-card">
+                    <p className="nx-notification-detail-text">{notification.details.additionalInfo}</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {notification.type === 'investment' && notification.details && (
+              <div className="nx-notification-detail-group">
+                {notification.details.investmentInterest && (
+                  <div className="nx-notification-detail-item">
+                    <DollarSign size={16} className="nx-notification-detail-icon nx-notification-detail-icon--investment" />
+                    <div>
+                      <span className="nx-notification-detail-label">Investment Interest: </span>
+                      <span className="nx-notification-detail-value">{notification.details.investmentInterest}</span>
+                    </div>
+                  </div>
+                )}
+                {notification.details.investmentAmount && (
+                  <div className="nx-notification-detail-item">
+                    <DollarSign size={16} className="nx-notification-detail-icon nx-notification-detail-icon--investment" />
+                    <div>
+                      <span className="nx-notification-detail-label">Investment Range: </span>
+                      <span className="nx-notification-detail-value">{notification.details.investmentAmount}</span>
+                    </div>
+                  </div>
+                )}
+                {notification.details.meetingDate && (
+                  <div className="nx-notification-detail-item">
+                    <Calendar size={16} className="nx-notification-detail-icon nx-notification-detail-icon--calendar" />
+                    <div>
+                      <span className="nx-notification-detail-label">Meeting: </span>
+                      <span className="nx-notification-detail-value">{notification.details.meetingDate} at {notification.details.meetingTime}</span>
+                    </div>
+                  </div>
+                )}
+                {notification.details.additionalInfo && (
+                  <div className="nx-notification-detail-card">
+                    <p className="nx-notification-detail-text">{notification.details.additionalInfo}</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {notification.type === 'system' && notification.details?.additionalInfo && (
+              <div className="nx-notification-detail-card nx-notification-detail-card--system">
+                <p className="nx-notification-detail-text">{notification.details.additionalInfo}</p>
+              </div>
+            )}
+          </div>
+
+          {/* Contact Details */}
+          {(notification.user.email || notification.user.phone) && (
+            <div className="nx-notification-modal-contact">
+              <h4 className="nx-notification-contact-title">Contact Information</h4>
+              <div className="nx-notification-contact-list">
+                {notification.user.email && (
+                  <div className="nx-notification-contact-item">
+                    <Mail size={14} />
+                    <a href={`mailto:${notification.user.email}`} className="nx-notification-contact-link">{notification.user.email}</a>
+                  </div>
+                )}
+                {notification.user.phone && (
+                  <div className="nx-notification-contact-item">
+                    <Phone size={14} />
+                    <a href={`tel:${notification.user.phone}`} className="nx-notification-contact-link">{notification.user.phone}</a>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Modal Footer */}
+        <div className="nx-notification-modal-footer">
+          <Button variant="outline" onClick={onClose} className="nx-notification-footer-btn">
+            Close
+          </Button>
+          {notification.type === 'message' && (
+            <Button onClick={() => { window.location.href = notification.details?.actionUrl || '/messages'; }} className="nx-notification-footer-btn nx-notification-footer-btn--primary">
+              <Mail size={16} className="nx-btn-icon" />
+              Reply
+            </Button>
+          )}
+          {notification.type === 'connection' && notification.details?.connectionStatus === 'pending' && (
+            <>
+              <Button 
+                variant="outline" 
+                className="nx-notification-footer-btn nx-notification-footer-btn--decline"
+                style={{ backgroundColor: 'white', color: '#374151', borderColor: '#e5e7eb' }}
+              >
+                Decline
+              </Button>
+              <Button 
+                className="nx-notification-footer-btn nx-notification-footer-btn--primary"
+                style={{ backgroundColor: '#10b981', color: 'white' }}
+              >
+                Accept
+              </Button>
+            </>
+          )}
+          {notification.type === 'investment' && notification.details?.meetingDate && (
+            <Button className="nx-notification-footer-btn nx-notification-footer-btn--primary">
+              <Calendar size={16} className="nx-btn-icon" />
+              Confirm Meeting
+            </Button>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+};
+
 export const NotificationsPage: React.FC = () => {
   const [notifications, setNotifications] = useState<Notification[]>(initialNotifications);
   const [selectedNotification, setSelectedNotification] = useState<Notification | null>(null);
 
-  const unreadCount = notifications.filter(n => n.unread).length;
+  const unreadCount = useMemo(() => notifications.filter(n => n.unread).length, [notifications]);
 
   const markAllAsRead = () => {
     setNotifications(prev => prev.map(n => ({ ...n, unread: false })));
@@ -269,31 +544,17 @@ export const NotificationsPage: React.FC = () => {
   const closePopup = () => {
     setSelectedNotification(null);
   };
-  const getNotificationIcon = (type: string) => {
-    switch (type) {
-      case 'message':
-        return <MessageCircle size={16} className="text-primary-600" />;
-      case 'connection':
-        return <UserPlus size={16} className="text-secondary-600" />;
-      case 'investment':
-        return <DollarSign size={16} className="text-accent-600" />;
-      case 'system':
-        return <Bell size={16} className="text-blue-600" />;
-      default:
-        return <Bell size={16} className="text-gray-600" />;
-    }
-  };
   
   return (
-    <div className="notifications-page page-main-content space-y-6 animate-fade-in">
-      <div className="notifications-header page-header flex justify-between items-center">
+    <div className="nx-notifications-page animate-fade-in">
+      <div className="nx-notifications-header">
         <div className="notifications-title-section">
-          <h1 className="notifications-title text-2xl font-bold text-gray-900">Notifications</h1>
-          <p className="notifications-subtitle text-gray-600">Stay updated with your network activity</p>
+          <h1 className="nx-notifications-title">Notifications</h1>
+          <p className="nx-notifications-subtitle">Stay updated with your network activity</p>
         </div>
         
         <Button 
-          className="notifications-mark-all-btn" 
+          className="nx-notifications-mark-all-btn"
           variant="outline" 
           size="sm"
           onClick={markAllAsRead}
@@ -303,207 +564,23 @@ export const NotificationsPage: React.FC = () => {
         </Button>
       </div>
       
-      <div className="notifications-list page-content space-y-4">
-        {notifications.map(notification => (
-          <Card
+      <div className="nx-notifications-list-container">
+        <div className="nx-notifications-list">
+        {notifications.map((notification, index) => (
+          <NotificationItem
             key={notification.id}
-            className={clsx(
-              'notifications-item transition-colors duration-200 cursor-pointer',
-              notification.unread && 'bg-primary-50 hover:bg-primary-100'
-            )}
-            onClick={() => handleNotificationClick(notification)}
-          >
-            <CardBody className="notifications-item-body flex items-start p-4">
-              <Avatar
-                src={notification.user.avatar}
-                alt={notification.user.name}
-                size="md"
-                className="flex-shrink-0 mr-4"
-              />
-              
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <span className="font-medium text-gray-900">
-                    {notification.user.name}
-                  </span>
-                  {notification.unread && (
-                    <Badge variant="primary" size="sm" rounded>New</Badge>
-                  )}
-                </div>
-                
-                <p className="text-gray-600 mt-1">
-                  {notification.content}
-                </p>
-                
-                <div className="flex items-center gap-2 mt-2 text-sm text-gray-500">
-                  {getNotificationIcon(notification.type)}
-                  <span>{notification.time}</span>
-                </div>
-              </div>
-            </CardBody>
-          </Card>
+            notification={notification}
+            index={index}
+            onClick={handleNotificationClick}
+          />
         ))}
+        </div>
       </div>
 
-      {/* Notification Detail Popup */}
-      {selectedNotification && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm animate-fade-in" onClick={closePopup}>
-          <div 
-            className="bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-hidden animate-in zoom-in-95 duration-200" 
-            onClick={(e) => e.stopPropagation()}
-          >
-            {/* Popup Header */}
-            <div className="flex items-center justify-between p-6 border-b border-gray-100">
-              <div className="flex items-center gap-3">
-                <Avatar
-                  src={selectedNotification.user.avatar}
-                  alt={selectedNotification.user.name}
-                  size="lg"
-                />
-                <div>
-                  <h3 className="text-lg font-bold text-gray-900">{selectedNotification.user.name}</h3>
-                  {selectedNotification.user.role && (
-                    <p className="text-sm text-gray-500">{selectedNotification.user.role}{selectedNotification.user.company && ` at ${selectedNotification.user.company}`}</p>
-                  )}
-                </div>
-              </div>
-              <button 
-                onClick={closePopup}
-                className="p-2 hover:bg-gray-100 rounded-xl transition-colors"
-              >
-                <X size={20} className="text-gray-400" />
-              </button>
-            </div>
-
-            {/* Popup Content */}
-            <div className="p-6 overflow-y-auto max-h-[60vh]">
-              {/* Notification Type Badge */}
-              <div className="flex items-center gap-2 mb-4">
-                {getNotificationIcon(selectedNotification.type)}
-                <span className="text-sm font-medium text-gray-500 capitalize">{selectedNotification.type}</span>
-                <span className="text-sm text-gray-400">• {selectedNotification.time}</span>
-              </div>
-
-              {/* Main Content */}
-              <p className="text-gray-700 mb-4">{selectedNotification.content}</p>
-
-              {/* Type-specific Details */}
-              {selectedNotification.type === 'message' && selectedNotification.details?.message && (
-                <div className="bg-gray-50 rounded-xl p-4 mb-4">
-                  <div className="flex items-start gap-2">
-                    <Mail size={16} className="text-gray-400 mt-0.5" />
-                    <p className="text-gray-600 text-sm">{selectedNotification.details.message}</p>
-                  </div>
-                </div>
-              )}
-
-              {selectedNotification.type === 'connection' && selectedNotification.details && (
-                <div className="space-y-3 mb-4">
-                  {selectedNotification.details.connectionStatus && (
-                    <div className="flex items-center gap-2">
-                      <span className="text-sm font-medium text-gray-500">Status:</span>
-                      <Badge 
-                        variant={selectedNotification.details.connectionStatus === 'accepted' ? 'success' : selectedNotification.details.connectionStatus === 'pending' ? 'warning' : 'secondary'}
-                        size="sm"
-                      >
-                        {selectedNotification.details.connectionStatus === 'accepted' ? 'Accepted' : selectedNotification.details.connectionStatus === 'pending' ? 'Pending' : 'Declined'}
-                      </Badge>
-                    </div>
-                  )}
-                  {selectedNotification.details.additionalInfo && (
-                    <p className="text-sm text-gray-600 bg-gray-50 rounded-xl p-4">{selectedNotification.details.additionalInfo}</p>
-                  )}
-                </div>
-              )}
-
-              {selectedNotification.type === 'investment' && selectedNotification.details && (
-                <div className="space-y-3 mb-4">
-                  {selectedNotification.details.investmentInterest && (
-                    <div className="flex items-start gap-2">
-                      <DollarSign size={16} className="text-green-600 mt-0.5" />
-                      <div>
-                        <span className="text-sm font-medium text-gray-500">Investment Interest: </span>
-                        <span className="text-sm text-gray-700">{selectedNotification.details.investmentInterest}</span>
-                      </div>
-                    </div>
-                  )}
-                  {selectedNotification.details.investmentAmount && (
-                    <div className="flex items-start gap-2">
-                      <DollarSign size={16} className="text-green-600 mt-0.5" />
-                      <div>
-                        <span className="text-sm font-medium text-gray-500">Investment Range: </span>
-                        <span className="text-sm text-gray-700">{selectedNotification.details.investmentAmount}</span>
-                      </div>
-                    </div>
-                  )}
-                  {selectedNotification.details.meetingDate && (
-                    <div className="flex items-start gap-2">
-                      <Calendar size={16} className="text-indigo-600 mt-0.5" />
-                      <div>
-                        <span className="text-sm font-medium text-gray-500">Meeting: </span>
-                        <span className="text-sm text-gray-700">{selectedNotification.details.meetingDate} at {selectedNotification.details.meetingTime}</span>
-                      </div>
-                    </div>
-                  )}
-                  {selectedNotification.details.additionalInfo && (
-                    <p className="text-sm text-gray-600 bg-gray-50 rounded-xl p-4">{selectedNotification.details.additionalInfo}</p>
-                  )}
-                </div>
-              )}
-
-              {selectedNotification.type === 'system' && selectedNotification.details?.additionalInfo && (
-                <p className="text-sm text-gray-600 bg-blue-50 rounded-xl p-4">{selectedNotification.details.additionalInfo}</p>
-              )}
-
-              {/* Contact Info */}
-              {(selectedNotification.user.email || selectedNotification.user.phone) && (
-                <div className="border-t border-gray-100 pt-4 mt-4">
-                  <h4 className="text-sm font-semibold text-gray-700 mb-2">Contact Information</h4>
-                  <div className="space-y-2">
-                    {selectedNotification.user.email && (
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <Mail size={14} />
-                        <a href={`mailto:${selectedNotification.user.email}`} className="text-indigo-600 hover:underline">{selectedNotification.user.email}</a>
-                      </div>
-                    )}
-                    {selectedNotification.user.phone && (
-                      <div className="flex items-center gap-2 text-sm text-gray-600">
-                        <Phone size={14} />
-                        <a href={`tel:${selectedNotification.user.phone}`} className="text-indigo-600 hover:underline">{selectedNotification.user.phone}</a>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Popup Actions */}
-            <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
-              <Button variant="outline" onClick={closePopup}>
-                Close
-              </Button>
-              {selectedNotification.type === 'message' && (
-                <Button onClick={() => { window.location.href = selectedNotification.details?.actionUrl || '/messages'; }}>
-                  <Mail size={16} className="mr-2" />
-                  Reply
-                </Button>
-              )}
-              {selectedNotification.type === 'connection' && selectedNotification.details?.connectionStatus === 'pending' && (
-                <>
-                  <Button variant="outline" className="text-red-600 border-red-300 hover:bg-red-50">Decline</Button>
-                  <Button>Accept</Button>
-                </>
-              )}
-              {selectedNotification.type === 'investment' && selectedNotification.details?.meetingDate && (
-                <Button>
-                  <Calendar size={16} className="mr-2" />
-                  Confirm Meeting
-                </Button>
-              )}
-            </div>
-          </div>
-        </div>
-      )}
+      <NotificationModal
+        notification={selectedNotification}
+        onClose={closePopup}
+      />
     </div>
   );
 };

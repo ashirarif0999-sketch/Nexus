@@ -1,3 +1,14 @@
+// Check if IndexedDB is available
+const isIndexedDBAvailable = (): boolean => {
+  try {
+    return typeof window !== 'undefined' &&
+           typeof window.indexedDB !== 'undefined' &&
+           window.indexedDB !== null;
+  } catch (error) {
+    return false;
+  }
+};
+
 const DB_NAME = 'NexusoRecentContacts';
 const DB_VERSION = 1;
 const STORE_NAME = 'recentContacts';
@@ -6,6 +17,12 @@ class RecentContactsDB {
   private db: IDBDatabase | null = null;
 
   private async openDB(): Promise<IDBDatabase> {
+    // Check if IndexedDB is supported
+    if (!isIndexedDBAvailable()) {
+      const error = new Error('IndexedDB is not supported in this browser');
+      console.error('❌ IndexedDB not available:', error.message);
+      throw error;
+    }
     if (this.db) return this.db;
 
     return new Promise((resolve, reject) => {

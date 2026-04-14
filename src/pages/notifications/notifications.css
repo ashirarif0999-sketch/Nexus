@@ -1,0 +1,454 @@
+/* 
+  Nexus Notifications Design System 
+  Aligned with Nexuso Dashboard (April 2026)
+*/
+
+@keyframes nx-slide-up-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.nx-notifications-page {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.nx-notifications-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 3rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 2px solid #f3f4f6;
+}
+
+.nx-notifications-title {
+  font-family: 'oldschool-grotesk-regular', 'Mileast', sans-serif;
+  font-size: 2.75rem;
+  font-weight: 700;
+  color: #0d0e12;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.5rem;
+}
+
+.nx-notifications-subtitle {
+  color: #666;
+  font-size: 1.1rem;
+  font-weight: 400;
+}
+
+.nx-notifications-mark-all-btn {
+  border-radius: 10px !important;
+  font-weight: 600 !important;
+  padding: 0.6rem 1.2rem !important;
+  border: 1.5px solid #e5e7eb !important;
+  color: #374151 !important;
+  background: white !important;
+  transition: all 0.2s ease !important;
+  cursor: pointer;
+}
+
+.nx-notifications-mark-all-btn:hover:not(:disabled) {
+  background: transparent !important;
+  border-color: #d1d5db !important;
+}
+
+.nx-notifications-mark-all-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.nx-notifications-list {
+  display: flex;
+  flex-direction: column;
+  perspective: 1000px;
+}
+
+/* Notification Item - Surface & Visual Hierarchy */
+.nx-notification-item {
+  position: relative;
+  background: transparent !important;
+  border-radius: 0px !important;
+  box-shadow: none !important;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1) !important;
+  cursor: pointer;
+  overflow: hidden;
+  
+  /* Entrance Animation */
+  opacity: 0;
+  animation: nx-slide-up-fade-in 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  animation-delay: calc(var(--nx-index) * 0.08s);
+}
+
+.nx-notification-item:hover {
+  border-color: none !important;
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.08) !important;
+  transform: translateY(-2px);
+  transition: all 0.1s ease;
+  anchor-name: --notification-hover;
+}
+
+.nx-notifications-list {
+  position: relative;
+}
+
+.nx-notifications-list::before {
+  content: '';
+  position: absolute;
+  position-anchor: --notification-hover;
+  top: anchor(top);
+  left: anchor(left);
+  right: anchor(right);
+  bottom: anchor(bottom);
+  border: 1px solid #ebebeb;
+  background: #e4e4e7;
+  border-radius: 12px;
+  z-index: -1;
+  opacity: 0;
+  transition: all 0.3s ease;
+  pointer-events: none;
+}
+
+.nx-notifications-list:has(.nx-notification-item:hover)::before {
+  opacity: 1;
+}
+
+.nx-notification-item--unread {
+  background: transparent !important;
+}
+
+.nx-notification-item-body {
+  display: flex;
+  padding: 12px 24px !important;
+  gap: 1.5rem;
+}
+
+.nx-notification-avatar-container {
+  position: relative;
+    flex-shrink: 0;
+    place-content: center;
+    height: max-content;
+    align-self: center;
+}
+
+
+.nx-notification-unread-dot {
+position: absolute;
+    top: 77px;
+    right: 10px;
+    width: 14px;
+    height: 14px;
+    background: #3B82F6;
+    border: 2.5px solid white;
+    border-radius: 50%;
+    z-index: 2;
+}
+
+.nx-notification-modal-content-wrapper {
+  flex: 1;
+  min-width: 0;
+}
+
+.nx-notification-header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.6rem;
+}
+
+.nx-notification-user-name {
+  font-family: 'oldschool-grotesk-regular', sans-serif;
+  font-weight: 600;
+  color: #111827;
+  font-size: 1.125rem;
+}
+
+.nx-notification-header-row .nx-notification-meta-top {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.nx-notification-time {
+  font-size: 0.875rem;
+  color: #9ca3af;
+  font-weight: 500;
+}
+
+.nx-notification-text {
+  color: #4b5563;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin-bottom: 0.75rem;
+}
+
+.nx-notification-new-badge {
+    background: #d9e8ff !important;
+    color: #3B82F6 !important;
+    padding: 0.2rem 0.6rem !important;
+    font-size: 0.7rem !important;
+    letter-spacing: 0.05em;
+}
+
+.nx-notification-footer-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+.nx-notification-content-wrapper{
+  width: -webkit-fill-available;
+}
+.nx-notification-avatar-container .avatar-wrapper{
+.avatar-container{
+  img{
+    width: 90px;
+    height: 90px;
+  }
+}
+}
+.nx-notification-type-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+}
+
+/* Status Labels Theming */
+.nx-tag-message { background: #eff6ff; color: #3b82f6; }
+.nx-tag-connection { background: #f0fdf4; color: #10b981; }
+.nx-tag-investment { background: #fffbeb; color: #f59e0b; }
+.nx-tag-system { background: #fdf2f8; color: #ec4899; }
+
+/* Modal Design - Premium Dashboard Style */
+.nx-notification-modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 999;
+  background: linear-gradient(45deg, #5a5a5a, #ffffff5e);
+  backdrop-filter: blur(8px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.5rem;
+  animation: nx-fade-in 0.3s ease;
+}
+
+.nx-notification-modal {
+  background: #ffffff;
+  width: 100%;
+  max-width: 560px;
+  border-radius: 20px;
+  box-shadow: 0 30px 60px -12px rgba(0, 0, 0, 0.25);
+  overflow: hidden;
+  animation: nx-scale-up 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.nx-notification-modal-header {
+      padding: 16px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.nx-notification-modal-user {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.nx-notification-modal-user-name {
+  font-family: 'oldschool-grotesk-regular', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.nx-notification-modal-user-role {
+  font-size: 0.95rem;
+  color: #6b7280;
+  margin-top: 0.15rem;
+}
+
+.nx-notification-modal-close {
+padding: 29px 45px;
+    border-radius: 12px;
+    color: #9ca3af;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    top: -14px;
+    right: -30px;
+}
+
+
+.nx-notification-modal-body {
+  padding: 12px 24px;
+  overflow-y: auto;
+}
+
+.nx-notification-modal-status {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  justify-content: space-between;
+  margin-bottom: 1.75rem;
+}
+
+.nx-notification-modal-type {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: #3B82F6;
+  font-weight: 700;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+}
+
+.nx-notification-modal-type-label {
+  color: #111827;
+  font-family: 'oldschool-grotesk-regular', sans-serif;
+}
+
+.nx-notification-modal-dot {
+  color: #e5e7eb;
+}
+
+.nx-notification-modal-time {
+  color: #6b7280;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.nx-notification-modal-main-text {
+  font-size: 1.2rem;
+  line-height: 1.7;
+  color: #374151;
+  margin-bottom: 2rem;
+  letter-spacing: -0.005em;
+}
+
+.nx-notification-modal-details {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+.nx-notification-detail-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 0.25rem 0;
+}
+
+.nx-notification-detail-icon {
+  margin-top: 0.15rem;
+  color: #3b82f6;
+  flex-shrink: 0;
+}
+
+.nx-notification-detail-icon--investment {
+  color: #10b981;
+}
+
+.nx-notification-detail-label {
+  font-size: 0.95rem;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+.nx-notification-detail-value {
+  font-family: 'oldschool-grotesk-regular', sans-serif;
+  font-weight: 600;
+  color: #111827;
+  font-size: 1rem;
+}
+
+.nx-notification-detail-card {
+  background: #f8fafc;
+  border-radius: 14px;
+  padding: 1.5rem;
+  border: 1px solid #e2e8f0;
+}
+
+.nx-notification-detail-text {
+ color: #4b5563;
+    line-height: 1.5rem;
+    font-size: 15px;
+    font-style: italic;
+  }
+
+.nx-notification-modal-contact {
+  margin-top: 2rem;
+  padding-top: 1.5rem;
+  border-top: 1.5px solid #f3f4f6;
+}
+
+.nx-notification-contact-title {
+  font-family: 'oldschool-grotesk-regular', sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  margin-bottom: 1rem;
+  color: #111827;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.nx-notification-contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+}
+
+.nx-notification-contact-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: #4b5563;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.nx-notification-contact-link {
+  color: #3b82f6;
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+.nx-notification-contact-link:hover {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+.nx-notification-modal-footer {
+  padding: 21px 26px;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+/* Generic Animations */
+@keyframes nx-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes nx-scale-up {
+  from { opacity: 0; transform: scale(0.95) translateY(10px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}

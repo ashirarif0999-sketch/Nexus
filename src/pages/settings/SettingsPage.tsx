@@ -411,7 +411,7 @@ toast.error('Failed to update profile photo. Please try again.');
                         <span className="text-3xl font-bold text-green-600">$50,000.00</span>
                       </div>
                     </div>
-                    <div className="flex gap-3">
+                    <div className="flex gap-0">
                       <Button variant="outline" className="flex items-center gap-2">
                         <ArrowUpCircle size={18} />
                         Deposit

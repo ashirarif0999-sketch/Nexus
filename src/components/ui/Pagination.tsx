@@ -61,7 +61,7 @@ export const Pagination: React.FC<PaginationProps> = ({
             className={clsx(
               'w-10 h-10 rounded-md font-medium transition-colors',
               currentPage === page
-                ? 'bg-primary-600 text-white'
+                ? 'bg-[#405cff] text-white'
                 : 'border border-gray-300 hover:bg-gray-50 text-gray-700'
             )}
             aria-label={`Page ${page}`}
