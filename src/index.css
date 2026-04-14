@@ -47,7 +47,7 @@ body {
 }
 
 .excel-container{
-      overflow-x: auto !;
+      overflow-x: auto !important;
     overflow-y: auto;
     max-height: 400px;
     border: 1px solid #ccc;
