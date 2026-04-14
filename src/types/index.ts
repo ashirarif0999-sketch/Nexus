@@ -100,6 +100,9 @@ export interface Message {
   isDeleted?: boolean;
   replyTo?: string; // ID of the message being replied to
   replyContent?: string; // Content of the replied message for display
+  isEdited?: boolean;
+  isForwarded?: boolean;
+  forwardedFrom?: string;
   attachmentUrl?: string;
   attachmentType?: 'image' | 'video' | 'audio' | 'file';
   attachmentName?: string;

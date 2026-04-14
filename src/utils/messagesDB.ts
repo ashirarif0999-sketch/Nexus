@@ -560,13 +560,15 @@ export const getMessagesBetweenUsersCustom = async (user1Id: string, user2Id: st
 // Send a message (stores in IndexedDB for all accounts - always persist)
 export const sendMessageCustom = async (newMessage: Omit<Message, 'id' | 'timestamp' | 'isRead' | 'reactions' | 'isStarred' | 'isDeleted'>): Promise<Message> => {
   const message: Message = {
-    ...newMessage,
-    id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
-    timestamp: new Date().toISOString(),
     isRead: false,
     reactions: [],
     isStarred: false,
-    isDeleted: false
+    isDeleted: false,
+    isEdited: false,
+    isForwarded: false,
+    ...newMessage,
+    id: `msg-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+    timestamp: new Date().toISOString(),
   };
 
   // Always use IndexedDB for persistence
@@ -595,6 +597,33 @@ export const sendMessageCustom = async (newMessage: Omit<Message, 'id' | 'timest
 
   return message;
 };
+
+// Update a message (for status changes, content edits, reactions, starring, etc)
+export const updateMessageCustom = async (message: Message): Promise<boolean> => {
+  try {
+    await messagesDB.saveMessage(message);
+    
+    // Also update in localStorage if present for backward compatibility
+    try {
+      const { loadMessages, saveMessages } = await import('./messageStorage');
+      const localMessages = loadMessages();
+      const index = localMessages.findIndex(m => m.id === message.id);
+      if (index !== -1) {
+        localMessages[index] = message;
+        saveMessages(localMessages);
+      }
+    } catch (lsError) {
+      // Ignore localStorage errors during update
+    }
+
+    console.log('Message updated in persistence:', message.id);
+    return true;
+  } catch (error) {
+    console.error('Failed to update message in IndexedDB:', error);
+    return false;
+  }
+};
+
 
 // Get conversations for a user (from IndexedDB with localStorage fallback and migration)
 export const getConversationsForUserCustom = async (userId: string): Promise<ChatConversation[]> => {

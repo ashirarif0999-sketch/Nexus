@@ -9,8 +9,8 @@ import { ROUTES, ROOT_REDIRECT } from './config/routes';
 // Layouts - Keep DashboardLayout eagerly loaded (required for most routes)
 import { DashboardLayout } from './components/layout/DashboardLayout';
 
-// Loading Spinner
-import LoadingSpinner from './components/ui/LoadingSpinner';
+// Transition Wrapper with Barba.js and GSAP
+import TransitionWrapper from './components/ui/TransitionWrapper';
 
 // Check browser capabilities
 const checkBrowserCapabilities = () => {
@@ -68,8 +68,6 @@ const ExternalRedirect: React.FC<{ to: string }> = ({ to }) => {
 
 
 function App() {
-  const [showInitialLoader, setShowInitialLoader] = useState(true);
-
   // Check browser capabilities on mount
   useEffect(() => {
     const capabilities = checkBrowserCapabilities();
@@ -83,15 +81,12 @@ function App() {
     }
   }, []);
 
-  if (showInitialLoader) {
-    return <LoadingSpinner onComplete={() => setShowInitialLoader(false)} />;
-  }
-
   return (
     <AuthProvider>
-      <Router>
-        <Suspense fallback={null}>
-          <Routes>
+      <TransitionWrapper>
+        <Router>
+          <Suspense fallback={null}>
+            <Routes>
             {/* Landing Page - External HTML - using window.location to prevent infinite loop */}
             <Route path={ROUTES.LANDING} element={<ExternalRedirect to="/landingpage.html" />} />
             {/* Authentication Routes */}
@@ -174,6 +169,7 @@ function App() {
           </Routes>
         </Suspense>
       </Router>
+      </TransitionWrapper>
     </AuthProvider>
   );
 }

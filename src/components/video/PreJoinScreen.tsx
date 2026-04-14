@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Mic, MicOff, Video, VideoOff, Monitor, Settings, MoreVertical, Sparkles, ArrowLeft } from 'lucide-react';
 import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { playJoinCall } from '../../utils/audioManager';
 
 const cn = (...classes: (string | undefined | null | false)[]) => twMerge(clsx(...classes));
 
@@ -14,6 +15,8 @@ interface PreJoinProps {
 export const PreJoinScreen: React.FC<PreJoinProps> = ({ onJoin, onBack, roomId }) => {
   const [micOn, setMicOn] = useState(true);
   const [camOn, setCamOn] = useState(true);
+
+
 
   return (
     <div className="fixed inset-0 bg-[#202124] flex items-center justify-center p-4 sm:p-8 z-50 font-sans text-[#f1f3f4]">
@@ -93,7 +96,10 @@ export const PreJoinScreen: React.FC<PreJoinProps> = ({ onJoin, onBack, roomId }
           
           <div className="w-full space-y-4">
             <button
-              onClick={onJoin}
+              onClick={() => {
+                playJoinCall();
+                onJoin();
+              }}
               className="w-full sm:w-auto px-10 py-3 bg-[#8ab4f8] hover:bg-[#aecbff] text-[#202124] font-medium rounded-full transition-all text-sm tracking-wide shadow-md active:scale-95"
             >
               Join now
@@ -121,6 +127,8 @@ export const PreJoinScreen: React.FC<PreJoinProps> = ({ onJoin, onBack, roomId }
           </div>
         </div>
       </div>
+
+
     </div>
   );
 };

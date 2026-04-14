@@ -1,23 +1,24 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { gsap } from 'gsap';
 
 interface LoadingSpinnerProps {
   onComplete?: () => void;
 }
 
 const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ onComplete }) => {
-  const [isVisible, setIsVisible] = useState(true);
-  const [isFading, setIsFading] = useState(false);
+  const [transitionPhase, setTransitionPhase] = useState<'loading' | 'fading' | 'splitting' | 'done'>('loading');
   const svgGroupRef = useRef<SVGGElement>(null);
   const centerDotRef = useRef<SVGCircleElement>(null);
+  const splitLeftRef = useRef<HTMLDivElement>(null);
+  const splitRightRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    // Show loading spinner for 5 seconds, then fade out
+    // Show loading spinner for 3 seconds, then start fading
     const timer = setTimeout(() => {
-      setIsFading(true);
-      // Wait for fade animation to complete before hiding
+      setTransitionPhase('fading');
+      // Wait for fade animation to complete before starting split
       setTimeout(() => {
-        setIsVisible(false);
-        onComplete?.();
+        setTransitionPhase('splitting');
       }, 500); // Match the CSS transition duration
     }, 3000);
 
@@ -25,7 +26,7 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ onComplete }) => {
   }, [onComplete]);
 
   useEffect(() => {
-    if (!isVisible) return;
+    if (transitionPhase !== 'loading') return;
 
     const svgGroup = svgGroupRef.current;
     if (!svgGroup) return;
@@ -126,8 +127,8 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ onComplete }) => {
         });
       }, 3000);
 
-      // Infinite repeat if still visible
-      if (isVisible) {
+      // Infinite repeat if still loading
+      if (transitionPhase === 'loading') {
         setTimeout(() => {
           animateSpinner();
         }, 4000);
@@ -135,12 +136,48 @@ const LoadingSpinner: React.FC<LoadingSpinnerProps> = ({ onComplete }) => {
     }
 
     animateSpinner();
-  }, [isVisible]);
+  }, [transitionPhase === 'loading']);
 
-  if (!isVisible) return null;
+  useEffect(() => {
+    if (transitionPhase !== 'splitting') return;
+
+    const splitLeft = splitLeftRef.current;
+    const splitRight = splitRightRef.current;
+    if (!splitLeft || !splitRight) return;
+
+    // Animate the split
+    gsap.to(splitLeft, {
+      top: '-100%',
+      duration: 0.8,
+      ease: 'power2.inOut'
+    });
+    gsap.to(splitRight, {
+      top: '-100%',
+      duration: 0.8,
+      ease: 'power2.inOut',
+      delay: 0.25,
+      onComplete: () => {
+        setTransitionPhase('done');
+        onComplete?.();
+      }
+    });
+  }, [transitionPhase, onComplete]);
+
+  if (transitionPhase === 'done') return null;
 
   return (
-    <div className={`loading-spinner-container flex items-center justify-center min-h-screen bg-aliceblue transition-opacity duration-500 ${isFading ? 'opacity-0' : 'opacity-100'}`}>
+    <div className={`loading-spinner-container flex items-center justify-center min-h-screen bg-aliceblue transition-opacity duration-500 ${transitionPhase === 'fading' ? 'opacity-0' : 'opacity-100'} relative overflow-hidden`}>
+      <img src="/images/logo.avif" alt="Logo" className="absolute top-4 left-4 w-16 h-auto z-10" />
+      <div
+        ref={splitLeftRef}
+        className="absolute top-0 left-0 w-1/2 h-full bg-aliceblue z-20"
+        style={{ left: '0%' }}
+      />
+      <div
+        ref={splitRightRef}
+        className="absolute top-0 right-0 w-1/2 h-full bg-aliceblue z-20"
+        style={{ right: '0%' }}
+      />
       <svg viewBox="0 0 200 200" className="w-48 h-48">
         <defs>
           <filter id="goo">

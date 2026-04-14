@@ -21,6 +21,10 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
+    <!-- Page Transitions -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="split-transition.js" defer></script>
+
     <style>
         @font-face {
     font-family: 'oldschool-grotesk-bold';
@@ -53,6 +57,12 @@
             color: var(--text-primary);
             background-color: var(--bg-light);
             overflow-x: hidden;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        body.loaded {
+            opacity: 1;
         }
 
         a {

@@ -22,6 +22,10 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
+    <!-- Page Transitions -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="split-transition.js" defer></script>
+
     <style>
         @font-face {
     font-family: 'oldschool-grotesk-regular';
@@ -62,6 +66,12 @@
     background: url(images/abstract-geometric-wavy-folds-background.avif);
     overflow-x: hidden;
     background-size: cover;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+        }
+
+        body.loaded {
+            opacity: 1;
         }
 
 
@@ -2627,147 +2637,6 @@ font-family: 'DM Sans', sans-serif;
             </div>
         </div>
     </section>
-
-    <!-- ============================================
-         SECTION 3 - TESTIMONIAL CAROUSEL
-         ============================================ -->
-    <section class="testimonials" id="testimonials">
-        <div class="testimonials-container">
-            <div class="testimonials-label">• What our users say</div>
-            <h2 class="testimonials-heading">Trusted by the world's best fund managers</h2>
-
-            <div class="carousel-wrapper">
-                <div class="carousel-track" id="carousel-track">
-                    <!-- Card 1 -->
-                    <div class="testimonial-card testimonial-card-1">
-                        <div class="testimonial-content-wrapper">
-                            <span class="testimonial-badge testimonial-badge-1">Former founder</span>
-                            <h3 class="testimonial-fund-name">GTMfund</h3>
-                            <p class="testimonial-quote">"For Fund II, we transitioned to a traditional closed-end fund with institutional support. This allowed us to be more intentional about our portfolio construction—how many deals we're doing, our check sizes, and the overall fund size. We worked closely with Nexus throughout this transition, and their team was incredible in supporting us."</p>
-                            <a href="#" class="testimonial-cta">Read the Q+A →</a>
-                        </div>
-                        <div class="testimonial-attributes-wrapper">
-                            <img src="https://picsum.photos/seed/gtmfund/80/80" alt="Paul Irving" class="testimonial-portrait">
-                            <p class="testimonial-attribution">Paul Irving</p>
-                            <div class="testimonial-stats">
-                                <div class="testimonial-stat">
-                                    <div class="testimonial-stat-label">Partner</div>
-                                    <div class="testimonial-stat-value">Paul Irving</div>
-                                </div>
-                                <div class="testimonial-stat">
-                                    <div class="testimonial-stat-label">Latest Fund</div>
-                                    <div class="testimonial-stat-value">$54M Fund II</div>
-                                </div>
-                                <div class="testimonial-stat">
-                                    <div class="testimonial-stat-label">LP Base</div>
-                                    <div class="testimonial-stat-value">350+ GTM Leaders</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Card 2 -->
-                    <div class="testimonial-card testimonial-card-2">
-                        <div class="testimonial-content-wrapper">
-                            <span class="testimonial-badge testimonial-badge-2">Venture-backed</span>
-                            <h3 class="testimonial-fund-name">Capital Factory</h3>
-                            <p class="testimonial-quote">"We've been on Nexus from the beginning, from our first Rolling Fund to our most recent $125M SPV. The platform keeps getting more efficient and adding more features, and their white-glove support helps us launch different fund structures and close LPs at any scale."</p>
-                        </div>
-                        <div class="testimonial-attributes-wrapper">
-                            <img src="https://picsum.photos/seed/capitalfactory/80/80" alt="Joshua Baer" class="testimonial-portrait">
-                            <p class="testimonial-attribution">Joshua Baer</p>
-                            <div class="testimonial-stats">
-                                <div class="testimonial-stat">
-                                    <div class="testimonial-stat-label">Partner</div>
-                                    <div class="testimonial-stat-value">Joshua Baer</div>
-                                </div>
-                                <div class="testimonial-stat">
-                                    <div class="testimonial-stat-label">Platform</div>
-                                    <div class="testimonial-stat-value">Rolling Funds, SPVs, Venture Funds</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Card 3 -->
-                    <div class="testimonial-card testimonial-card-3">
-                        <div class="testimonial-content-wrapper">
-                            <span class="testimonial-badge testimonial-badge-3">Partner investor</span>
-                            <h3 class="testimonial-fund-name">Sarah Smith Fund</h3>
-                            <p class="testimonial-quote">"For the Nexus Rolling Fund specifically, I wanted to be in business from day one. The nice thing is you can always be accepting new LPs. Literally the day I wanted to start, I was able to start investing in companies and not turn off my deal flow."</p>
-                        </div>
-                        <div class="testimonial-attributes-wrapper">
-                            <img src="https://picsum.photos/seed/sarahsmith/80/80" alt="Sarah Smith" class="testimonial-portrait">
-                            <p class="testimonial-attribution">Sarah Smith</p>
-                            <div class="testimonial-stats">
-                                <div class="testimonial-stat">
-                                    <div class="testimonial-stat-label">Partner</div>
-                                    <div class="testimonial-stat-value">Sarah Smith</div>
-                                </div>
-                                <div class="testimonial-stat">
-                                    <div class="testimonial-stat-label">Firm</div>
-                                    <div class="testimonial-stat-value">Nexus Capital Ventures</div>
-                                </div>
-                                <div class="testimonial-stat">
-                                    <div class="testimonial-stat-label">Acquisitions</div>
-                                    <div class="testimonial-stat-value">40+</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Card 4 -->
-                    <div class="testimonial-card testimonial-card-4">
-                        <div class="testimonial-content-wrapper">
-                            <span class="testimonial-badge testimonial-badge-4">Power operator</span>
-                            <h3 class="testimonial-fund-name">Kearny Jackson</h3>
-                            <p class="testimonial-quote">"I invest in SPVs, run my own SPVs, have my own fund, and am an LP in a bunch of different funds. Having everything in one place is really awesome."</p>
-                        </div>
-                        <div class="testimonial-attributes-wrapper">
-                            <img src="https://picsum.photos/seed/kearny/80/80" alt="Brian Krishnan" class="testimonial-portrait">
-                            <p class="testimonial-attribution">Brian Krishnan</p>
-                            <div class="testimonial-stats">
-                                <div class="testimonial-stat">
-                                    <div class="testimonial-stat-label">Partner</div>
-                                    <div class="testimonial-stat-value">Brian Krishnan</div>
-                                </div>
-                                <div class="testimonial-stat">
-                                    <div class="testimonial-stat-label">Firm</div>
-                                    <div class="testimonial-stat-value">Brown & Krishnan</div>
-                                </div>
-                                <div class="testimonial-stat">
-                                    <div class="testimonial-stat-label">Geo</div>
-                                    <div class="testimonial-stat-value">Nigeria, Hong Kong, Pakistan</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="carousel-controls">
-                <div class="carousel-dots" id="carousel-dots">
-                    <div class="carousel-dot active"></div>
-                    <div class="carousel-dot"></div>
-                    <div class="carousel-dot"></div>
-                    <div class="carousel-dot"></div>
-                </div>
-                <button class="carousel-nav-btn" id="carousel-prev" aria-label="Previous slide">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
-                </button>
-                <button class="carousel-nav-btn" id="carousel-next" aria-label="Next slide">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
-                </button>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============================================
-         SECTION 4 - FOOTER
-         ============================================ -->
-    <!-- ============================================
-          SECTION 11 — FOOTER
-          ============================================ -->
     </main>
 
     <footer class="footer" id="footer">

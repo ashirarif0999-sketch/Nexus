@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Video, Calendar, Clock, User, Plus, Search, MoreVertical, Phone, MessageSquare } from 'lucide-react';
 import { clsx } from 'clsx';
 import { useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../config/routes';
+import { playJoinCall } from '../../utils/audioManager';
 
 // Mock meetings data
 const mockMeetings = [
@@ -58,6 +59,8 @@ export const VideoMeetingsPage: React.FC = () => {
   const [appliedSearchTerm, setAppliedSearchTerm] = useState('');
   const [filter, setFilter] = useState<'all' | 'scheduled' | 'completed'>('all');
 
+
+
   const filteredMeetings = mockMeetings.filter(meeting => {
     const matchesSearch = appliedSearchTerm === '' ||
       meeting.title.toLowerCase().includes(appliedSearchTerm.toLowerCase()) ||
@@ -72,6 +75,9 @@ export const VideoMeetingsPage: React.FC = () => {
   };
 
   const handleStartNewMeeting = () => {
+    // Play join call sound
+    playJoinCall();
+
     // Start a new meeting
     const newRoomId = `room-${Date.now()}`;
     navigate(ROUTES.VIDEO.ROOM(newRoomId));
@@ -188,13 +194,16 @@ export const VideoMeetingsPage: React.FC = () => {
                   </span>
 
                   {meeting.status === 'scheduled' ? (
-                    <button
-                      onClick={() => handleJoinMeeting(meeting.id)}
-                      className="join-meeting-button flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
-                    >
-                      <Phone size={16} />
-                      Join
-                    </button>
+                     <button
+                       onClick={() => {
+                         playJoinCall();
+                         handleJoinMeeting(meeting.id);
+                       }}
+                       className="join-meeting-button flex items-center gap-2 px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 transition-colors"
+                     >
+                       <Phone size={16} />
+                       Join
+                     </button>
                   ) : (
                      <button
                        onClick={() => handleJoinMeeting(meeting.id)}
@@ -256,6 +265,8 @@ export const VideoMeetingsPage: React.FC = () => {
           </div>
         </button>
       </div>
+
+
     </div>
   );
 };

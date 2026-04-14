@@ -19,6 +19,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/boxicons/2.1.0/dist/boxicons.js" integrity="sha512-Dm5UxqUSgNd93XG7eseoOrScyM1BVs65GrwmavP0D0DujOA8mjiBfyj71wmI2VQZKnnZQsSWWsxDKNiQIqk8sQ==" crossorigin="anonymous" referrerpolicy="no-referrer" defer></script>
     <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
 
+    <!-- Page Transitions -->
+    <script src="split-transition.js" defer></script>
+
     <!-- Barba.js for smooth page transitions -->
     <script src="https://unpkg.com/@barba/core@latest"></script>
     
@@ -37,7 +40,7 @@
     font-style: normal;
     font-display: swap;
 }
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+ @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 /* Custom Font - Mileast */
 @font-face {
@@ -173,6 +176,12 @@ a {
     color: var(--text-primary);
     background-color: #0D0E12 !important;
     overflow-x: hidden;
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
+        body.loaded {
+            opacity: 1;
 }
 
         /* ============================================
@@ -1731,12 +1740,64 @@ font-family: 'DM Sans', sans-serif;
         }
 
         .testimonials-container {
-            max-width: max-content;
             margin: 0 auto;
             position: relative;
             overflow: visible;
         }
 
+        /* New testimonial slide styles */
+        .testimonial-slide {
+            display: none;
+            flex-direction: row;
+            gap: 32px;
+            align-items: flex-start;
+            width: auto;
+            height: auto;
+            min-height: 250px;
+            position: relative;
+            background: #405cff;
+            border-radius: var(--radius-xl);
+            padding: 40px;
+            box-shadow: var(--shadow-md);
+            margin: 0 auto;
+            overflow: clip;
+        }
+
+        .testimonial-slide.active {
+            display: flex;
+        }
+
+        .testimonial-slide[data-slide="0"] .testimonial-slide-content {
+            /* Can add specific styling for first slide if needed */
+        }
+
+        .testimonial-slide[data-slide="1"] .testimonial-slide-content {
+            /* Can add specific styling for second slide if needed */
+        }
+
+        .testimonial-slide[data-slide="2"] .testimonial-slide-content {
+            /* Can add specific styling for third slide if needed */
+        }
+
+        .testimonial-slide-content {
+            flex: 1;
+            width: auto;
+            max-width: 500px;
+        }
+
+        .testimonial-slide-image {
+            flex-shrink: 0;
+            margin-right: -40px;
+            margin-top: -40px;
+            margin-bottom: -50px;
+        }
+
+        .testimonial-slide-image img {
+            width: 262px;
+            height: 370px;
+            object-fit: cover;
+        }
+
         .testimonials-label {
             font-family: 'DM Sans', sans-serif;
             font-size: 11px;
@@ -1764,13 +1825,9 @@ font-family: 'DM Sans', sans-serif;
         .carousel-track {
             display: flex;
             gap: 12px;
-            overflow-x: auto;
-            overflow-y: visible;
-            scroll-snap-type: x mandatory;
-            scroll-behavior: smooth;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            padding: 0 calc(50vw - 300px);
+            overflow: visible;
+            padding: 0;
+            justify-content: center;
         }
 
         .carousel-track::-webkit-scrollbar {
@@ -1778,18 +1835,25 @@ font-family: 'DM Sans', sans-serif;
         }
 
         .testimonial-card {
-            min-width: 460px;
-            max-width: 584px;
-            min-height: 400px;
-            border-radius: var(--radius-2xl);
-            padding: 40px;
-            flex-shrink: 0;
-            scroll-snap-align: center;
+            flex: 0 0 auto;
+            width: 280px;
+            max-width: none;
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: var(--radius-xl);
+            overflow: hidden;
+            transition: all 200ms ease;
             position: relative;
-            overflow: visible;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            padding: 40px;
+            min-height: 400px;
+        }
+
+        .testimonial-card:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.15);
+            box-shadow: var(--shadow-lg);
         }
 
         .testimonial-card-1 {
@@ -1830,10 +1894,10 @@ font-family: 'DM Sans', sans-serif;
         }
 
         .testimonial-quote {
-            font-family: 'Instrument Serif', serif;
-            font-style: italic;
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 400;
             font-size: 18px;
-            color: white;
+            color: #ccdaff;
             line-height: 1.6;
             margin-bottom: 24px;
         }
@@ -1863,6 +1927,8 @@ font-family: 'DM Sans', sans-serif;
             font-size: 18px;
             color: rgba(255,255,255,0.5);
             letter-spacing: 0.05em;
+            bottom:12px;
+            position: absolute;
         }
 
         .testimonial-portrait {
@@ -1963,332 +2029,9 @@ font-family: 'DM Sans', sans-serif;
             cursor: not-allowed;
         }
 
-        /* Old testimonial styles (kept for backward compatibility) */
-        .testimonial-slide {
-            flex: 1 1 calc(50% - 16px);
-            max-width: 584px;
-        }
-
-        .testimonial-content {
-            padding: 48px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .testimonial-photo {
-            background: rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .person-silhouette {
-            width: 120px;
-            height: 160px;
-            position: relative;
-        }
-
-        .person-head {
-            width: 60px;
-            height: 60px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .person-body {
-            width: 80px;
-            height: 100px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 40px 40px 0 0;
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-        }
 
 
-        .testimonials-label {
-            font-family: 'DM Sans', sans-serif;
-            font-size: 11px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.12em;
-            color: var(--primary-500);
-            text-align: center;
-            margin-bottom: 16px;
-        }
 
-        .testimonials-heading {
-            font-family: 'DM Serif Display', serif;
-            font-size: clamp(28px, 3.5vw, 44px);
-            color: var(--neutral-900);
-            text-align: center;
-            margin-bottom: 48px;
-        }
-
-        .carousel-wrapper {
-            position: relative;
-            overflow: visible;
-        }
-
-        .carousel-track {
-            display: flex;
-            gap: 12px;
-            overflow-x: auto;
-            overflow-y: visible;
-            scroll-snap-type: x mandatory;
-            scroll-behavior: smooth;
-            scrollbar-width: none;
-            -ms-overflow-style: none;
-            padding: 0 calc(50vw - 300px);
-        }
-
-        .carousel-track::-webkit-scrollbar {
-            display: none;
-        }
-
-        .testimonial-card {
-            min-width: 460px;
-            max-width: 584px;
-            min-height: 400px;
-            border-radius: var(--radius-2xl);
-            padding: 40px;
-            flex-shrink: 0;
-            scroll-snap-align: center;
-            position: relative;
-            overflow: visible;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .testimonial-card-1 {
-            background: var(--primary-500);
-        }
-
-        .testimonial-card-2 {
-            background: #1A2744;
-        }
-
-        .testimonial-card-3 {
-            background: var(--secondary-500);
-        }
-
-        .testimonial-badge {
-            display: inline-block;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 11px;
-            font-weight: 500;
-            border-radius: var(--radius-full);
-            padding: 4px 12px;
-            margin-bottom: 16px;
-        }
-
-        .testimonial-badge-1 {
-            background: rgba(255, 255, 255, 0.15);
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .testimonial-badge-2 {
-            background: rgba(255, 255, 255, 0.06);
-            color: rgba(255, 255, 255, 0.5);
-        }
-
-        .testimonial-badge-3 {
-            background: rgba(255, 255, 255, 0.15);
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        .testimonial-quote {
-            font-family: 'Instrument Serif', serif;
-            font-style: italic;
-            font-size: 18px;
-            color: white;
-            line-height: 1.6;
-            margin-bottom: 24px;
-        }
-
-        .testimonial-attribution {
-            margin-top: auto;
-        }
-
-        .testimonial-name {
-            font-family: 'DM Sans', sans-serif;
-            font-size: 14px;
-            font-weight: 700;
-            color: white;
-            margin-bottom: 4px;
-        }
-
-        .testimonial-role {
-            font-family: 'DM Sans', sans-serif;
-            font-size: 13px;
-            color: rgba(255,255,255,0.65);
-            margin-bottom: 12px;
-        }
-
-        .testimonial-logo {
-            font-family: 'Montserrat', sans-serif;
-            font-weight: 700;
-            font-size: 18px;
-            color: rgba(255,255,255,0.5);
-            letter-spacing: 0.05em;
-        }
-
-        .testimonial-portrait {
-            width: 80px;
-            height: 80px;
-            border-radius: 50%;
-            border: 2px solid rgba(255, 255, 255, 0.15);
-            object-fit: cover;
-            margin-bottom: 24px;
-        }
-
-        .testimonial-stats {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 16px;
-            padding-top: 24px;
-            border-top: 1px solid rgba(255, 255, 255, 0.08);
-        }
-
-        .testimonial-stat {
-            flex: 1;
-            min-width: 100px;
-        }
-
-        .testimonial-stat-label {
-            font-family: 'DM Sans', sans-serif;
-            font-size: 10px;
-            font-weight: 500;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            color: rgba(255, 255, 255, 0.35);
-            margin-bottom: 4px;
-        }
-
-        .testimonial-stat-value {
-            font-family: 'DM Sans', sans-serif;
-            font-size: 13px;
-            font-weight: 400;
-            color: rgba(255, 255, 255, 0.8);
-        }
-
-        /* Carousel Controls */
-        .carousel-controls {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 16px;
-            padding-right: 48px;
-            margin-top: 40px;
-            max-width: 1400px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .carousel-dots {
-            display: flex;
-            gap: 8px;
-        }
-
-        .carousel-dot {
-            height: 8px;
-            border-radius: var(--radius-full);
-            background: rgba(0, 0, 0, 0.15);
-            transition: width var(--transition-slow), background var(--transition-slow);
-        }
-
-        .carousel-dot.active {
-            width: 24px;
-            background: var(--primary-500);
-        }
-
-        .carousel-nav-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            background: rgba(0, 0, 0, 0.04);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: background var(--transition-base), border-color var(--transition-base);
-        }
-
-        .carousel-nav-btn:hover {
-            background: rgba(0, 0, 0, 0.08);
-            border-color: rgba(0, 0, 0, 0.2);
-        }
-
-        .carousel-nav-btn svg {
-            width: 18px;
-            height: 18px;
-            color: rgba(0, 0, 0, 0.7);
-        }
-
-        .carousel-nav-btn:disabled {
-            opacity: 0.3;
-            cursor: not-allowed;
-        }
-
-        /* Old testimonial styles (kept for backward compatibility) */
-        .testimonial-slide {
-            flex: 1 1 calc(50% - 16px);
-            max-width: 584px;
-        }
-
-        .testimonial-content {
-            padding: 48px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .testimonial-photo {
-            background: rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .person-silhouette {
-            width: 120px;
-            height: 160px;
-            position: relative;
-        }
-
-        .person-head {
-            width: 60px;
-            height: 60px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 50%;
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-        }
-
-        .person-body {
-            width: 80px;
-            height: 100px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 40px 40px 0 0;
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-        }
 
         /* CTA Section */
         #cta {
@@ -3129,43 +2872,44 @@ body { margin: 0; padding: 0; }
     <!-- Testimonials Section -->
     <section id="testimonials">
         <div class="testimonials-container">
-            <div class="testimonials-label reveal-on-scroll">• TESTIMONIALS</div>
+            <div class="testimonials-label reveal-on-scroll">TESTIMONIALS</div>
             <h2 class="testimonials-heading reveal-on-scroll">Trusted by the world's best fund managers</h2>
             <div class="carousel-wrapper">
                 <div class="carousel-track" id="testimonialCarousel">
-                    <div class="testimonial-card testimonial-card-1">
-                        <div>
-                            <span class="testimonial-badge testimonial-badge-1">Venture-backed</span>
-                            <div class="testimonial-quote">"One of the most valuable aspects of Nexus's service is their responsive team of experts, who are always available to address our questions promptly. This proactive support has saved us significant costs and enabled us to build stronger LP relationships."</div>
-                        </div>
-                        <div class="testimonial-attribution">
-                            <div class="testimonial-name">Layla Hassan</div>
-                            <div class="testimonial-role">General Partner, Meridian Ventures</div>
-                            <div class="testimonial-logo">MERIDIAN</div>
-                        </div>
-                    </div>
+                    
 
-                    <div class="testimonial-card testimonial-card-2">
-                        <div>
-                            <span class="testimonial-badge testimonial-badge-2">Growth stage</span>
+                    <div class="testimonial-slide" data-slide="1" style="background: #212a41;">
+                        <div class="testimonial-slide-content">
                             <div class="testimonial-quote">"For Fund II, we transitioned to a traditional closed-end structure with institutional support. We worked closely with Nexus throughout, and their team was incredible in supporting that transition."</div>
+                            <div class="testimonial-attribution">
+                                <div class="testimonial-name">Paul Irving</div>
+                                <div class="testimonial-role">Partner & Platform Director, GTMfund</div>
+                                <div class="testimonial-logo"><svg fill="none" height="52" viewBox="0 0 128 52" width="128" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><clipPath id="a"><path d="m-.000244 0h128v52h-128z"></path></clipPath><g clip-path="url(#a)"><path d="m7.0775 35.3288c.22187-1.1022-.02964-2.0291-.75452-2.7807-.63416-.6559-1.41968-.9387-2.35655-.8483" stroke="#f9f9f7" stroke-width=".210526"></path><g fill="#f9f9f7"><path d="m69.9996 23.3332c0-.0122-.0048-.0239-.0134-.0326-.0086-.0086-.0203-.0134-.0324-.0134h-2.1989c-.0268 0-.0525-.0108-.0715-.0298-.0189-.0191-.0296-.0449-.0296-.0719v-2.0706c0-.0184.0071-.0359.0197-.0489.0127-.013.0298-.0202.0477-.0202h2.18c.0146 0 .0291-.003.0426-.0086.0135-.0057.0257-.014.036-.0245.0103-.0104.0184-.0228.0239-.0365.0055-.0136.0082-.0282.008-.0429-.0251-1.3001-.0216-2.3431.0108-3.129.097-2.4108 1.6007-3.7131 3.9168-3.8053.7159-.0289 1.3887-.0316 2.0183-.0081.0137.0003.0268.0061.0363.0159.0096.0099.0149.0232.0149.0369v2.1371c0 .009-.0018.0179-.0053.0262-.0035.0084-.0087.0159-.0153.0222-.0065.0063-.0142.0113-.0227.0146s-.0176.0049-.0267.0048c-1.4767-.0217-3.2472-.206-3.2863 1.8917-.0152.8158-.0184 1.754-.0094 2.8147.0004.0238.01.0466.0269.0633s.0397.0261.0634.0261h3.6163c.0138 0 .0275.0027.0402.0079.0128.0053.0244.013.0341.0227.0098.0096.0175.0212.0228.0338.0053.0127.008.0262.008.0399v2.0883c0 .0066-.0013.0131-.0039.0192s-.0063.0116-.0111.0163c-.0047.0046-.0104.0083-.0166.0108-.0062.0026-.0129.0039-.0196.0039h-3.7079c-.014 0-.0273.0057-.0372.0158-.0098.0102-.0154.024-.0154.0384v13.2885c0 .0179-.0071.0352-.0197.0479-.0127.0127-.0298.0198-.0477.0198h-2.498c-.0207 0-.0406-.0083-.0552-.023-.0147-.0147-.0229-.0347-.0229-.0556z"></path><path d="m123.452 34.2217c-.792.9933-1.73 1.8308-2.816 2.3187-1.483.6653-3.592.6884-5.122.233-3.111-.9269-5.027-3.5775-5.363-6.777-.509-4.8446 2.257-9.1865 7.439-9.3234 2.009-.0528 3.956.5746 5.278 2.0883.231.2656.393.5651.572.7765.006.0065.013.0111.021.0132.008.0022.017.0017.025-.0013.007-.0029.014-.0083.019-.0153s.007-.0153.007-.0237v-9.4806c0-.0133.005-.026.014-.0354.01-.0094.022-.0147.036-.0147h2.499c.024 0 .046.0094.063.0262.017.0167.026.0395.026.0632v22.5889c0 .0104-.004.0204-.011.0277-.007.0074-.017.0116-.027.0116h-2.277c-.015 0-.03-.0057-.042-.0162s-.019-.025-.021-.0408l-.259-2.3999c-.001-.0069-.004-.0134-.008-.0188s-.01-.0093-.017-.0113c-.006-.0021-.013-.0021-.019-.0001-.007.002-.012.0059-.017.0112zm-10.667-5.3433c.004 3.2117 1.928 5.8962 5.322 5.8921 3.394-.004 5.313-2.6926 5.309-5.9043-.004-3.213-1.928-5.8976-5.322-5.8935s-5.313 2.6927-5.309 5.9057z"></path><path d="m7.07749 35.3287c.22187-1.1021-.02964-2.0291-.75453-2.7807-.63416-.6559-1.41967-.9387-2.35654-.8483-.62967-1.3272-1.0231-2.7076-1.1803-4.1413-.70467-6.4071 2.39562-12.4429 9.28608-13.237 2.6961-.3104 5.6953.103 7.9643 1.7644 1.7219 1.2611 2.8209 2.9569 3.297 5.0871.0016.0075.0015.0153-.0002.0228-.0018.0074-.0052.0144-.01.0204-.0047.0059-.0108.0108-.0177.0141-.0068.0033-.0143.0051-.022.0051h-4.3196c-.0222 0-.0439-.0069-.0622-.0197-.0183-.0129-.0323-.031-.0402-.0521-1.0725-2.8553-3.8589-3.5275-6.6116-3.0911-4.63626.7331-5.79095 5.2742-5.34632 9.3477.11408 1.048.39208 1.988.83402 2.8201 1.43899 2.7089 4.0987 3.5369 6.9875 3.1412 1.9797-.2719 3.4016-1.3262 4.2657-3.1629.3719-.7914.6104-1.6442.7155-2.5585.0011-.0105.0001-.021-.0031-.0311-.0031-.01-.0083-.0192-.0151-.027-.0069-.0078-.0153-.014-.0247-.0183-.0094-.0042-.0196-.0063-.0299-.0063l-5.3787.0014c-.0232 0-.0455-.0094-.0619-.0262s-.0257-.0395-.0257-.0632v-2.8702c0-.018.0071-.0352.0198-.0479.0126-.0127.0297-.0199.0476-.0199h9.4397c.0253 0 .0497.0102.0676.0282.018.018.028.0425.028.068v11.989c0 .0161-.0062.0316-.0173.0431-.0111.0114-.0262.0178-.0419.0178h-3.5665c-.0206.0001-.0406-.0076-.056-.0216s-.0252-.0333-.0276-.0543l-.2964-2.736c-.0009-.0078-.0041-.0151-.0092-.0211-.0051-.0059-.0119-.0102-.0194-.0122-.0076-.0021-.0156-.0018-.0229.0008-.0074.0025-.0139.0073-.0186.0135-.697 1.0164-1.575 1.8055-2.6341 2.3675-1.6424.8713-3.91.9838-5.7586.729-1.52882-.2105-2.93682-.7552-4.22401-1.6343z"></path><path d="m33.1841 14.6182c5.3239.0018 8.1094-.0004 8.3564-.0068.0079-.0001.0157.0012.0231.0041.0073.0028.014.0071.0197.0125.0056.0055.0101.0119.0132.0191.003.0072.0046.0148.0046.0226v3.1439c0 .013-.0051.0254-.0142.0345-.0091.0092-.0214.0143-.0343.0143h-6.3138c-.007 0-.014.0014-.0206.0041-.0065.0028-.0125.0068-.0175.0118s-.0089.011-.0117.0176c-.0027.0066-.0041.0136-.0041.0207v18.6996c.0001.0187-.007.0368-.0198.0504s-.0303.0217-.0489.0228c-.1096.0054-.7558.0081-1.9388.0081s-1.8293-.0032-1.9389-.0095c-.0186-.001-.0361-.0092-.0488-.0228-.0128-.0136-.0199-.0316-.0199-.0504l.0121-18.6995c0-.0071-.0014-.0142-.0041-.0208-.0027-.0065-.0067-.0125-.0117-.0176-.005-.005-.0109-.009-.0175-.0117-.0065-.0027-.0135-.0041-.0206-.0041l-6.3137-.0041c-.0129 0-.0253-.0051-.0343-.0143-.0091-.0091-.0143-.0215-.0143-.0345l.0014-3.1439c0-.0079.0016-.0157.0047-.0229.0032-.0073.0078-.0138.0136-.0193.0058-.0054.0126-.0097.0202-.0124.0075-.0028.0155-.004.0235-.0037.2461.0063 3.0311.0104 8.355.0122z"></path><path d="m62.3748 21.57-6.0281 11.9077c-.0102.0199-.0256.0367-.0446.0484s-.0409.0179-.0632.018h-3.0356c-.03-.0001-.0594-.0085-.0849-.0243-.0255-.0157-.046-.0383-.0593-.0652l-5.9244-11.8737c-.0057-.0107-.0148-.0192-.0259-.0242-.011-.005-.0234-.0062-.0352-.0034s-.0223.0094-.03.0187c-.0077.0094-.0121.0211-.0126.0333v15.0068c0 .0226-.0089.0444-.0249.0604-.0159.016-.0375.025-.06.025h-3.8346c-.0115 0-.0229-.0023-.0335-.0067-.0106-.0045-.0203-.0109-.0284-.0191-.0082-.0082-.0146-.0179-.019-.0286s-.0067-.0221-.0067-.0337v-21.9045c0-.0116.0023-.023.0067-.0337s.0108-.0204.019-.0286c.0081-.0082.0178-.0146.0284-.0191.0106-.0044.022-.0067.0335-.0067h4.5528c.0383 0 .076.0108.1086.0312.0326.0203.0589.0494.076.084l6.8661 13.7601c.0059.0121.015.0222.0264.0293.0114.007.0245.0107.038.0105.0134-.0001.0267-.0041.0382-.0113.0115-.0073.0207-.0176.0268-.0299l6.7948-13.8075c.0097-.0198.0247-.0366.0433-.0483s.04-.018.0618-.0181h4.6174c.0229 0 .0448.0093.061.0258.0161.0165.0252.0389.0252.0623v21.9302c0 .0082-.0016.0163-.0047.0239s-.0077.0144-.0134.0202c-.0058.0058-.0126.0104-.0201.0135-.0076.0032-.0156.0048-.0238.0048h-3.8885c-.0157 0-.0308-.0063-.0419-.0175s-.0173-.0263-.0173-.0422v-15.0528c-.0003-.0075-.003-.0146-.0077-.0204s-.0111-.0098-.0183-.0115-.0148-.0009-.0216.0021c-.0067.0031-.0123.0083-.0158.0148z"></path><path d="m97.0371 36.5932c0 .0139-.0027.0276-.008.0404-.0053.0129-.013.0245-.0228.0343-.0097.0099-.0213.0176-.0341.023-.0127.0053-.0264.008-.0402.008l-2.4899.0014c-.0062 0-.0123-.0013-.0181-.0037-.0057-.0023-.0109-.0058-.0153-.0102-.0043-.0044-.0078-.0097-.0102-.0154-.0024-.0058-.0036-.0119-.0036-.0182l-.0094-15.5516c0-.014.0055-.0274.0154-.0373.0098-.0099.0232-.0155.0371-.0155h2.265c.0186-.0001.0365.0069.05.0195.0136.0126.0217.0299.0227.0482l.1671 2.6466c.0007.007.0036.0135.0082.0186.0047.0052.0108.0087.0176.0101.0068.0013.0139.0005.0201-.0025.0063-.0029.0114-.0078.0147-.014.9701-1.9649 2.9656-3.0341 5.1256-3.1019 2.63-.0813 4.976 1.1776 5.787 3.7876.285.9188.429 1.9243.43 3.0166.003 2.6136.006 5.6581.008 9.1336 0 .0223-.009.0437-.025.0594-.015.0158-.037.0246-.059.0246l-2.488.0014c-.011 0-.021-.0021-.031-.0061s-.018-.0099-.026-.0173c-.007-.0075-.013-.0163-.017-.026s-.006-.0201-.006-.0306c.013-3.9714.008-7.0864-.015-9.345-.009-.9296-.216-1.7865-.621-2.5707-.687-1.3281-2.131-1.8416-3.623-1.7441-2.9669.1952-4.4086 2.6425-4.4113 5.4355-.0045 4.4927-.0027 7.2265.0054 8.2013z"></path><path d="m89.112 21.0469h2.4912c.0062 0 .0124.0012.0181.0036s.0109.0059.0153.0103.0078.0096.0102.0154c.0024.0057.0036.0119.0036.0181v15.553c0 .0069-.0014.0138-.004.0202s-.0065.0122-.0114.0171c-.0049.005-.0107.0088-.017.0115-.0064.0027-.0132.004-.0201.004h-2.265c-.0186.0001-.0365-.0069-.05-.0195-.0136-.0126-.0217-.0299-.0227-.0482l-.1658-2.648c-.0007-.0069-.0035-.0134-.0082-.0186-.0046-.0051-.0108-.0087-.0176-.01-.0068-.0014-.0138-.0005-.0201.0024-.0063.003-.0114.0079-.0147.014-.9714 1.965-2.9669 3.0328-5.1281 3.0992-2.63.08-4.9758-1.1803-5.7856-3.7903-.2847-.9197-.4275-1.9256-.4284-3.0179-.0018-2.6136-.0027-5.6586-.0027-9.135 0-.0223.0088-.0436.0244-.0594.0157-.0158.0369-.0246.0591-.0246h2.4886c.0211 0 .0413.0084.0562.0234s.0233.0353.0233.0565c-.0144 3.9724-.0108 7.0879.0108 9.3464.0081.9297.2147 1.787.6198 2.5721.6858 1.328 2.1302 1.843 3.6217 1.7454 2.9682-.1924 4.4113-2.6398 4.4153-5.4327.0072-4.4937.0067-7.2279-.0013-8.2027 0-.028.011-.0549.0307-.0747.0197-.0199.0465-.031.0744-.031z"></path><path d="m3.9664 31.6998c.93687-.0904 1.72239.1924 2.35655.8483.72488.7516.97639 1.6785.75453 2.7807-.24657.9933-1.06173 1.9175-2.05878 2.1357-.93912.2033-1.79739.0922-2.60177-.5068-.74195-.552-1.10978-1.3732-1.1035-2.4636.00944-1.4771 1.18569-2.6981 2.65297-2.7943z"></path></g></g></svg></div>
+                            </div>
                         </div>
-                        <div class="testimonial-attribution">
-                            <div class="testimonial-name">Omar Siddiqui</div>
-                            <div class="testimonial-role">Partner & Platform Director, GTMfund</div>
-                            <div class="testimonial-logo">GTMfund</div>
+                        <div class="testimonial-slide-image">
+                            <img src="https://pbs.twimg.com/profile_images/1663750491862626304/TeEryl44_400x400.jpg" loading="lazy">
                         </div>
                     </div>
 
-                    <div class="testimonial-card testimonial-card-3">
-                        <div>
-                            <span class="testimonial-badge testimonial-badge-3">Early stage</span>
-                            <div class="testimonial-quote">"Nexus helped us launch our first fund in record time. Their platform handles everything from investor onboarding to capital calls, so we can focus on finding great deals."</div>
+                    <div class="testimonial-slide" data-slide="2">
+                        <div class="testimonial-slide-content">
+                            <div class="testimonial-quote">"One of the most valuable aspects of Nexus service is their responsive team of experts, who are always available to address out questions and concerns promptly. This proactive support has not only saved us significant costs but also enabled us to build stronger relationships with our LPs."</div>
+                            <div class="testimonial-attribution">
+                                <div class="testimonial-name">Erika Lucas</div>
+                                <div class="testimonial-role">General Partner, VEST her Ventures</div>
+                                <div class="testimonial-logo"><svg width="128" height="52" viewBox="0 0 128 52" fill="none" xmlns="http://www.w3.org/2000/svg">
+<path d="M66.6768 30.2292H71.6708C72.0757 32.8836 74.0553 33.6035 76.3499 33.9184C80.3541 34.4583 84.4033 34.5033 88.4075 33.8734C88.9024 33.7835 89.3973 33.6485 89.8473 33.4235C90.972 32.9286 91.4669 32.1188 91.3769 31.039C91.287 29.9592 90.6121 29.2393 89.6223 29.0594C87.9126 28.7444 86.203 28.5195 84.4933 28.3395C81.029 27.9796 77.5647 27.7097 74.1453 27.3047C73.0206 27.1698 71.8508 26.7198 70.816 26.2699C68.5664 25.2801 67.6216 23.4805 67.5766 21.0509C67.5766 18.6214 68.6114 16.9117 70.771 16.0119C72.1207 15.472 73.5155 14.9771 74.9552 14.7972C79.4093 14.1673 83.9084 14.0323 88.3176 15.0671C89.8923 15.427 91.422 16.0569 92.7717 16.8668C94.6164 17.9466 95.5162 19.7462 95.4712 22.0857H90.5221C89.9372 19.2963 87.6427 18.8464 85.3931 18.6664C82.3787 18.4864 78.5095 18.4864 76.3049 18.6664C74.1003 18.8464 74.8652 18.8464 74.1903 19.1613C73.1555 19.6112 72.5706 20.3311 72.6156 21.2759C72.6156 22.3107 73.2005 23.0306 74.1453 23.2555C75.72 23.6154 77.3397 23.9304 78.9144 24.0654C82.6487 24.4703 86.3829 24.7402 90.1172 25.1001C91.062 25.1901 91.9619 25.5051 92.8617 25.82C94.8413 26.5399 96.191 27.8896 96.416 30.0942C96.6859 32.5687 96.1011 34.7733 93.8965 36.258C92.2318 37.3827 90.2972 37.7877 88.3626 38.0126C83.5935 38.5525 78.8244 38.6425 74.1453 37.6977C72.7506 37.4277 71.3109 36.9328 70.0511 36.258C67.7116 35.0432 66.7218 32.9286 66.6768 30.1392V30.2292Z" fill="white"/>
+<path d="M44.4064 33.9633H63.7077V38.0125H39.1875V14.7971H63.6627V18.8013H44.3164V24.4252H63.6627V28.3394H44.3164V34.0083L44.4064 33.9633Z" fill="white"/>
+<path d="M116.347 38.0125C116.347 34.7282 116.347 31.6238 116.347 28.4744C116.347 25.37 116.347 22.2656 116.347 19.0262H128V14.7971H99.4307V19.0262H111.128L111.218 38.0125H116.347Z" fill="white"/>
+<path d="M20.246 36.6628C19.2112 38.6874 18.2215 40.667 17.0517 43.0516C11.2478 31.5338 5.66889 20.331 0 8.94824H6.34378C10.9329 18.0814 15.567 27.3496 20.246 36.6178V36.6628Z" fill="white"/>
+<path d="M30.819 15.6071C29.6492 13.2676 28.6594 11.2429 27.5796 9.03833H34.1034C32.9786 11.2429 31.9888 13.3125 30.819 15.6071Z" fill="white"/>
+</svg>
+</div>
+                            </div>
                         </div>
-                        <div class="testimonial-attribution">
-                            <div class="testimonial-name">Sarah Chen</div>
-                            <div class="testimonial-role">Managing Partner, Horizon Capital</div>
-                            <div class="testimonial-logo">HORIZON</div>
+                        <div class="testimonial-slide-image">
+                            <img src="https://images.squarespace-cdn.com/content/v1/5ca0ec9b809d8e4c67c27b3a/1739558335277-W3X8G0J9VB44WPA3HW77/4-min.png?format=1000w" alt="Sarah Chen" loading="lazy">
                         </div>
                     </div>
                 </div>
@@ -4024,14 +3768,12 @@ body { margin: 0; padding: 0; }
         const nextBtn = document.getElementById('carouselNext');
 
         if (carouselTrack) {
-            const cards = carouselTrack.querySelectorAll('.testimonial-card');
+            const slides = carouselTrack.querySelectorAll('.testimonial-slide');
             let currentIndex = 0;
 
             function updateCarousel() {
-                const cardWidth = cards[0].offsetWidth + 12; // card width + gap
-                carouselTrack.scrollTo({
-                    left: currentIndex * cardWidth,
-                    behavior: 'smooth'
+                slides.forEach((slide, i) => {
+                    slide.classList.toggle('active', i === currentIndex);
                 });
 
                 carouselDots.forEach((dot, i) => {
@@ -4048,7 +3790,7 @@ body { margin: 0; padding: 0; }
 
             if (nextBtn) {
                 nextBtn.addEventListener('click', () => {
-                    currentIndex = Math.min(cards.length - 1, currentIndex + 1);
+                    currentIndex = Math.min(slides.length - 1, currentIndex + 1);
                     updateCarousel();
                 });
             }
@@ -4060,18 +3802,14 @@ body { margin: 0; padding: 0; }
                 });
             });
 
-            // Update dots on scroll
-            carouselTrack.addEventListener('scroll', () => {
-                const cardWidth = cards[0].offsetWidth + 12;
-                const newIndex = Math.round(carouselTrack.scrollLeft / cardWidth);
-                if (newIndex !== currentIndex && newIndex >= 0 && newIndex < cards.length) {
+            // Initialize carousel
+            updateCarousel();
                     currentIndex = newIndex;
                     carouselDots.forEach((dot, i) => {
                         dot.classList.toggle('active', i === currentIndex);
                     });
                 }
-            });
-        }
+           
     </script>
 </body>
 </html>

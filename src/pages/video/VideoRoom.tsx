@@ -38,6 +38,7 @@ import {
 } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ROUTES } from '../../config/routes';
+import { playCrowd, playEndCall, stopCrowd } from '../../utils/audioManager';
 
 // ============================================
 // TYPES & INTERFACES
@@ -410,12 +411,10 @@ const ControlBar = ({
         onClick={() => { }}
       />
 
-      <div className="mx-2" />
-
       <ControlButton
         label="Leave call"
         variant="danger-pill"
-        icon={<PhoneOff className="w-6 h-6 rotate-[135deg]" />}
+        icon={<PhoneOff className="w-6 h-6" />}
         onClick={onEndCall}
         danger
       />
@@ -533,7 +532,7 @@ const SidePanel = ({
 
           {activeTab === 'activities' && (
             <div className="flex-1 overflow-y-auto p-4 space-y-6">
-              <div className="bg-[#202124] p-5 rounded-2xl border border-white/5">
+              <div className="bg-[#202124] p-3 rounded-2xl border border-white/5">
                 <div className="flex items-center gap-2 mb-4">
                   <Smile className="w-5 h-5 text-[#8ab4f8]" />
                   <h4 className="text-[15px] font-medium text-white">Recent Reactions</h4>
@@ -551,7 +550,7 @@ const SidePanel = ({
                 </div>
               </div>
 
-              <div className="bg-[#202124] p-5 rounded-2xl border border-white/5">
+              <div className="bg-[#202124] p-3 rounded-2xl border border-white/5">
                 <div className="flex items-center gap-2 mb-2">
                   <Hand className={cn("w-5 h-5", isHandRaised ? "text-[#8ab4f8]" : "text-[#9aa0a6]")} />
                   <h4 className="text-[15px] font-medium text-white">Raise Hand</h4>
@@ -798,7 +797,7 @@ const PostCallSummary = ({ duration, onRedirect }: { duration: number; onRedirec
   <motion.div
     initial={{ opacity: 0 }}
     animate={{ opacity: 1 }}
-    className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-[#040b14] text-center p-6"
+    className="fixed inset-0 z-[1000] flex flex-col items-center justify-center bg-[#0f0f0f] text-center p-6"
   >
     <motion.div
       initial={{ scale: 0.9, y: 20 }}
@@ -811,7 +810,7 @@ const PostCallSummary = ({ duration, onRedirect }: { duration: number; onRedirec
         </div>
       </div>
 
-      <h2 className="text-[40px] font-bold text-white mb-4 tracking-tight">Meeting Ended</h2>
+      <h2 className="text-[40px] text-white mb-4 tracking-tight">Meeting Ended</h2>
 
       <div className="flex items-center justify-center gap-2 text-[#9aa0a6] mb-12">
         <Clock className="w-4 h-4 opacity-70" />
@@ -820,7 +819,7 @@ const PostCallSummary = ({ duration, onRedirect }: { duration: number; onRedirec
 
       <button
         onClick={onRedirect}
-        className="px-12 py-3.5 bg-[#1a73e8] hover:bg-[#1b66c9] text-white font-bold rounded-xl transition-all duration-200 shadow-xl shadow-blue-900/30 active:scale-95 text-base"
+        className="return-to-dashboard-btn px-12 py-3.5 bg-[#1a73e8] hover:bg-[#1b66c9] text-white font-bold rounded-xl transition-all duration-200 shadow-xl shadow-blue-900/30 active:scale-95 text-base"
       >
         Return to Dashboard
       </button>
@@ -864,6 +863,8 @@ export const VideoRoom: React.FC = () => {
   const [floatingReactions, setFloatingReactions] = useState<{ id: string; emoji: string }[]>([]);
   const toastCounterRef = useRef(0);
 
+
+
   const [screenStream, setScreenStream] = useState<MediaStream | null>(null);
   const screenVideoRef = useRef<HTMLVideoElement>(null);
   const pipVideosRef = useRef<(HTMLVideoElement | null)[]>([]);
@@ -900,6 +901,19 @@ export const VideoRoom: React.FC = () => {
       return () => clearInterval(t);
     }
   }, [callEnded]);
+
+  // Handle room audio (crowd sound in loop)
+  useEffect(() => {
+    if (!isPreJoin && !callEnded) {
+      playCrowd();
+    } else {
+      stopCrowd();
+    }
+
+    return () => {
+      stopCrowd();
+    };
+  }, [isPreJoin, callEnded]);
 
   const addToast = useCallback((type: ToastType, message: string) => {
     const id = `${Date.now()}-${toastCounterRef.current++}`;
@@ -1158,12 +1172,16 @@ export const VideoRoom: React.FC = () => {
   }, []);
 
   const leaveMeeting = useCallback(() => {
+    stopCrowd();
+    playEndCall();
     setCallEnded(true);
     setShowEndModal(false);
     addToast('info', 'Leaving meeting...');
   }, [addToast]);
 
   const endForAll = useCallback(() => {
+    stopCrowd();
+    playEndCall();
     setCallEnded(true);
     setShowEndModal(false);
     addToast('warning', 'Meeting ended for all participants');
@@ -1172,6 +1190,8 @@ export const VideoRoom: React.FC = () => {
   const handleRedirect = useCallback(() => {
     navigate(ROUTES.DASHBOARD.ENTREPRENEUR);
   }, [navigate]);
+
+
 
   // Context Value
   const ctxValue = useMemo<MeetingContextType>(() => ({

@@ -33,3 +33,14 @@
 .messages-content-card > div {
   animation: fadeInScale 0.4s ease-out;
 }
+
+.chatpage-container .input-wrapper{
+  align-items: center;
+  textarea{
+    border-radius: 30px;
+  }
+  .message-textarea{
+    line-height: normal;
+    outline: transparent !important;
+  }
+}

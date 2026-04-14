@@ -24,6 +24,11 @@ body {
     opacity: 0;
   }
 }
+.meet-icon-btn {
+  svg{
+    rotate:0deg;
+  }
+}
 .documents-content {
   height: calc(100vh - 250px);
   overflow: hidden;
@@ -2647,7 +2652,6 @@ span {
   top: 0;
   bottom: 0;
   width: 20rem;
-  background-color: rgba(0, 0, 0, 0.95);
   backdrop-filter: blur(12px);
   border-left: 1px solid rgba(255, 255, 255, 0.1);
   z-index: 30;
@@ -3114,22 +3118,22 @@ flex: 1;
 .meet-control-pill {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 5px;
 }
 
 .meet-icon-btn {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background-color: var(--meet-tile);
-  color: var(--meet-text);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  transition: all 0.2s ease;
-  cursor: pointer;
-}
+ width: 60px;
+    height: 46px;
+    border-radius: 30px;
+    background-color: var(--meet-tile);
+    color: var(--meet-text);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
 
 .meet-icon-btn:hover {
   background-color: var(--meet-tile-hover);
@@ -3143,6 +3147,7 @@ flex: 1;
 .meet-icon-btn.danger {
   background-color: var(--meet-danger);
   color: white;
+  border-radius: 8px;
 }
 
 .meet-icon-btn.danger-pill {
@@ -3150,6 +3155,7 @@ flex: 1;
   border-radius: 28px;
   background-color: var(--meet-danger);
   color: white;
+  
 }
 
 .meet-sidebar-content {
@@ -3239,7 +3245,7 @@ flex: 1;
 }
 
 .conversation-item {
-  border-radius: var(--md3-radius-pill) !important;
+  border-radius: 12px !important;
   margin-bottom: 4px !important;
   border: none !important;
   height: 72px !important;
@@ -3252,14 +3258,17 @@ flex: 1;
 }
 
 .conversation-item.bg-\[\#F0F2F5\] {
-  background-color: var(--md3-secondary-container) !important;
+  background-color: #e4e4e7 !important;
 }
 
 .conversation-item.bg-\[\#F0F2F5\] .text-\[15px\] {
   color: var(--md3-on-secondary-container) !important;
   font-weight: 600 !important;
 }
-
+.progress-bar-length-01{
+  transition: all 1s ease !important;
+  transition: 3s !important ;
+}
 /* Chat Section */
 .chat-section {
   background-color: #FFFFFF !important;
@@ -3332,17 +3341,30 @@ flex: 1;
   background-color: #F0F2F5 !important;
   border-radius: 28px !important;
   border: none !important;
-  padding: 4px 12px !important;
 }
 
 .message-textarea {
   font-family: 'Google Sans Text', system-ui, sans-serif !important;
-  line-height: 20px !important;
+  outline-color: transparent !important;
 }
 
+
+.chatpage-container .input-wrapper{
+  align-items: center;
+  textarea{
+    border-radius: 30px;
+  }
+  .message-textarea{
+    line-height: normal;
+    padding: 0px 12px;
+    outline-color: transparent !important;
+    align-content: center; 
+  }
+}
 /* Send Button - MD3 FAB Style */
 .input-wrapper button.bg-\[\#405CFF\] {
-  background-color: var(--md3-primary) !important;
+  background-color: #8ab4f8 !important;
+  color: black;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
   transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1) !important;
 }
@@ -3395,9 +3417,9 @@ flex: 1;
 }
 
 .meet-control-btn {
-  width: 48px !important;
+  width: 60px !important;
   height: 48px !important;
-  border-radius: 50% !important;
+  border-radius: 50px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -3420,9 +3442,10 @@ flex: 1;
 }
 
 .meet-controls-pill {
-  background-color: rgba(60, 64, 67, 0.9) !important;
-  /* #3c4043 with opacity */
-  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 4px 8px 3px rgba(0, 0, 0, 0.15) !important;
+  background-color: rgba(21, 23, 24, 0.9) !important;
+  border: none;
+  gap:3px;
+
 }
 
 .meet-timer-pill {
@@ -3446,10 +3469,20 @@ flex: 1;
 /* Google Meet Dialogs & End Screen */
 .meet-dialog-panel {
   color: white !important;
+  width: 600px;
+  max-width: none;
+  scale:90%;
   font-family: 'Google Sans', 'Inter', system-ui, sans-serif !important;
   box-shadow: 0 24px 38px 3px rgba(0, 0, 0, 0.14), 0 9px 46px 8px rgba(0, 0, 0, 0.12), 0 11px 15px -7px rgba(0, 0, 0, 0.2) !important;
 }
+.return-to-dashboard-btn{
+  padding: 12px 44px;
 
+}
+h2{
+  font-family: 'oldschool-grotesk-regular', 'montserrat', sans-serif;
+  font-weight: 500;
+}
 .meet-dialog-title {
   letter-spacing: -0.25px !important;
 }
@@ -3495,13 +3528,11 @@ flex: 1;
 }
 
 .meet-bottom-bar {
-  background-color: #202124 !important;
   height: 80px !important;
   padding: 0 24px !important;
 }
 
 .meet-control-pill {
-  background-color: #3c4043 !important;
   border-radius: 24px !important;
   padding: 4px !important;
 }
