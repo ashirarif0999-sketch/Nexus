@@ -4,6 +4,7 @@
 
 @import '@react-pdf-viewer/core/lib/styles/index.css';
 @import '@react-pdf-viewer/default-layout/lib/styles/index.css';
+@import './component/BorderGlow.css';
 
 
 html {
@@ -583,8 +584,7 @@ body {
   border-radius: 12px;
 }
 
-/* Import Border Glow Effects */
-@import './component/BorderGlow.css';
+
 
 .avatar-wrapper {
   aspect-ratio: 1 / 1;
