@@ -10,15 +10,23 @@ export default defineConfig({
   build: {
     rollupOptions: {
       output: {
-        manualChunks: {
+        manualChunks: (id) => {
           // Separate React core into its own chunk
-          'vendor-react': ['react', 'react-dom', 'react-router-dom'],
+          if (id.includes('react') || id.includes('react-dom') || id.includes('react-router-dom')) {
+            return 'vendor-react';
+          }
           // Separate UI icons library
-          'vendor-icons': ['lucide-react'],
+          if (id.includes('lucide-react')) {
+            return 'vendor-icons';
+          }
           // Separate date handling
-          'vendor-date': ['date-fns'],
+          if (id.includes('date-fns')) {
+            return 'vendor-date';
+          }
           // Separate HTTP client
-          'vendor-http': ['axios'],
+          if (id.includes('axios')) {
+            return 'vendor-http';
+          }
         },
       },
     },
