@@ -51,8 +51,9 @@
      font-display: swap;
  }
 
-    html {
-   scroll-behavior: smooth;
+     html {
+    scroll-behavior: smooth;
+    interpolate-size: allow-keywords;
 }
 
         /* Initially hide content for delayed loading */
@@ -527,7 +528,57 @@ height: stretch;
             display: flex;
             align-items: center;
             position: relative;
-            gap: 3px;
+            anchor-name: --hovered-link;
+            isolation: isolate;
+        }
+
+        .navbar-nav::before,
+        .navbar-nav::after {
+            content: "";
+            position: absolute;
+            top: calc(anchor(bottom) - 10px);
+            left: calc(anchor(left) + 1rem);
+            right: calc(anchor(right) + 1rem);
+            bottom: calc(anchor(bottom) + 5px);
+            border-radius: 30px;
+            position-anchor: --hovered-link;
+            transition: 500ms linear(0, 0.029 1.6%, 0.123 3.5%, 0.651 10.6%, 0.862 14.1%, 1.002 17.7%, 1.046 19.6%, 1.074 21.6%, 1.087 23.9%, 1.086 26.6%, 1.014 38.5%, 0.994 46.3%, 1);
+        }
+
+        .navbar-nav::before {
+            z-index: -1;
+            background: rgb(255, 255, 255);
+            backdrop-filter: blur(2px);
+            
+        }
+        .navbar-nav.navbar-nav:has(.navbar-link:active)::before{
+            color: black;
+            background: white;
+            
+        }
+
+        .navbar-nav::after {
+            z-index: -2;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .navbar-nav:has(.navbar-link:hover)::before,
+        .navbar-nav:has(.navbar-link:hover)::after {
+            top: anchor(top);
+            left: anchor(left);
+            right: anchor(right);
+            bottom: anchor(bottom);
+            border-radius: 30px;
+        }
+
+        .navbar-nav:has(.navbar-link:first-of-type:hover)::before,
+        .navbar-nav:has(.navbar-link:first-of-type:hover)::after {
+            border-radius: 32px 30px 30px 32px;
+        }
+
+        .navbar-nav:has(.navbar-link:last-of-type:hover)::before,
+        .navbar-nav:has(.navbar-link:last-of-type:hover)::after {
+            border-radius: 30px 32px 32px 30px;
         }
 
         .navbar-dropdown-showcase-card-g2 .navbar-dropdown-showcase-image{
@@ -816,7 +867,7 @@ font-family: 'DM Sans', sans-serif;
            NAVBAR LINK STYLING
            ============================================ */
         .navbar-link {
-            font-family: 'DM Sans', sans-serif;
+            font-family: 'oldschool-grotesk-regular', sans-serif;
             font-size: 16px;
             font-weight: 400;
             display: flex;
@@ -825,15 +876,14 @@ font-family: 'DM Sans', sans-serif;
             transition: all 200ms var(--custom-curve) !important;
             white-space: nowrap;
             padding: 9px 18px;
-            border-radius: 30px;
             position: relative;
             color: aliceblue;
         }
 
         .navbar-link:hover {
-            background: #E6E6F2;
     color: #20243b !important;
     transition: all 300ms var(--ease-in-out) !important;
+            anchor-name: --hovered-link;
         }
 .navbar-link.active .navbar-dropdown-content{
     outline: 1px solid #3e00ff;
@@ -848,7 +898,7 @@ font-family: 'DM Sans', sans-serif;
     outline-offset: -4px;
     outline: 1px solid #3e00ff;
     background-clip: border-box;
-    transition: all 200ms var(--custom-curve) !important;
+    transition: all 300ms var(--custom-curve) !important;
         }
 
         .navbar-link svg {
@@ -860,7 +910,6 @@ font-family: 'DM Sans', sans-serif;
         .navbar-link:hover svg {
             opacity: 1;
         }
-
         /* Old .navbar-dropdown styles - keeping for backwards compatibility if needed */
         .navbar-link:hover > .navbar-dropdown {
             opacity: 1;
@@ -1181,11 +1230,11 @@ font-family: 'DM Sans', sans-serif;
         
         .hero-cta-primary {
             font-family: 'DM Sans', sans-serif;
-    font-size: 20px;
+    font-size: 21px;
     font-weight: 500;
-    color: #0D0E12;
+    color: aliceblue;
     background: #E6E6F2;
-    padding: 7px 43px;
+    padding: 14px 31px;
     border-radius: 49px;
     display: inline-flex;
     align-items: center;
@@ -1194,14 +1243,7 @@ font-family: 'DM Sans', sans-serif;
     transition: all var(--transition-fast);
         }
         
-        .hero-cta-primary:hover {
-            background: #405cff;
-            color: aliceblue;
-            transform:translateY(-6px);
-                box-shadow: 0px 6px 0px 0px #2f44c0;
-        }
         .hero-cta-primary:active{
-            box-shadow: 0px 0px 0px 0px #2f44c0;
             transform: translateY(0px);
         }
         .hero-cta-primary svg {
@@ -2175,33 +2217,35 @@ display: flex;
             font-size: 14px;
             font-weight: 500;
             color: var(--text-inverse);
-            background: var(--neutral-900);
+            background: rgb(48, 48, 48);
             padding: 14px 28px;
             border-radius: var(--radius-full);
             transition: all var(--transition-fast);
         }
         
         .cta-button-primary:hover {
-            background: var(--neutral-800);
-            transform: scale(1.01);
+            background: #1c1c30;
+            box-shadow: inset 0px 0px 10px 5px rgb(0, 0, 0);
         }
         
         .cta-button-ghost {
             font-family: 'DM Sans', sans-serif;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-inverse);
-            border: 1.5px solid rgba(255, 255, 255, 0.4);
-            padding: 14px 28px;
-            border-radius: var(--radius-full);
-            display: inline-flex;
-            align-items: center;
-            gap: var(--spacing-sm);
-            transition: all var(--transition-fast);
+    font-size: 14px;
+    font-weight: 500;
+    color: black;
+    border: 1.5px solid rgb(255 255 255 / 24%);
+    padding: 14px 28px;
+    border-radius: var(--radius-full);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    box-shadow: inset 0px 0px 13px -2px #ffffffa6;
+    backdrop-filter: blur(871px);
+    transition: all var(--transition-fast);
         }
         
         .cta-button-ghost:hover {
-            background: rgba(255, 255, 255, 0.1);
+            background: rgb(255, 255, 255);
             border-color: rgba(255, 255, 255, 0.6);
         }
         
@@ -2909,6 +2953,96 @@ border-left: 2px solid var(--primary-500);
 }
 
     </style>
+    <style>
+      .border-glow-button {
+        position: relative;
+        display: inline-grid;
+        isolation: isolate;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        background: #120F17;
+        border-radius: 49px; /* Matching the original button radius */
+        transform: translate3d(0, 0, 0.01px);
+        box-shadow: rgba(0,0,0,0.1) 0 1px 2px, rgba(0,0,0,0.1) 0 2px 4px, rgba(0,0,0,0.1) 0 4px 8px, rgba(0,0,0,0.1) 0 8px 16px, rgba(0,0,0,0.1) 0 16px 32px, rgba(0,0,0,0.1) 0 32px 64px;
+        transition: transform 0.2s ease;
+      }
+
+      .border-glow-button .hero-cta-primary {
+        background: transparent !important; /* Let the container handle background */
+        box-shadow: none !important;
+        position: relative;
+        z-index: 2;
+        margin: 0;
+      }
+
+      .glow-border,
+      .glow-fill {
+        position: absolute;
+        inset: 0;
+        border-radius: inherit;
+        pointer-events: none;
+        z-index: -1;
+        opacity: 0;
+        transition: opacity 0.75s ease-in-out;
+      }
+
+      .glow-border {
+        border: 1px solid transparent;
+        background: 
+          linear-gradient(#120F17, #120F17) padding-box,
+          linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0)) border-box;
+      }
+
+      .glow-fill {
+        mix-blend-mode: soft-light;
+      }
+
+      .glow-outer {
+        position: absolute;
+        pointer-events: none;
+        z-index: 1;
+        border-radius: inherit;
+        inset: -40px;
+        opacity: 0;
+        mix-blend-mode: plus-lighter;
+        transition: opacity 0.75s ease-in-out;
+      }
+
+      .glow-outer-shadow {
+        position: absolute;
+        inset: 40px;
+        border-radius: inherit;
+      }
+
+      .border-glow-button.is-hovered .glow-border,
+      .border-glow-button.is-hovered .glow-fill,
+      .border-glow-button.is-hovered .glow-outer {
+        opacity: 1;
+        transition: opacity 0.25s ease-out;
+      }
+
+      /* Animated Intro */
+      @keyframes glow-sweep {
+        0% { opacity: 0; transform: scale(0.9); }
+        30% { opacity: 1; transform: scale(1.02); }
+        60% { opacity: 1; transform: scale(1.02); }
+        100% { opacity: 0; transform: scale(1); }
+      }
+
+      .border-glow-button .glow-border.intro-animation,
+      .border-glow-button .glow-fill.intro-animation,
+      .border-glow-button .glow-outer.intro-animation {
+        animation: glow-sweep 4s ease-in-out forwards;
+        animation-delay: 3.5s;
+      }
+
+      .border-glow-button:hover {
+        transform: translateY(-6px);
+      }
+      
+      .border-glow-button:active {
+        transform: translateY(0px);
+      }
+    </style>
 </head>
 <body>
 
@@ -3155,8 +3289,14 @@ border-left: 2px solid var(--primary-500);
             
             <!-- CTA Row -->
             <div class="hero-cta-row">
-                <a href="contact-sales.html" class="hero-cta-primary" style="width: auto; height:auto;">Contact sales</a>
-                
+                <div class="border-glow-button" id="hero-glow-cta">
+                    <a href="contact-sales.html" class="hero-cta-primary" style="width: auto; height:auto;">Contact sales</a>
+                    <div class="glow-border intro-animation"></div>
+                    <div class="glow-fill intro-animation"></div>
+                    <span class="glow-outer intro-animation">
+                        <span class="glow-outer-shadow"></span>
+                    </span>
+                </div>
             </div>
             
             <!-- Product Category Cards -->
@@ -3385,7 +3525,8 @@ border-left: 2px solid var(--primary-500);
          ============================================ -->
     <section class="cta-section" id="cta">
         <div class="container-narrow">
-            <div class="cta-block reveal-on-scroll">
+            <div class="cta-block reveal-on-scroll" style="overflow: hidden;">
+                <img src="https://img.freepik.com/free-vector/grainy-gradient-backgrounds_361591-5300.jpg?semt=ais_hybrid&w=740&q=80" style="position: absolute;top: 0;width: -webkit-fill-available;height: -webkit-fill-available;left: 0;z-index: -1;scale: 102%;transform: scale(-1,-1);">
                 <h2 class="cta-heading">Your complete fundraising OS</h2>
                 <p class="cta-sub">Launch, run, and scale your network without worrying about increasing admin costs. We'll help you choose the ideal plan for your needs.</p>
                 <div class="cta-buttons">
@@ -4871,5 +5012,153 @@ document.addEventListener('DOMContentLoaded', () => {
     
 
     <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,300&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" onload="this.media='all'">
+    <script>
+        (function() {
+            const container = document.getElementById('hero-glow-cta');
+            if (!container) return;
+
+            const glowBorder = container.querySelector('.glow-border');
+            const glowFill = container.querySelector('.glow-fill');
+            const glowOuter = container.querySelector('.glow-outer');
+            const glowOuterShadow = container.querySelector('.glow-outer-shadow');
+
+            const colors = ['#c084fc', '#f472b6', '#38bdf8'];
+            const glowColor = '40 80 80';
+            const borderRadius = 49;
+            const glowRadius = 40;
+            const glowIntensity = 1.0;
+            const edgeSensitivity = 5;
+            const colorSensitivity = edgeSensitivity + 20;
+            const fillOpacity = 0.5;
+            const coneSpread = 25;
+
+            const GRADIENT_POSITIONS = ['80% 55%', '69% 34%', '8% 6%', '41% 38%', '86% 85%', '82% 18%', '51% 4%'];
+            const COLOR_MAP = [0, 1, 2, 0, 1, 2, 1];
+
+            // Automated intro rotation
+            let introAngle = 0;
+            const introTimer = setInterval(() => {
+                introAngle += 2;
+                if (introAngle >= 360) introAngle = 0;
+                
+                // Only apply if mouse hasn't taken over
+                if (!container.classList.contains('mouse-active')) {
+                    const angleDeg = `${introAngle}deg`;
+                    const mask = `conic-gradient(from ${angleDeg} at center, black ${coneSpread}%, transparent ${coneSpread + 15}%, transparent ${100 - coneSpread - 15}%, black ${100 - coneSpread}%)`;
+                    glowBorder.style.maskImage = mask;
+                    glowBorder.style.webkitMaskImage = mask;
+                    
+                    const outerMask = `conic-gradient(from ${angleDeg} at center, black 2.5%, transparent 10%, transparent 90%, black 97.5%)`;
+                    glowOuter.style.maskImage = outerMask;
+                    glowOuter.style.webkitMaskImage = outerMask;
+                }
+            }, 16);
+
+            // Clean up intro after 9 seconds (3.5s delay + 4s animation + buffer)
+            setTimeout(() => {
+                clearInterval(introTimer);
+                container.querySelectorAll('.intro-animation').forEach(el => el.classList.remove('intro-animation'));
+            }, 9000);
+
+            function buildMeshGradients(colors) {
+                const gradients = GRADIENT_POSITIONS.map((pos, i) => {
+                    const c = colors[Math.min(COLOR_MAP[i], colors.length - 1)];
+                    return `radial-gradient(at ${pos}, ${c} 0px, transparent 50%)`;
+                });
+                gradients.push(`linear-gradient(${colors[0]} 0 100%)`);
+                return gradients;
+            }
+
+            function buildBoxShadow(glowColor, intensity) {
+                const match = glowColor.match(/([\d.]+)\s*([\d.]+)%?\s*([\d.]+)%?/);
+                const h = match ? parseFloat(match[1]) : 40;
+                const s = match ? parseFloat(match[2]) : 80;
+                const l = match ? parseFloat(match[3]) : 80;
+                const base = `${h}deg ${s}% ${l}%`;
+                const layers = [
+                    [0, 0, 0, 1, 100, true], [0, 0, 1, 0, 60, true], [0, 0, 3, 0, 50, true],
+                    [0, 0, 6, 0, 40, true], [0, 0, 15, 0, 30, true], [0, 0, 25, 2, 20, true],
+                    [0, 0, 50, 2, 10, true],
+                    [0, 0, 1, 0, 60, false], [0, 0, 3, 0, 50, false], [0, 0, 6, 0, 40, false],
+                    [0, 0, 15, 0, 30, false], [0, 0, 25, 2, 20, false], [0, 0, 50, 2, 10, false],
+                ];
+                return layers.map(([x, y, blur, spread, alpha, inset]) => {
+                    const a = Math.min(alpha * intensity, 100);
+                    return `${inset ? 'inset ' : ''}${x}px ${y}px ${blur}px ${spread}px hsl(${base} / ${a}%)`;
+                }).join(', ');
+            }
+
+            const meshGradients = buildMeshGradients(colors);
+            const borderBg = meshGradients.map(g => `${g} border-box`).join(', ');
+            const fillBg = meshGradients.join(', ');
+            const boxShadow = buildBoxShadow(glowColor, glowIntensity);
+
+            glowFill.style.background = fillBg;
+            glowOuterShadow.style.boxShadow = boxShadow;
+
+            container.addEventListener('pointermove', (e) => {
+                container.classList.add('mouse-active');
+                const rect = container.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const cx = rect.width / 2;
+                const cy = rect.height / 2;
+                const dx = x - cx;
+                const dy = y - cy;
+
+                // Angle
+                let degrees = Math.atan2(dy, dx) * (180 / Math.PI) + 90;
+                if (degrees < 0) degrees += 360;
+                const angleDeg = `${degrees.toFixed(3)}deg`;
+
+                // Proximity
+                let kx = Infinity, ky = Infinity;
+                if (dx !== 0) kx = cx / Math.abs(dx);
+                if (dy !== 0) ky = cy / Math.abs(dy);
+                const edgeProximity = Math.min(Math.max(1 / Math.min(kx, ky), 0), 1);
+
+                // Opacities
+                const borderOpacity = Math.max(0, (edgeProximity * 100 - colorSensitivity) / (100 - colorSensitivity));
+                const glowOpacity = Math.max(0, (edgeProximity * 100 - edgeSensitivity) / (100 - edgeSensitivity));
+
+                // Apply updates
+                glowBorder.style.opacity = borderOpacity;
+                glowFill.style.opacity = borderOpacity * fillOpacity;
+                glowOuter.style.opacity = glowOpacity;
+
+                const mask = `conic-gradient(from ${angleDeg} at center, black ${coneSpread}%, transparent ${coneSpread + 15}%, transparent ${100 - coneSpread - 15}%, black ${100 - coneSpread}%)`;
+                glowBorder.style.maskImage = mask;
+                glowBorder.style.webkitMaskImage = mask;
+                glowBorder.style.background = `linear-gradient(#120F17, #120F17) padding-box, linear-gradient(rgba(255, 255, 255, 0), rgba(255, 255, 255, 0)) border-box, ${borderBg}`;
+
+                const outerMask = `conic-gradient(from ${angleDeg} at center, black 2.5%, transparent 10%, transparent 90%, black 97.5%)`;
+                glowOuter.style.maskImage = outerMask;
+                glowOuter.style.webkitMaskImage = outerMask;
+
+                const fillMask = [
+                    'linear-gradient(to bottom, black, black)',
+                    'radial-gradient(ellipse at 50% 50%, black 40%, transparent 65%)',
+                    'radial-gradient(ellipse at 66% 66%, black 5%, transparent 40%)',
+                    'radial-gradient(ellipse at 33% 33%, black 5%, transparent 40%)',
+                    'radial-gradient(ellipse at 66% 33%, black 5%, transparent 40%)',
+                    'radial-gradient(ellipse at 33% 66%, black 5%, transparent 40%)',
+                    `conic-gradient(from ${angleDeg} at center, transparent 5%, black 15%, black 85%, transparent 95%)`,
+                ].join(', ');
+                glowFill.style.maskImage = fillMask;
+                glowFill.style.webkitMaskImage = fillMask;
+                glowFill.style.maskComposite = 'subtract, add, add, add, add, add';
+                glowFill.style.webkitMaskComposite = 'source-out, source-over, source-over, source-over, source-over, source-over';
+            });
+
+            container.addEventListener('pointerenter', () => container.classList.add('is-hovered'));
+            container.addEventListener('pointerleave', () => {
+                container.classList.remove('is-hovered');
+                container.classList.remove('mouse-active');
+                glowBorder.style.opacity = '0';
+                glowFill.style.opacity = '0';
+                glowOuter.style.opacity = '0';
+            });
+        })();
+    </script>
     </body>
 </html>

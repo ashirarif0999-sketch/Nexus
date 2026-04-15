@@ -15,6 +15,10 @@ const RESET_TOKEN_KEY = 'business_nexus_reset_token';
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
+  const [usersState, setUsersState] = useState<User[]>(() => {
+    const stored = localStorage.getItem('business_nexus_users');
+    return stored ? JSON.parse(stored) : users;
+  });
 
   // Check for stored user on initial load
   useEffect(() => {
@@ -24,6 +28,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
     setIsLoading(false);
   }, []);
+
+  // Persist users to localStorage whenever usersState changes
+  useEffect(() => {
+    localStorage.setItem('business_nexus_users', JSON.stringify(usersState));
+  }, [usersState]);
 
   // Mock login function - memoized to prevent re-renders
   // Note: password parameter is unused in mock implementation (demo mode accepts any password)
@@ -35,12 +44,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Find user with matching email and role
-      let foundUser = users.find(u => u.email === email && u.role === role);
-      
+      let foundUser = usersState.find(u => u.email === email && u.role === role);
+
       // If no matching user, create a new one for demo purposes
       if (!foundUser) {
         const name = email.split('@')[0].replace('.', ' ').split(' ').map((s: string) => s.charAt(0).toUpperCase() + s.slice(1)).join(' ');
-        
+        let newUser: User;
+
         if (role === 'entrepreneur') {
           const newEntrepreneur: Entrepreneur = {
             id: `e${Date.now()}`,
@@ -59,8 +69,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             foundedYear: 2024,
             teamSize: 5
           };
-          foundUser = newEntrepreneur;
-          users.push(newEntrepreneur);
+          newUser = newEntrepreneur;
         } else {
           const newInvestor: Investor = {
             id: `i${Date.now()}`,
@@ -78,9 +87,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             minimumInvestment: '$50,000',
             maximumInvestment: '$500,000'
           };
-          foundUser = newInvestor;
-          users.push(newInvestor);
+          newUser = newInvestor;
         }
+
+        foundUser = newUser;
+        setUsersState(prev => [...prev, newUser]);
       }
       
        // Load profile data from IndexedDB
@@ -120,14 +131,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Check if email already exists
-      if (users.some(u => u.email === email)) {
+      if (usersState.some(u => u.email === email)) {
         throw new Error('Email already in use');
       }
-      
+
       // Create new user
-      const newUser: Entrepreneur | Investor = role === 'entrepreneur' 
+      const newUser: Entrepreneur | Investor = role === 'entrepreneur'
         ? {
-            id: `${role[0]}${users.length + 1}`,
+            id: `${role[0]}${usersState.length + 1}`,
             name,
             email,
             role: 'entrepreneur',
@@ -144,7 +155,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             teamSize: 1
           }
         : {
-            id: `${role[0]}${users.length + 1}`,
+            id: `${role[0]}${usersState.length + 1}`,
             name,
             email,
             role: 'investor',
@@ -159,9 +170,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             minimumInvestment: '$50,000',
             maximumInvestment: '$500,000'
           };
-      
+
        // Add user to mock data
-       users.push(newUser as Entrepreneur | Investor);
+       setUsersState(prev => [...prev, newUser as Entrepreneur | Investor]);
 
        // Initialize profile in IndexedDB
        await userProfilesDB.saveProfile({
@@ -191,7 +202,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       // Check if user exists
-      const user = users.find(u => u.email === email);
+      const user = usersState.find(u => u.email === email);
       if (!user) {
         throw new Error('No account found with this email');
       }
@@ -243,14 +254,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       // Simulate API call delay
       await new Promise(resolve => setTimeout(resolve, 1000));
 
-      // Update user in mock data
-      const userIndex = users.findIndex(u => u.id === userId);
-      if (userIndex === -1) {
+      // Check if user exists and update
+      const userExists = usersState.some(u => u.id === userId);
+      if (!userExists) {
         throw new Error('User not found');
       }
 
-      const updatedUser = { ...users[userIndex], ...updates };
-      (users as unknown as User[])[userIndex] = updatedUser;
+      setUsersState(prev => {
+        const userIndex = prev.findIndex(u => u.id === userId);
+        const updatedUsers = [...prev];
+        updatedUsers[userIndex] = { ...updatedUsers[userIndex], ...updates };
+        return updatedUsers;
+      });
 
       // Save profile data to IndexedDB
       await userProfilesDB.updateProfile(userId, {

@@ -420,7 +420,7 @@ const ControlBar = ({
       />
     </div>
 
-    <div className="meet-control-pill">
+    <div className="meet-control-pill meet-control-pill-1">
       <ControlButton variant="ghost" label="Meeting details" icon={<Info className="w-5 h-5" />} onClick={() => { }} />
       <ControlButton variant="ghost" label="Show everyone" icon={<Users className="w-5 h-5" />} onClick={onTogglePeople} badge={3} />
       <ControlButton variant="ghost" label="Chat with everyone" icon={<MessageSquare className="w-5 h-5" />} onClick={onToggleChat} badge={chatUnread} />
@@ -763,7 +763,7 @@ const EndCallModal = ({
               {isHost ? 'Are you sure you want to end the meeting for all participants, or just leave?' : 'You will disconnect from this meeting.'}
             </p>
 
-            <div className="flex flex-col gap-3.5">
+            <div className="flex flex-row gap-3.5">
               {isHost && (
                 <button
                   onClick={onEndForAll}
@@ -779,13 +779,14 @@ const EndCallModal = ({
                 Leave meeting
               </button>
 
-              <button
+              
+            </div>
+            <button
                 onClick={onClose}
-                className="mt-4 text-[14px] text-[#9aa0a6] hover:text-white transition-colors font-medium"
+                className="mt-4 px-8 py-4 text-[14px] text-[#9aa0a6] hover:text-black rounded-[12px] hover:bg-white w-full transition-colors font-medium"
               >
                 Cancel
               </button>
-            </div>
           </div>
         </motion.div>
       </motion.div>

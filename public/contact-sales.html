@@ -53,6 +53,7 @@
 
         html {
             scroll-behavior: smooth;
+            interpolate-size: allow-keywords;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
             text-rendering: optimizeLegibility;
@@ -422,10 +423,55 @@ left: -24px;
         }
         .navbar-nav {
             display: flex;
-            gap:3px;
             align-items: center;
             position: relative;
+            anchor-name: --hovered-link;
+            isolation: isolate;
         }
+
+        .navbar-nav::before,
+        .navbar-nav::after {
+            content: "";
+            position: absolute;
+            top: calc(anchor(bottom) - 10px);
+            left: calc(anchor(left) + 1rem);
+            right: calc(anchor(right) + 1rem);
+            bottom: calc(anchor(bottom) + 5px);
+            border-radius: 30px;
+            position-anchor: --hovered-link;
+            transition: 500ms linear(0, 0.029 1.6%, 0.123 3.5%, 0.651 10.6%, 0.862 14.1%, 1.002 17.7%, 1.046 19.6%, 1.074 21.6%, 1.087 23.9%, 1.086 26.6%, 1.014 38.5%, 0.994 46.3%, 1);
+        }
+
+        .navbar-nav::before {
+            z-index: -1;
+            background: rgb(255, 255, 255);
+            backdrop-filter: blur(2px);
+        }
+
+        .navbar-nav::after {
+            z-index: -2;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .navbar-nav:has(.navbar-link:hover)::before,
+        .navbar-nav:has(.navbar-link:hover)::after {
+            top: anchor(top);
+            left: anchor(left);
+            right: anchor(right);
+            bottom: anchor(bottom);
+            border-radius: 30px;
+        }
+
+        .navbar-nav:has(.navbar-link:first-of-type:hover)::before,
+        .navbar-nav:has(.navbar-link:first-of-type:hover)::after {
+            border-radius: 32px 30px 30px 32px;
+        }
+
+        .navbar-nav:has(.navbar-link:last-of-type:hover)::before,
+        .navbar-nav:has(.navbar-link:last-of-type:hover)::after {
+            border-radius: 30px 32px 32px 30px;
+        }
+
         .navbar-nav:has(.navbar-link:hover) .navbar-dropdown-window {
             max-height: max-content !important;
             animation: popin 300ms ease !important;
@@ -497,9 +543,9 @@ left: -24px;
             color: #405CFF;
         }
         .navbar-link:hover {
-            background: #E6E6F2;
     color: #20243b !important;
     transition: all 300ms var(--ease-in-out) !important;
+            anchor-name: --hovered-link;
         }
         
         .navbar-link.active {
@@ -524,13 +570,11 @@ left: -24px;
             transition: all 200ms var(--custom-curve) !important;
             white-space: nowrap;
             padding: 9px 18px;
-            border-radius: 30px;
             position: relative;
             color: aliceblue;
         }
         
         .navbar-link:hover {
-            background: #E6E6F2;
             color: #20243b ;
         }
        

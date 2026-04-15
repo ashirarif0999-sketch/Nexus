@@ -1273,21 +1273,21 @@ export const AuthenticationPage: React.FC = () => {
               </p>
               
               
-              {/* Trust Signals with Animated Counters */}
-              <div className="auth-trust-signals flex justify-center gap-8 mt-8">
-                <div className="trust-item flex flex-col items-center">
-                  <Counter end={500} suffix="+" className="text-3xl font-bold text-white" duration={2000} />
-                  <span className="text-sm text-gray-400">Startups</span>
-                </div>
-                <div className="trust-item flex flex-col items-center">
-                  <Counter end={2000} suffix="+" className="text-3xl font-bold text-white" duration={2500} />
-                  <span className="text-sm text-gray-400">Investors</span>
-                </div>
-                <div className="trust-item flex flex-col items-center">
-                  <Counter end={2.4} prefix="$" suffix="B" className="text-3xl font-bold text-white" duration={3000} />
-                  <span className="text-sm text-gray-400">Facilitated</span>
-                </div>
-              </div>
+               {/* Trust Signals with Animated Counters */}
+               <div className="auth-trust-signals flex justify-center gap-8 mt-8">
+                 <div className="trust-item flex flex-col items-center">
+                   <Counter end={500} suffix="+" className="text-3xl font-bold text-white" duration={2000} delay={2700} />
+                   <span className="text-sm text-gray-400">Startups</span>
+                 </div>
+                 <div className="trust-item flex flex-col items-center">
+                   <Counter end={2000} suffix="+" className="text-3xl font-bold text-white" duration={2500} delay={2700} />
+                   <span className="text-sm text-gray-400">Investors</span>
+                 </div>
+                 <div className="trust-item flex flex-col items-center">
+                   <Counter end={2.4} prefix="$" suffix="B" className="text-3xl font-bold text-white" duration={3000} delay={2700} />
+                   <span className="text-sm text-gray-400">Facilitated</span>
+                 </div>
+               </div>
             </div>
           </div>
           

@@ -210,6 +210,7 @@ body {
 
 .filter-modal-content {
   z-index: 1002;
+  animation: popIn 0.3s ease-out forwards;
 }
 
 .modal-close-button {
@@ -315,16 +316,28 @@ body {
 @keyframes popIn {
   0% {
     opacity: 0;
-    transform: translate(-50%, -50%) scale(0.8);
+    transform:  scale(0.9);
   }
 
   70% {
-    transform: translate(-50%, -50%) scale(1.025);
+    transform:scale(1.015);
   }
 
   100% {
     opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
+    transform: scale(1);
+  }
+}
+
+@keyframes popOut {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  100% {
+    opacity: 0;
+    transform: scale(0.8);
   }
 }
 
@@ -347,7 +360,7 @@ body {
   }
 
   .account-item {
-    background: aliceblue;
+    background: rgb(228, 228, 228);
     color: #0D0E12;
   }
 }
@@ -394,8 +407,13 @@ body {
 .showaccountdropdown {
   position: absolute;
   inset: -356px !important;
+  background: rgba(165, 165, 165, 0.87);
+  backdrop-filter: blur(10px);
 }
-
+h1, h2, h3, h4, h5, h6 {
+  z-index: 0;
+  position: relative;
+}
 .animate-pop-in {
   animation: popIn 0.34s ease-out forwards;
 }
@@ -2118,7 +2136,6 @@ span {
 .video-meetings-page .meetings-list {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
 }
 
 .video-meetings-page .no-meetings-empty-state {
@@ -2457,11 +2474,12 @@ span {
   right: 11px;
 }
 .entrepreneur-profile-views-icon, .entrepreneur-upcoming-meetings-icon, .entrepreneur-total-connections-icon ,.entrepreneur-pending-requests-icon {
-  position: relative;
-  padding: 15px 6px 15px 25px;
-  scale: 208%;
-  z-index: -1;
-  right: 11px;
+      position: relative;
+    padding: 15px 6px 15px 25px;
+    scale: 208%;
+    border-radius: 0px 30px 30px 0px;
+    z-index: -1;
+    right: 11px;
 
 }
 
@@ -2490,7 +2508,6 @@ span {
 .video-room-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
   background-color: rgb(15, 23, 42);
   color: white;
   overflow: hidden;
@@ -2647,14 +2664,14 @@ span {
 }
 
 .side-panel {
-  position: fixed;
+  position:absolute;
   right: 0;
   top: 0;
   bottom: 0;
   width: 20rem;
   backdrop-filter: blur(12px);
   border-left: 1px solid rgba(255, 255, 255, 0.1);
-  z-index: 30;
+  z-index: 1000;
   display: flex;
   flex-direction: column;
 }
@@ -2795,8 +2812,7 @@ span {
   }
 
   .side-panel {
-    width: 100%;
-    z-index: 35;
+    width: 90%;
   }
 
   .side-panel-content {
@@ -3028,7 +3044,6 @@ flex: 1;
     justify-content: center;
     position: relative;
     overflow: hidden;
-    margin-bottom: 80px;
   /* Space for fixed control bar if not using flex */
 }
 
@@ -3172,7 +3187,25 @@ flex: 1;
   font-size: 14px;
   font-weight: 500;
 }
-
+@media(max-width:1024px){
+  .meet-clock-info{
+    position: fixed;
+    top: 25px;
+    left: 15px;
+  }
+  .meet-control-pill-1{
+    position: fixed;
+    top:15px;
+    right: 10px;
+    .meet-icon-btn{
+      width:40px;
+      height:40px;
+    }
+  }
+  .meet-bottom-bar{
+    justify-content: center;
+  }
+}
 /* ==========================================================================
    Google Material Design 3 (MD3) - Messages Module
    ========================================================================== */
@@ -3205,12 +3238,14 @@ flex: 1;
 
 .chatpage-container {
   background-color: var(--md3-surface) !important;
-  border-radius: var(--md3-radius-xl) !important;
   border: none !important;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1), 0 1px 3px 1px rgba(0, 0, 0, 0.15) !important;
   overflow: hidden;
   height: stretch !important;
   width: stretch !important;
+}
+html{
+  scrollbar-color: rgb(184, 184, 184) transparent;
 }
 
 /* Sidebar Refinement */
@@ -3347,8 +3382,19 @@ flex: 1;
   font-family: 'Google Sans Text', system-ui, sans-serif !important;
   outline-color: transparent !important;
 }
-
-
+.text-type__content{
+  font-size: 1.5rem !important;
+  font-family: 'oldschool-grotesk-regular', system-ui, sans-serif;
+}
+.register-card, .login-card{
+  box-shadow: none !important;
+  border:none !important;
+}
+.counter-value{
+  font-size:2rem !important;
+  font-family: 'Montserrat', sans-serif;
+}
+.showaccountddropdo
 .chatpage-container .input-wrapper{
   align-items: center;
   textarea{

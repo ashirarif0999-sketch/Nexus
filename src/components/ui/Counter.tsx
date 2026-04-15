@@ -3,14 +3,16 @@ import React, { useState, useEffect, useRef } from 'react';
 interface CounterProps {
   end: number;
   duration?: number;
+  delay?: number;
   prefix?: string;
   suffix?: string;
   className?: string;
 }
 
-export const Counter: React.FC<CounterProps> = ({ 
-  end, 
+export const Counter: React.FC<CounterProps> = ({
+  end,
   duration = 2000,
+  delay = 5000,
   prefix = '',
   suffix = '',
   className = ''
@@ -25,7 +27,11 @@ export const Counter: React.FC<CounterProps> = ({
         entries.forEach((entry) => {
           if (entry.isIntersecting && !hasAnimated.current) {
             hasAnimated.current = true;
-            animateValue();
+            if (delay > 0) {
+              setTimeout(() => animateValue(), delay);
+            } else {
+              animateValue();
+            }
           }
         });
       },
@@ -37,7 +43,7 @@ export const Counter: React.FC<CounterProps> = ({
     }
 
     return () => observer.disconnect();
-  }, []);
+  }, [delay]);
 
   const animateValue = () => {
     const startTime = Date.now();
