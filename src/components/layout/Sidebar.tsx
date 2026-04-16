@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useMemo, memo } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import { Avatar } from '../ui/Avatar';
+import { useSearch } from '../../context/SearchContext';
 import { ConfirmDialog } from '../ui/ConfirmDialog';
 import { ROUTES } from '../../config/routes';
 import {
@@ -191,6 +192,7 @@ AccountMenu.displayName = 'AccountMenu';
 
 export const Sidebar: React.FC<SidebarProps> = memo(({ onExpandChange, isExpanded: controlledExpanded }) => {
   const { user, logout } = useAuth();
+  const { openSearch } = useSearch();
   const navigate = useNavigate();
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [internalExpanded, setInternalExpanded] = useState(false);
@@ -266,7 +268,7 @@ export const Sidebar: React.FC<SidebarProps> = memo(({ onExpandChange, isExpande
         <div className="dock__top">
           {/* Main nav items */}
           <nav className="dock__nav">
-            {navItems.map((item, i) => (
+            {navItems.map((item) => (
               <DockItem 
                 key={item.to} 
                 {...item} 
@@ -282,7 +284,7 @@ export const Sidebar: React.FC<SidebarProps> = memo(({ onExpandChange, isExpande
           {isExpanded ? (
             <button
               className="dock-item dock-item--expanded"
-              onClick={() => {/* wire to your search modal */ }}
+              onClick={openSearch}
             >
               <span className="dock-item__icon">
                 <Search size={20} />
@@ -293,7 +295,7 @@ export const Sidebar: React.FC<SidebarProps> = memo(({ onExpandChange, isExpande
             <Tooltip label="Search  ⌘K">
               <button
                 className="dock-item"
-                onClick={() => {/* wire to your search modal */ }}
+                onClick={openSearch}
               >
                 <Search size={20} />
               </button>

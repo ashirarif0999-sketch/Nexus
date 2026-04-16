@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+
 
 export type UserRole = 'entrepreneur' | 'investor';
 
@@ -66,6 +66,7 @@ export interface Entrepreneur extends User {
 }
 
 export interface Investor extends User {
+  vcsFirm: string;
   role: 'investor';
   investmentInterests: string[];
   investmentStage: string[];
@@ -135,6 +136,21 @@ export interface Document {
   shared: boolean;
   url: string;
   ownerId: string;
+}
+
+export interface Post {
+  id: string;
+  authorId: string;
+  authorName: string;
+  authorAvatar: string;
+  authorRole: UserRole;
+  title: string;
+  content: string;
+  category: string;
+  timestamp: string;
+  likes: number;
+  comments: number;
+  tags: string[];
 }
 
 export interface AuthContextType {

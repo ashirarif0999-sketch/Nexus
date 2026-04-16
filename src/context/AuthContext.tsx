@@ -268,6 +268,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
 
       // Save profile data to IndexedDB
+      const currentUser = usersState.find(u => u.id === userId);
+      const updatedUser = { ...currentUser, ...updates };
       await userProfilesDB.updateProfile(userId, {
         avatarUrl: updatedUser.avatarUrl,
         name: updatedUser.name,
@@ -285,7 +287,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       toast.error((error as Error).message);
       throw error;
     }
-  }, [user]);
+  }, [user, usersState]);
 
   // Memoized context value to prevent unnecessary re-renders
   const value = useMemo(() => ({

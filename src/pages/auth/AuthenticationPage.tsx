@@ -522,6 +522,7 @@ export const AuthenticationPage: React.FC = () => {
             <Button
               variant="outline"
               fullWidth
+              className="backtologin-auth-btn"
               onClick={handleBackToLogin}
               leftIcon={<ArrowLeft size={18} />}
             >
@@ -1067,6 +1068,7 @@ export const AuthenticationPage: React.FC = () => {
                 <Button
                   variant="ghost"
                   fullWidth
+                  className="backtologin-auth-btn"
                   onClick={() => switchView('login')}
                   leftIcon={<ArrowLeft size={18} />}
                 >
@@ -1115,6 +1117,7 @@ export const AuthenticationPage: React.FC = () => {
               <Button
                 variant="ghost"
                 fullWidth
+                className="backtologin-auth-btn"
                 onClick={() => switchView('login')}
                 leftIcon={<ArrowLeft size={18} />}
               >
@@ -1200,6 +1203,7 @@ export const AuthenticationPage: React.FC = () => {
             <Button
               variant="ghost"
               fullWidth
+              className="backtologin-auth-btn"
               onClick={() => switchView('login')}
               leftIcon={<ArrowLeft size={18} />}
             >

@@ -1,6 +1,7 @@
 import React, { Suspense, lazy, useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { SearchProvider } from './context/SearchContext';
 import toast from 'react-hot-toast';
 
 // Import centralized routes
@@ -47,8 +48,7 @@ const DocumentsPage = lazy(() => import('./pages/documents/DocumentsPage').then(
 const SettingsPage = lazy(() => import('./pages/settings/SettingsPage').then(m => ({ default: m.SettingsPage })));
 const HelpPage = lazy(() => import('./pages/help/HelpPage').then(m => ({ default: m.HelpPage })));
 const DealsPage = lazy(() => import('./pages/deals/DealsPage').then(m => ({ default: m.DealsPage })));
-
-
+const SearchResultsPage = lazy(() => import('./pages/search/SearchResultsPage').then(m => ({ default: m.SearchResultsPage })));
 
 // Calendar Pages - Lazy load (heavy - FullCalendar)
 const CalendarPage = lazy(() => import('./pages/calendar/CalendarPage').then(m => ({ default: m.CalendarPage })));
@@ -83,6 +83,7 @@ function App() {
 
   return (
     <AuthProvider>
+      <SearchProvider>
       <TransitionWrapper>
         <Router>
           <Suspense fallback={null}>
@@ -143,6 +144,10 @@ function App() {
               <Route index element={<DealsPage />} />
             </Route>
 
+            <Route path={ROUTES.SEARCH} element={<DashboardLayout />}>
+              <Route index element={<SearchResultsPage />} />
+            </Route>
+
             {/* Calendar Routes */}
             <Route path={ROUTES.CALENDAR} element={<DashboardLayout />}>
               <Route index element={<CalendarPage />} />
@@ -170,6 +175,7 @@ function App() {
         </Suspense>
       </Router>
       </TransitionWrapper>
+      </SearchProvider>
     </AuthProvider>
   );
 }

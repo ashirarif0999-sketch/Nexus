@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom';
+
 /**
  * Centralized Route Configuration for Nexuso
  * 
@@ -89,6 +91,9 @@ export const ROUTES = {
   
   // Fallback Routes
   NOT_FOUND: '/404',
+  
+  // Global Search
+  SEARCH: '/search',
 } as const;
 
 // ============================================================================

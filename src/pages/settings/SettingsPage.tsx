@@ -242,17 +242,28 @@ toast.error('Failed to update profile photo. Please try again.');
                      size="xl"
                    />
 
-                   <div>
-<div className="file-upload-wrapper">
-  <Input
-    ref={fileInputRef}
-    id="photo-upload"
-    type="file"
-    accept="image/*"
-    className="file-upload-input"
-    onChange={handleFileSelect}
-  />
-</div>
+                    <div>
+                      <div className="relative">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => fileInputRef.current?.click()}
+                          className="choose-file-upload-btn flex items-center gap-2"
+                        >
+                          <svg className="svg-item-file-upload" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                          </svg>
+                          Choose File
+                        </Button>
+                        <Input
+                          ref={fileInputRef}
+                          id="photo-upload"
+                          type="file"
+                          accept="image/*"
+                          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+                          onChange={handleFileSelect}
+                        />
+                      </div>
                      {selectedFile && (
                        <div className="mt-2 flex gap-2">
                          <Button size="sm" onClick={handlePhotoUpload}>

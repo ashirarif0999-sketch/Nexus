@@ -1,4 +1,4 @@
-import { Entrepreneur, Investor, User, UserRole } from '../types';
+import { Entrepreneur, Investor, User, Post } from '../types';
 import { savedAccountsDB } from '../utils/savedAccountsDB';
 
 // In-memory cache for custom accounts
@@ -184,7 +184,7 @@ startupName: 'HealthPulse',
   name: 'Sofia Martinez',
   email: 'sofia@cyberShield.io',
   role: 'entrepreneur',
-  avatarUrl: 'https://images.pexels.com/photos/38325/pexels-photo-38325.jpeg?w=300&h=300&auto=compress&cs=tinysrgb',
+  avatarUrl: 'https://www.diplomacy.edu/wp-content/uploads/2023/03/Sofia-Martinez-Gomez.jpg',
   bio: 'Former CISO at Fortune 500 financial institution with CISSP and CISM certifications. 12 years defending enterprise networks against advanced threats. Expert in zero-trust architecture, threat intelligence, and making enterprise-grade security accessible to SMBs.',
   startupName: 'CyberShield',
   pitchSummary: 'Zero-trust security platform for small and medium businesses with automated threat detection.',
@@ -224,7 +224,7 @@ startupName: 'HealthPulse',
   name: 'Aisha Rahman',
   email: 'aisha@foodtech.io',
   role: 'entrepreneur',
-  avatarUrl: 'https://images.pexels.com/photos/3764645/pexels-photo-3764645.jpeg?w=300&h=300&auto=compress&cs=tinysrgb',
+  avatarUrl: 'https://img.freepik.com/free-photo/beautiful-face-young-blond-woman-with-clean-fresh-skin-natural-make-up-white-background-model-without-make-up-nude_639032-1183.jpg?semt=ais_hybrid&w=740&q=80',
   bio: 'PhD in Molecular Biology from Stanford with former research role at Impossible Foods. Expert in plant-based protein formulation, food texture engineering, and sustainable agriculture supply chains. Driven to create delicious, ethical protein alternatives that scale globally.',
   startupName: 'FoodTech Labs',
   pitchSummary: 'Plant-based protein products with identical taste and texture to animal proteins.',
@@ -498,7 +498,7 @@ startupName: 'HealthPulse',
   name: 'Elena Volkov',
   email: 'elena@quantumbase.ai',
   role: 'entrepreneur',
-  avatarUrl: 'https://images.pexels.com/photos/158046/pexels-photo-158046.jpeg?w=300&h=300&auto=compress&cs=tinysrgb',
+  avatarUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQpriFAR0dhg3SaQtSZCJPdSbEUe3HmweaUTg&s',
   bio: 'PhD in Quantum Physics from Caltech with former research role at IBM Quantum. Expert in quantum algorithms, error correction techniques, and enterprise quantum applications. Focused on making quantum computing practical and accessible for real-world business problems.',
   startupName: 'QuantumBase',
   pitchSummary: 'Quantum computing infrastructure provider for enterprise applications.',
@@ -545,7 +545,8 @@ export const investors: Investor[] = [
   minimumInvestment: '$250K',
   maximumInvestment: '$1.5M',
   isOnline: true,
-  createdAt: '2020-05-18T10:15:00Z'
+  createdAt: '2020-05-18T10:15:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i2',
@@ -561,7 +562,8 @@ export const investors: Investor[] = [
   minimumInvestment: '$500K',
   maximumInvestment: '$3M',
   isOnline: false,
-  createdAt: '2019-08-30T15:40:00Z'
+  createdAt: '2019-08-30T15:40:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i3',
@@ -577,7 +579,8 @@ export const investors: Investor[] = [
   minimumInvestment: '$1M',
   maximumInvestment: '$5M',
   isOnline: true,
-  createdAt: '2021-02-12T09:30:00Z'
+  createdAt: '2021-02-12T09:30:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i4',
@@ -593,7 +596,8 @@ export const investors: Investor[] = [
   minimumInvestment: '$100K',
   maximumInvestment: '$2M',
   isOnline: true,
-  createdAt: '2018-11-20T14:00:00Z'
+  createdAt: '2018-11-20T14:00:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i5',
@@ -609,7 +613,8 @@ export const investors: Investor[] = [
   minimumInvestment: '$200K',
   maximumInvestment: '$1M',
   isOnline: false,
-  createdAt: '2020-07-15T11:30:00Z'
+  createdAt: '2020-07-15T11:30:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i6',
@@ -625,7 +630,8 @@ export const investors: Investor[] = [
   minimumInvestment: '$50K',
   maximumInvestment: '$500K',
   isOnline: true,
-  createdAt: '2019-03-10T09:00:00Z'
+  createdAt: '2019-03-10T09:00:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i7',
@@ -641,7 +647,8 @@ export const investors: Investor[] = [
   minimumInvestment: '$2M',
   maximumInvestment: '$10M',
   isOnline: false,
-  createdAt: '2020-01-25T16:45:00Z'
+  createdAt: '2020-01-25T16:45:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i8',
@@ -657,14 +664,15 @@ export const investors: Investor[] = [
   minimumInvestment: '$300K',
   maximumInvestment: '$2M',
   isOnline: true,
-  createdAt: '2021-04-08T13:20:00Z'
+  createdAt: '2021-04-08T13:20:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i9',
   name: 'Robert Kim',
   email: 'robert@asiaventures.io',
   role: 'investor',
-  avatarUrl: 'https://images.pexels.com/photos/1560146/pexels-photo-1560146.jpeg?w=300&h=300&auto=compress&cs=tinysrgb',
+  avatarUrl: 'https://cdn.prod.website-files.com/60ad27641a0797c316256572/67ab3060563dc45f217956a5_Main%20Headshot%20-%20Robert%20Kim%20(website).jpg',
   bio: 'Cross-border investor with offices in SF, Singapore, and Seoul. Former McKinsey consultant specializing in Asia-US market expansion. Expert in cultural adaptation, global supply chains, and regulatory navigation across jurisdictions.',
   investmentInterests: ['E-commerce', 'Logistics', 'Cross-border Tech'],
   investmentStage: ['Series A', 'Series B'],
@@ -673,7 +681,8 @@ export const investors: Investor[] = [
   minimumInvestment: '$500K',
   maximumInvestment: '$3M',
   isOnline: true,
-  createdAt: '2019-09-12T10:00:00Z'
+  createdAt: '2019-09-12T10:00:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i10',
@@ -689,7 +698,8 @@ export const investors: Investor[] = [
   minimumInvestment: '$2M',
   maximumInvestment: '$8M',
   isOnline: false,
-  createdAt: '2020-11-30T15:15:00Z'
+  createdAt: '2020-11-30T15:15:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i11',
@@ -705,7 +715,8 @@ export const investors: Investor[] = [
   minimumInvestment: '$250K',
   maximumInvestment: '$1.5M',
   isOnline: true,
-  createdAt: '2021-06-20T12:00:00Z'
+  createdAt: '2021-06-20T12:00:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i12',
@@ -721,14 +732,15 @@ export const investors: Investor[] = [
   minimumInvestment: '$750K',
   maximumInvestment: '$4M',
   isOnline: true,
-  createdAt: '2019-12-05T14:30:00Z'
+  createdAt: '2019-12-05T14:30:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i13',
   name: 'Alex Rivera',
   email: 'alex@gamechangers.vc',
   role: 'investor',
-  avatarUrl: 'https://images.pexels.com/photos/1920556/pexels-photo-1920556.jpeg?w=300&h=300&auto=compress&cs=tinysrgb',
+  avatarUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRkVJdEpPscaefq7MJ4oHUm5mcEmWAp5vzjdw&s',
   bio: 'Former Creative Director at Riot Games with 12 years in game design and live operations. Expert in player engagement mechanics, esports ecosystem development, and creator economy monetization. Passionate about backing founders building the next generation of interactive entertainment and community-driven experiences.',
   investmentInterests: ['Gaming', 'Esports', 'Entertainment Tech'],
   investmentStage: ['Seed', 'Series A'],
@@ -737,7 +749,8 @@ export const investors: Investor[] = [
   minimumInvestment: '$150K',
   maximumInvestment: '$1M',
   isOnline: false,
-  createdAt: '2020-08-18T11:45:00Z'
+  createdAt: '2020-08-18T11:45:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i14',
@@ -753,7 +766,8 @@ export const investors: Investor[] = [
   minimumInvestment: '$200K',
   maximumInvestment: '$1.5M',
   isOnline: true,
-  createdAt: '2021-01-10T09:30:00Z'
+  createdAt: '2021-01-10T09:30:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i15',
@@ -769,7 +783,8 @@ export const investors: Investor[] = [
   minimumInvestment: '$25K',
   maximumInvestment: '$100K',
   isOnline: true,
-  createdAt: '2022-04-15T10:00:00Z'
+  createdAt: '2022-04-15T10:00:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i16',
@@ -785,7 +800,8 @@ export const investors: Investor[] = [
   minimumInvestment: '$30K',
   maximumInvestment: '$75K',
   isOnline: false,
-  createdAt: '2021-09-20T14:30:00Z'
+  createdAt: '2021-09-20T14:30:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i17',
@@ -801,7 +817,8 @@ export const investors: Investor[] = [
   minimumInvestment: '$20K',
   maximumInvestment: '$80K',
   isOnline: true,
-  createdAt: '2022-01-05T09:00:00Z'
+  createdAt: '2022-01-05T09:00:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i18',
@@ -817,7 +834,8 @@ export const investors: Investor[] = [
   minimumInvestment: '$100K',
   maximumInvestment: '$300K',
   isOnline: true,
-  createdAt: '2020-11-12T11:00:00Z'
+  createdAt: '2020-11-12T11:00:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i19',
@@ -833,7 +851,8 @@ export const investors: Investor[] = [
   minimumInvestment: '$150K',
   maximumInvestment: '$400K',
   isOnline: false,
-  createdAt: '2021-06-18T15:20:00Z'
+  createdAt: '2021-06-18T15:20:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i20',
@@ -849,7 +868,8 @@ export const investors: Investor[] = [
   minimumInvestment: '$125K',
   maximumInvestment: '$350K',
   isOnline: true,
-  createdAt: '2020-08-25T10:45:00Z'
+  createdAt: '2020-08-25T10:45:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i21',
@@ -865,14 +885,15 @@ export const investors: Investor[] = [
   minimumInvestment: '$500K',
   maximumInvestment: '$2M',
   isOnline: true,
-  createdAt: '2019-12-10T13:00:00Z'
+  createdAt: '2019-12-10T13:00:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i22',
   name: 'Henry Park',
   email: 'henry@scalevc.io',
   role: 'investor',
-  avatarUrl: 'https://images.pexels.com/photos/1560146/pexels-photo-1560146.jpeg?w=300&h=300&auto=compress&cs=tinysrgb',
+  avatarUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ116KNCLdBzsLV-OxKS1ucEF8ifaASkLO_xg&s',
   bio: 'Former CMO at Warby Parker with expertise in D2C brand building and omnichannel retail strategy. Expert in customer acquisition economics, brand storytelling, and e-commerce conversion optimization. Passionate about backing founders who combine product excellence with compelling brand narratives.',
   investmentInterests: ['E-commerce', 'D2C', 'Brand Tech'],
   investmentStage: ['Series A'],
@@ -881,7 +902,8 @@ export const investors: Investor[] = [
   minimumInvestment: '$750K',
   maximumInvestment: '$2.5M',
   isOnline: false,
-  createdAt: '2020-03-22T16:30:00Z'
+  createdAt: '2020-03-22T16:30:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i23',
@@ -897,7 +919,8 @@ export const investors: Investor[] = [
   minimumInvestment: '$600K',
   maximumInvestment: '$1.8M',
   isOnline: true,
-  createdAt: '2021-02-14T11:15:00Z'
+  createdAt: '2021-02-14T11:15:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i24',
@@ -913,7 +936,8 @@ export const investors: Investor[] = [
   minimumInvestment: '$3M',
   maximumInvestment: '$10M',
   isOnline: true,
-  createdAt: '2018-07-08T09:00:00Z'
+  createdAt: '2018-07-08T09:00:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i25',
@@ -929,14 +953,15 @@ export const investors: Investor[] = [
   minimumInvestment: '$2.5M',
   maximumInvestment: '$8M',
   isOnline: false,
-  createdAt: '2019-05-20T14:00:00Z'
+  createdAt: '2019-05-20T14:00:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i26',
   name: 'Larry Davis',
   email: 'larry@seriesb.io',
   role: 'investor',
-  avatarUrl: 'https://images.pexels.com/photos/1920556/pexels-photo-1920556.jpeg?w=300&h=300&auto=compress&cs=tinysrgb',
+  avatarUrl: 'https://www.mckendree.edu/directory/images/25_Larry_Davis.jpg',
   bio: 'PhD in Cryptography from UC Berkeley with former security lead at Coinbase. Expert in blockchain architecture, cybersecurity threat modeling, and enterprise security adoption. Focused on backing technically rigorous founders building infrastructure for the decentralized future.',
   investmentInterests: ['Quantum', 'Blockchain', 'Cybersecurity'],
   investmentStage: ['Series B'],
@@ -945,14 +970,15 @@ export const investors: Investor[] = [
   minimumInvestment: '$2M',
   maximumInvestment: '$7M',
   isOnline: true,
-  createdAt: '2020-09-15T10:30:00Z'
+  createdAt: '2020-09-15T10:30:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i27',
   name: 'Monica Garcia',
   email: 'monica@latefund.com',
   role: 'investor',
-  avatarUrl: 'https://images.pexels.com/photos/158046/pexels-photo-158046.jpeg?w=300&h=300&auto=compress&cs=tinysrgb',
+  avatarUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPqwfcj5buoLqXuz80Z0XgSLm-CXQjE3OMLg&s',
   bio: 'Former Managing Director at Goldman Sachs Growth Equity with expertise in late-stage capital markets and M&A strategy. Expert in IPO preparation, board governance, and enterprise sales scaling. Focused on backing market leaders ready to dominate their categories and prepare for public markets.',
   investmentInterests: ['Enterprise', 'B2B', 'SaaS'],
   investmentStage: ['Series C'],
@@ -961,7 +987,8 @@ export const investors: Investor[] = [
   minimumInvestment: '$10M',
   maximumInvestment: '$30M',
   isOnline: true,
-  createdAt: '2017-11-25T08:00:00Z'
+  createdAt: '2017-11-25T08:00:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i28',
@@ -977,7 +1004,8 @@ export const investors: Investor[] = [
   minimumInvestment: '$8M',
   maximumInvestment: '$25M',
   isOnline: false,
-  createdAt: '2018-04-12T15:45:00Z'
+  createdAt: '2018-04-12T15:45:00Z',
+  vcsFirm: ''
 },
 {
   id: 'i29',
@@ -993,7 +1021,8 @@ export const investors: Investor[] = [
   minimumInvestment: '$12M',
   maximumInvestment: '$35M',
   isOnline: true,
-  createdAt: '2017-08-30T12:00:00Z'
+  createdAt: '2017-08-30T12:00:00Z',
+  vcsFirm: ''
 }
 ];
 
@@ -1045,4 +1074,53 @@ export const getUsersByRole = (role: 'entrepreneur' | 'investor') => {
 // Get all users including custom accounts
 export const getAllUsers = (): User[] => {
   return [...users, ...customAccountsCache];
+};
+
+export const posts: Post[] = [
+  {
+    id: 'p1',
+    authorId: 'e1',
+    authorName: 'Sarah Johnson',
+    authorAvatar: 'https://images.pexels.com/photos/774909/pexels-photo-774909.jpeg?w=300&h=300&auto=compress&cs=tinysrgb',
+    authorRole: 'entrepreneur',
+    title: 'Seed Funding Opportunity',
+    content: 'Our AI-powered analytics platform for SMBs is looking for $1.5M in seed funding to expand our data science team and accelerate market entry.',
+    category: 'Funding',
+    timestamp: '2024-03-15T10:00:00Z',
+    likes: 24,
+    comments: 8,
+    tags: ['AI', 'FinTech', 'Seed']
+  },
+  {
+    id: 'p2',
+    authorId: 'e2',
+    authorName: 'David Chen',
+    authorAvatar: 'https://images.pexels.com/photos/614810/pexels-photo-614810.jpeg?w=300&h=300&auto=compress&cs=tinysrgb',
+    authorRole: 'entrepreneur',
+    title: 'Partnerships for Sustainable Packaging',
+    content: 'We are looking for B2B partners in the food industry to pilot our biodegradable polymer packaging. 100% plastic-free and cost-competitive.',
+    category: 'Partnership',
+    timestamp: '2024-03-14T14:30:00Z',
+    likes: 18,
+    comments: 12,
+    tags: ['Sustainability', 'Packaging', 'CleanTech']
+  },
+  {
+    id: 'p3',
+    authorId: 'e3',
+    authorName: 'Maya Patel',
+    authorAvatar: 'https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?w=300&h=300&auto=compress&cs=tinysrgb',
+    authorRole: 'entrepreneur',
+    title: 'Hiring: Lead Backend Engineer',
+    content: 'HealthPulse is hiring! We need a lead backend engineer with experience in HIPAA compliance and Node.js to help scale our mental health platform.',
+    category: 'Hiring',
+    timestamp: '2024-03-13T09:15:00Z',
+    likes: 45,
+    comments: 15,
+    tags: ['Jobs', 'HealthTech', 'NodeJS']
+  }
+];
+
+export const findPostById = (id: string) => {
+  return posts.find(post => post.id === id) || null;
 };

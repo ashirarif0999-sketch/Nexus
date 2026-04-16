@@ -4,6 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { Navbar } from './Navbar';
 import { Sidebar } from './Sidebar';
 import { GuidedTour } from '../ui/GuidedTour';
+import { SearchOverlay } from '../search/SearchOverlay';
 import { ROUTES } from '../../config/routes';
 
 export const DashboardLayout: React.FC = memo(() => {
@@ -53,6 +54,7 @@ export const DashboardLayout: React.FC = memo(() => {
       </div>
 
       <GuidedTour run={showTour} onComplete={handleTourComplete} />
+      <SearchOverlay />
     </div>
   );
 });

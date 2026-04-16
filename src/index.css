@@ -39,6 +39,24 @@ body {
   position: sticky;
   top: 0;
 }
+
+.choose-file-upload-btn{
+  color: black;
+  padding: 12px 24px 12px 12px;
+  position: relative;
+  z-index: 1;
+}
+
+/* Button text stays in one line */
+.button-content {
+  white-space: nowrap;
+  align-items: center;
+  .svg-item-file-upload{
+    width: 19px;
+    margin-right: 5px;
+  }
+}
+.choose
 .investors-title, .entrepreneurs-title, .documents-title, .video-meetings-header .page-title{
   font-family: 'oldschool-grotesk-regular', sans-serif;
     font-size: 2.75rem !important;
@@ -60,6 +78,11 @@ body {
     max-width: none !important;
     width: stretch !important;
     aspect-ratio: 1/1;
+}
+.backtologin-auth-btn{
+  background: #424242 !important;
+  color: white !important;
+  margin-top: 10px !important;
 }
 .excel-table { border-collapse: collapse; font-family: 'Calibri', sans-serif; font-size: 10pt; margin: 0; }
                   .excel-table td, .excel-table th { border: 1px solid #ccc; padding: 2px 4px; text-align: left; vertical-align: top; background-color: #fff; min-width: 60px; max-width: 120px; overflow: hidden; white-space: nowrap; }
@@ -345,8 +368,8 @@ body {
 .saved-accounts-dropdown-menu {
   animation: popIn 0.34s ease-out forwards;
   position: fixed;
-  top: 50%;
-  left: 50%;
+  top: 25% !important;
+  left: 0% !important;
   width: 90%;
   max-width: 414px;
   max-height: stretch;
@@ -774,10 +797,6 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 
-/* Button text stays in one line */
-.button-content {
-  white-space: nowrap;
-}
 
 /* Card buttons parent - flexible positioning */
 .card-buttons-parent {

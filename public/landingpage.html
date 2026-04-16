@@ -10,7 +10,7 @@
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="icon" type="image/x-icon" href="images/compressed/logo.jpg" />
+    <link rel="icon" type="image/x-icon" href="images/logo.avif" />
     
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" ></script>
@@ -2473,9 +2473,6 @@ display: flex;
                 cursor: pointer;
             }
         }
-        .faq-icon{
-
-        }
         .faq-item.open {
 border-left: 2px solid var(--primary-500);
     padding-left: 16px;
@@ -3022,16 +3019,16 @@ border-left: 2px solid var(--primary-500);
 
       /* Animated Intro */
       @keyframes glow-sweep {
-        0% { opacity: 0; transform: scale(1.02); }
+        0% { opacity: 0; transform: scale(0.9); }
         30% { opacity: 1; transform: scale(1.02); }
-        80% { opacity: 1; transform: scale(1.02); }
+        60% { opacity: 1; transform: scale(1.02); }
         100% { opacity: 0; transform: scale(1); }
       }
 
       .border-glow-button .glow-border.intro-animation,
       .border-glow-button .glow-fill.intro-animation,
       .border-glow-button .glow-outer.intro-animation {
-        animation: glow-sweep 7s ease-in-out forwards;
+        animation: glow-sweep 4s ease-in-out forwards;
         animation-delay: 3.5s;
       }
 
@@ -3066,7 +3063,7 @@ border-left: 2px solid var(--primary-500);
          ============================================ -->
     <nav class="navbar" id="navbar">
         <div class="navbar-inner">
-            <a href="landingpage.html" class="navbar-brand"><img src="images/compressed/logo-nexus-inverted.jpg" alt="Nexus" class="navbar-logo" loading="lazy"></a>
+            <a href="landingpage.html" class="navbar-brand"><img src="images/logo-nexus-inverted.avif" alt="Nexus" class="navbar-logo" loading="lazy"></a>
             
             <div class="navbar-nav">
                 <a href="#" class="navbar-link">Products <i data-lucide="chevron-down"></i></a>
@@ -3213,7 +3210,7 @@ border-left: 2px solid var(--primary-500);
                                 <div class="navbar-dropdown-showcase-list">
                                     <div class="navbar-dropdown-showcase-card navbar-dropdown-showcase-card-g3">
                                         <div class="navbar-dropdown-showcase-image">
-                                            <image src="images/compressed/navbar 3.jpg" width="100%" height="100%" alt="Fund Benchmarks Report 2025" style="object-fit: cover; border-radius: var(--radius-lg);">
+                                            <image src="images/navbar 3.avif" width="100%" height="100%" alt="Fund Benchmarks Report 2025" style="object-fit: cover; border-radius: var(--radius-lg);">
                                             <!-- Image placeholder - leave for user -->
                                         </div>
                                         <div class="showcase-wrapper-group-3">
@@ -3223,7 +3220,7 @@ border-left: 2px solid var(--primary-500);
                                     </div>
                                     <div class="navbar-dropdown-showcase-card navbar-dropdown-showcase-card-g3">
                                         <div class="navbar-dropdown-showcase-image">
-                                            <img src="images/compressed/navbar 4.jpg" width="100%" height="100%" alt="How Browder Capital Launched Institutional Fund IV with Nexus" style="object-fit: cover; border-radius: var(--radius-lg);" loading="lazy"> 
+                                            <img src="images/navbar 4.avif" width="100%" height="100%" alt="How Browder Capital Launched Institutional Fund IV with Nexus" style="object-fit: cover; border-radius: var(--radius-lg);" loading="lazy"> 
                                             <!-- Image placeholder - leave for user -->
                                         </div>
                                         <div class="showcase-wrapper-group-3">
@@ -3390,7 +3387,7 @@ border-left: 2px solid var(--primary-500);
                     </a>
                 </div>
                 <div class="full-service-portraits">
-                    <img src="images/compressed/full-service.jpg" alt="Team member 1" class="full-service-portrait" loading="lazy">
+                    <img src="images/full-service.avif" alt="Team member 1" class="full-service-portrait" loading="lazy">
                     
                 </div>
             </div>
@@ -3471,7 +3468,7 @@ border-left: 2px solid var(--primary-500);
     <section class="testimonial" id="testimonial">
         <div class="testimonial-inner">
             <span class="section-label section-label-light text-center reveal-label">• Testimonials</span>
-            <div class="testimonial-quote-mark" style="mix-blend-mode:plus-lighter;"><img src="images/compressed/quote-mark.jpg" alt="Quote mark" style="transition: height 300ms var(--ease-out) !important; animation: popin 300ms var(--ease-out) !important; opacity: 0.08; width: 453px; height: auto;" loading="lazy"></div>
+            <div class="testimonial-quote-mark" style="mix-blend-mode:plus-lighter;"><img src="images/quote-mark.avif" alt="Quote mark" style="transition: height 300ms var(--ease-out) !important; animation: popin 300ms var(--ease-out) !important; opacity: 0.08; width: 453px; height: auto;" loading="lazy"></div>
             <div class="testimonial-content">
                 <div class="testimonial-carousel">
                     <div class="testimonial-slide active" data-slide="0">
@@ -3712,7 +3709,7 @@ border-left: 2px solid var(--primary-500);
         <div class="footer-inner">
             <div class="footer-top">
                 <div class="footer-brand-section">
-                    <a href="#" class="footer-brand"><img src="images/compressed/logo-nexus-inverted.jpg" alt="Nexus" class="footer-brand-logo" loading="lazy"></a>
+                    <a href="#" class="footer-brand"><img src="images/logo-nexus-inverted.avif" alt="Nexus" class="footer-brand-logo" loading="lazy"></a>
                     <div class="footer-brand-actions">
                         <a href="contact-sales.html" class="footer-cta-small">Contact sales</a>
                         <a href="/login" class="footer-signin-small">Sign in</a>
@@ -5030,7 +5027,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const edgeSensitivity = 5;
             const colorSensitivity = edgeSensitivity + 20;
             const fillOpacity = 0.5;
-            const coneSpread = 75;
+            const coneSpread = 25;
 
             const GRADIENT_POSITIONS = ['80% 55%', '69% 34%', '8% 6%', '41% 38%', '86% 85%', '82% 18%', '51% 4%'];
             const COLOR_MAP = [0, 1, 2, 0, 1, 2, 1];
@@ -5054,11 +5051,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }, 16);
 
-            // Clean up intro after 9 seconds (3.5s delay + 7s animation + buffer)
+            // Clean up intro after 9 seconds (3.5s delay + 4s animation + buffer)
             setTimeout(() => {
                 clearInterval(introTimer);
                 container.querySelectorAll('.intro-animation').forEach(el => el.classList.remove('intro-animation'));
-            }, 10000);
+            }, 9000);
 
             function buildMeshGradients(colors) {
                 const gradients = GRADIENT_POSITIONS.map((pos, i) => {
