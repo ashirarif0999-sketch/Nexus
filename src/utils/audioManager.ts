@@ -108,7 +108,7 @@ export const audioManager = AudioManager.getInstance();
 
 // Export convenience functions using imported assets for reliable Vite bundling
 export const playJoinCall = () => audioManager.play('joinCall', joinCallSfx, false, 1.0);
-export const playCrowd = () => audioManager.play('crowd', croudSfx, true, 0.4); // Increased volume slightly
+export const playCrowd = () => audioManager.play('crowd', croudSfx, true, 0.8); // Louder background
 export const playEndCall = () => audioManager.play('endCall', endCallSfx, false, 1.0);
 export const stopCrowd = () => audioManager.stop('crowd');
 export const stopAllAudio = () => audioManager.stopAll();

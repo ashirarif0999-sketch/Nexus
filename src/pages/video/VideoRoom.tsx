@@ -35,10 +35,18 @@ import {
   ArrowLeft,
   Check,
   Clock,
+  Volume2,
+  VolumeX,
 } from 'lucide-react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { ROUTES } from '../../config/routes';
 import { playCrowd, playEndCall, stopCrowd } from '../../utils/audioManager';
+import vid1 from '../../video/vid1.mp4';
+import vid2 from '../../video/vid2.mp4';
+import vid3 from '../../video/vid3.mp4';
+import vid4 from '../../video/vid4.mp4';
+import vid5 from '../../video/vid5.mp4';
+import vid6 from '../../video/vid6.mp4';
 
 // ============================================
 // TYPES & INTERFACES
@@ -66,6 +74,7 @@ interface Participant {
   isSpeaking: boolean;
   isScreenSharing: boolean;
   isPinned: boolean;
+  isAudioMuted: boolean;
   avatarColor: string;
 }
 
@@ -104,16 +113,25 @@ const getAvatarColor = (name: string) => {
   return colors[Math.abs(hash) % colors.length];
 };
 
-const MOCK_PARTICIPANTS: Omit<Participant, 'avatarColor' | 'isSpeaking'>[] = [
+const MOCK_PARTICIPANTS: Omit<Participant, 'avatarColor' | 'isSpeaking' | 'isAudioMuted'>[] = [
   { id: '1', name: 'Sarah Chen', role: 'investor', isMuted: false, isVideoOn: true, isScreenSharing: false, isPinned: false },
   { id: '2', name: 'Michael Roberts', role: 'entrepreneur', isMuted: true, isVideoOn: true, isScreenSharing: false, isPinned: false },
-  { id: '3', name: 'David Kim', role: 'guest', isMuted: false, isVideoOn: false, isScreenSharing: false, isPinned: false },
+  { id: '3', name: 'David Kim', role: 'guest', isMuted: false, isVideoOn: true, isScreenSharing: false, isPinned: false },
   { id: '4', name: 'Elena Rodriguez', role: 'investor', isMuted: false, isVideoOn: true, isScreenSharing: true, isPinned: false },
   { id: '5', name: 'John Doe', role: 'guest', isMuted: true, isVideoOn: true, isScreenSharing: false, isPinned: false },
   { id: '6', name: 'Jane Smith', role: 'investor', isMuted: false, isVideoOn: true, isScreenSharing: false, isPinned: false },
 ];
 
 const REACTION_EMOJIS = ['👍', '❤️', '😂', '😮', '🎉', '👏', '🚀', ''];
+
+const VIDEO_MAP: Record<string, string> = {
+  '1': vid1,
+  '2': vid2,
+  '3': vid3,
+  '4': vid4,
+  '5': vid5,
+  '6': vid6,
+};
 
 // ============================================
 // CONTEXT & PROVIDERS
@@ -285,11 +303,13 @@ const VideoTile = ({
   participant,
   isLocal = false,
   onTogglePin,
+  onToggleAudioMute,
   isHandRaised,
 }: {
   participant: Participant;
   isLocal?: boolean;
   onTogglePin: (id: string) => void;
+  onToggleAudioMute: (id: string) => void;
   isHandRaised: boolean;
 }) => {
   return (
@@ -299,13 +319,23 @@ const VideoTile = ({
       animate={{ opacity: 1, scale: 1 }}
       className={cn(
         'meet-tile group',
+        isLocal && 'meet-tile-local',
         participant.isSpeaking && 'active-speaker'
       )}
     >
       {participant.isVideoOn ? (
-        <div className="video-feed-container w-full h-full bg-[#1e1f21] flex items-center justify-center overflow-hidden">
-          <Avatar name={isLocal ? 'You' : participant.name} size="xl" isMuted={participant.isMuted} />
-          {/* In a real app, video would be here */}
+        <div className="video-feed-container w-full h-full bg-[#1e1f21] overflow-hidden">
+          {participant.id !== 'local' ? (
+            <video
+              src={VIDEO_MAP[participant.id]}
+              autoPlay
+              loop
+              muted={participant.isAudioMuted}
+              className="w-full h-full object-cover"
+            />
+          ) : (
+            <Avatar name={isLocal ? 'You' : participant.name} size="xl" isMuted={participant.isMuted} />
+          )}
         </div>
       ) : (
         <div className="meet-tile-placeholder">
@@ -315,6 +345,14 @@ const VideoTile = ({
 
       {/* Meet-style overlays */}
       <div className="absolute top-2 right-2 flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+        {participant.id !== 'local' && (
+          <button
+            onClick={() => onToggleAudioMute(participant.id)}
+            className="p-1.5 bg-[#202124] hover:bg-[#3c4043] rounded-full text-white transition-colors border border-white/5 shadow-lg"
+          >
+            {participant.isAudioMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+          </button>
+        )}
         <button
           onClick={() => onTogglePin(participant.id)}
           className="p-1.5 bg-[#202124] hover:bg-[#3c4043] rounded-full text-white transition-colors border border-white/5 shadow-lg"
@@ -580,11 +618,13 @@ const SidePanel = ({
 const ParticipantCarousel = ({
   participants,
   onTogglePin,
+  onToggleAudioMute,
   orientation = 'horizontal',
   isHandRaised = false
 }: {
   participants: Participant[];
   onTogglePin: (id: string) => void;
+  onToggleAudioMute: (id: string) => void;
   orientation?: 'horizontal' | 'vertical';
   isHandRaised?: boolean;
 }) => {
@@ -669,8 +709,9 @@ const ParticipantCarousel = ({
               participant={p}
               isLocal={p.id === 'local'}
               onTogglePin={onTogglePin}
-              isHandRaised={isHandRaised}
-            />
+              isHandRaised={isHandRaised} onToggleAudioMute={function (id: string): void {
+                throw new Error('Function not implemented.');
+              } }            />
           </div>
         ))}
       </div>
@@ -783,7 +824,7 @@ const EndCallModal = ({
             </div>
             <button
                 onClick={onClose}
-                className="mt-4 px-8 py-4 text-[14px] text-[#9aa0a6] hover:text-black rounded-[12px] hover:bg-white w-full transition-colors font-medium"
+                className="mt-4 px-8 py-4 text-[14px] text-[#9aa0a6] hover:text-black rounded-[12px] hover:bg-white w-full transition-colors bg-[#3c4043] color-[white] font-medium"
               >
                 Cancel
               </button>
@@ -839,7 +880,7 @@ export const VideoRoom: React.FC = () => {
 
   const [participants, setParticipants] = useState<Participant[]>([]);
   const [localParticipant, setLocalParticipant] = useState<Participant>({
-    id: 'local', name: 'You', role: 'host' as ParticipantRole, isMuted: false, isVideoOn: true, isScreenSharing: false, isPinned: false, isSpeaking: false, avatarColor: getAvatarColor('You')
+    id: 'local', name: 'You', role: 'host' as ParticipantRole, isMuted: false, isVideoOn: true, isScreenSharing: false, isPinned: false, isSpeaking: false, isAudioMuted: false, avatarColor: getAvatarColor('You')
   });
   const [activeSpeakerId, setActiveSpeakerId] = useState('');
   const [callDuration, setCallDuration] = useState(0);
@@ -878,7 +919,7 @@ export const VideoRoom: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const initial = MOCK_PARTICIPANTS.map((p) => ({ ...p, avatarColor: getAvatarColor(p.name), isSpeaking: false }));
+    const initial = MOCK_PARTICIPANTS.map((p) => ({ ...p, avatarColor: getAvatarColor(p.name), isSpeaking: false, isAudioMuted: false }));
     setParticipants(initial);
     addToast('info', 'Connected to meeting');
   }, []);
@@ -1158,6 +1199,16 @@ export const VideoRoom: React.FC = () => {
     }
   }, [addToast]);
 
+  const handleToggleAudioMute = useCallback((id: string) => {
+    if (id === 'local') {
+      setLocalParticipant(prev => ({ ...prev, isAudioMuted: !prev.isAudioMuted }));
+      addToast('info', (prev: { isAudioMuted: any; }) => prev.isAudioMuted ? 'Video audio unmuted' : 'Video audio muted');
+    } else {
+      setParticipants((prev) => prev.map((p) => p.id === id ? { ...p, isAudioMuted: !p.isAudioMuted } : p));
+      addToast('info', 'Toggled video audio');
+    }
+  }, [addToast]);
+
   const handleSendMessage = useCallback((text: string) => {
     setChatMessages((prev) => [...prev, { id: Date.now().toString(), senderId: 'local', senderName: 'You', text, timestamp: new Date() }]);
     setChatUnread(0);
@@ -1235,13 +1286,15 @@ export const VideoRoom: React.FC = () => {
                 participant={localParticipant}
                 isLocal
                 onTogglePin={handleTogglePin}
-                isHandRaised={isHandRaised}
-              />
+                isHandRaised={isHandRaised} onToggleAudioMute={function (id: string): void {
+                  throw new Error('Function not implemented.');
+                } }              />
               {sortedParticipants.filter(p => p.id !== 'local').map((participant) => (
                 <VideoTile
                   key={participant.id}
                   participant={participant}
                   onTogglePin={handleTogglePin}
+                  onToggleAudioMute={handleToggleAudioMute}
                   isHandRaised={isHandRaised}
                 />
               ))}
@@ -1252,7 +1305,7 @@ export const VideoRoom: React.FC = () => {
               windowWidth > 850 ? "flex-row" : "flex-col"
             )}>
               <div className="relative w-[stretch] h-[stretch] rounded-2xl overflow-hidden shadow-2xl border border-white/5 animate-in fade-in zoom-in duration-300">
-                <video ref={screenVideoRef} className="w-full h-full object-contain bg-[black]" autoPlay playsInline />
+                <video ref={screenVideoRef} className="w-full h-full object-contain bg-[black]" autoPlay playsInline muted />
                 <div className="absolute bottom-4 left-4 bg-black/80 px-3 py-1.5 rounded-lg flex items-center gap-2 border border-white/10">
                   <Monitor className="w-4 h-4 text-[#8ab4f8]" />
                   <span className="text-sm font-medium text-white">Your presentation</span>
@@ -1266,6 +1319,7 @@ export const VideoRoom: React.FC = () => {
                 <ParticipantCarousel
                   participants={allParticipants.filter(p => !p.isScreenSharing)}
                   onTogglePin={handleTogglePin}
+                  onToggleAudioMute={handleToggleAudioMute}
                   orientation={windowWidth > 850 ? 'vertical' : 'horizontal'}
                   isHandRaised={isHandRaised}
                 />

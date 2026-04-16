@@ -56,6 +56,10 @@ body {
     margin-right: 5px;
   }
 }
+.video-feed-container{
+  align-content: center;
+    place-items: anchor-center;
+}
 .choose
 .investors-title, .entrepreneurs-title, .documents-title, .video-meetings-header .page-title{
   font-family: 'oldschool-grotesk-regular', sans-serif;
@@ -2200,9 +2204,10 @@ span {
   border-radius: 0.5rem;
   border: 1px solid #e5e7eb;
   padding: 1rem;
+  margin-top: 5px !important;
+  margin-bottom: 0px !important;
   transition: box-shadow 0.2s;
 }
-
 .video-meetings-page .meeting-card:hover {
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
 }
@@ -2533,7 +2538,19 @@ span {
   overflow: hidden;
   min-height: 100vh;
 }
-
+@media(max-width:480px){
+  .container{
+    scrollbar-width: none;
+  }
+  html{
+    scrollbar-width: auto !important;
+  }
+  .video-room-container{
+    min-height: 113vh;
+    scrollbar-color: transparent transparent;
+    scrollbar-width: none;
+  }
+}
 .video-room-header {
   display: flex;
   flex-direction: row;
@@ -3073,7 +3090,9 @@ flex: 1;
   gap: 12px;
   width: 100%;
   height: 100%;
-  max-width: 1600px;
+  top: -50px;
+  position: relative;
+  max-width: 1200px;
   margin: 0 auto;
   align-content: center;
   justify-content: center;
@@ -3099,6 +3118,12 @@ flex: 1;
 .meet-tile.active-speaker {
   border-color: var(--meet-primary);
   box-shadow: 0 0 0 2px var(--meet-bg), 0 0 0 4px var(--meet-primary);
+}
+
+.meet-tile-local {
+  border-color: #4285f4;
+  border-width: 3px;
+  box-shadow: 0 0 0 3px rgba(66, 133, 244, 0.3);
 }
 
 .meet-tile-placeholder {
@@ -3141,7 +3166,7 @@ flex: 1;
   bottom: 0;
   left: 0;
   right: 0;
-  height: 80px;
+  height: 60px;
   background-color: var(--meet-bg);
   display: flex;
   align-items: center;
@@ -3155,19 +3180,24 @@ flex: 1;
   align-items: center;
   gap: 5px;
 }
-
+textarea, input{
+  caret-shape:bar;
+  caret: 2px;
+  caret-color: #5395ff;
+}
 .meet-icon-btn {
- width: 60px;
-    height: 46px;
+     width: 58px;
+    height: 58px;
     border-radius: 30px;
     background-color: var(--meet-tile);
     color: var(--meet-text);
     display: flex;
     align-items: center;
     justify-content: center;
-    border: none;
+    border: 2px solid #00000061;
     transition: all 0.2s ease;
     cursor: pointer;
+    margin-bottom: 20px;
   }
 
 .meet-icon-btn:hover {
@@ -3183,13 +3213,15 @@ flex: 1;
   background-color: var(--meet-danger);
   color: white;
   border-radius: 8px;
+  height: 45px;
 }
 
 .meet-icon-btn.danger-pill {
-  width: 56px;
-  border-radius: 28px;
-  background-color: var(--meet-danger);
-  color: white;
+ width: 53px;
+    border-radius: 28px;
+    background-color: var(--meet-danger);
+    color: white;
+    height: 53px;
   
 }
 
@@ -3594,7 +3626,6 @@ h2{
 }
 
 .meet-bottom-bar {
-  height: 80px !important;
   padding: 0 24px !important;
 }
 
